@@ -1,0 +1,12 @@
+# Idea Files #
+.idea/**
+target/*
+**/target/*
+*.ipr
+*.iws
+*.iml
+dependency-reduced-pom.xml
+.DS_Store
+**/.DS_Store
+.run
+checkstyle.xml
