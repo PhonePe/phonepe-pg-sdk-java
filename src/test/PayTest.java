@@ -1,0 +1,118 @@
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import com.google.common.collect.Maps;
+import com.phonepe.sdk.pg.common.exception.PhonePeException;
+import com.phonepe.sdk.pg.common.http.PhonePeResponse;
+import com.phonepe.sdk.pg.common.models.request.PgPaymentRequest;
+import com.phonepe.sdk.pg.common.models.request.paymentmodeconstraints.CardPaymentModeConstraint;
+import com.phonepe.sdk.pg.common.models.request.paymentmodeconstraints.CardType;
+import com.phonepe.sdk.pg.common.models.request.paymentmodeconstraints.NetBankingPaymentModeConstraint;
+import com.phonepe.sdk.pg.common.models.request.paymentmodeconstraints.PaymentModeConstraint;
+import com.phonepe.sdk.pg.common.models.request.paymentmodeconstraints.UpiCollectPaymentModeConstraint;
+import com.phonepe.sdk.pg.common.models.request.paymentmodeconstraints.UpiIntentPaymentModeConstraint;
+import com.phonepe.sdk.pg.common.models.request.paymentmodeconstraints.UpiQrPaymentModeConstraint;
+import com.phonepe.sdk.pg.common.models.response.PgPaymentResponse;
+import com.phonepe.sdk.pg.payments.v2.models.request.PaymentModeConfig;
+import com.phonepe.sdk.pg.payments.v2.customcheckout.CustomCheckoutConstants;
+import com.phonepe.sdk.pg.payments.v2.models.request.StandardCheckoutPayRequest;
+import com.phonepe.sdk.pg.payments.v2.models.response.StandardCheckoutPayResponse;
+import com.phonepe.sdk.pg.payments.v2.standardcheckout.StandardCheckoutConstants;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import lombok.SneakyThrows;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import wiremock.org.apache.http.HttpStatus;
+
+public class PayTest extends BaseSetupWithOAuth {
+
+    @SneakyThrows
+    @Test
+    void testPayReturnSuccess() {
+        final String url = StandardCheckoutConstants.PAY_API;
+        String redirectUrl = "https://redirectUrl.com";
+
+        List<PaymentModeConstraint> enabledPaymentModes = new ArrayList<>();
+        enabledPaymentModes.add(new UpiIntentPaymentModeConstraint());
+        enabledPaymentModes.add(new UpiCollectPaymentModeConstraint());
+        enabledPaymentModes.add(new UpiQrPaymentModeConstraint());
+        enabledPaymentModes.add(new NetBankingPaymentModeConstraint());
+        enabledPaymentModes.add(new CardPaymentModeConstraint(Collections.singleton(CardType.DEBIT_CARD)));
+        enabledPaymentModes.add(new CardPaymentModeConstraint(Collections.singleton(CardType.CREDIT_CARD)));
+
+        PaymentModeConfig paymentModeConfig = PaymentModeConfig.builder()
+                .enabledPaymentModes(enabledPaymentModes)
+                .disabledPaymentModes(Collections.emptyList())
+                .build();
+        StandardCheckoutPayRequest standardCheckoutPayRequest =
+                StandardCheckoutPayRequest.builder()
+                        .merchantOrderId(merchantOrderId)
+                        .amount(amount)
+                        .redirectUrl(redirectUrl)
+                        .paymentModeConfig(paymentModeConfig)
+                        .build();
+        StandardCheckoutPayResponse standardCheckoutResponse = StandardCheckoutPayResponse.builder()
+                .orderId(String.valueOf(java.time.Instant.now()
+                        .getEpochSecond()))
+                .state("PENDING")
+                .expireAt(java.time.Instant.now()
+                        .getEpochSecond())
+                .redirectUrl("https://google.com")
+                .build();
+        Map<String, String> headers = getHeaders();
+
+        addStubForPostRequest(url, headers, standardCheckoutPayRequest, HttpStatus.SC_OK, Maps.newHashMap(),
+                standardCheckoutResponse);
+        StandardCheckoutPayResponse actual = standardCheckoutClient.pay(standardCheckoutPayRequest);
+        Assertions.assertEquals(standardCheckoutResponse, actual);
+    }
+
+    @Test
+    void testPayBadRequest() {
+        final String url = StandardCheckoutConstants.PAY_API;
+        StandardCheckoutPayRequest standardCheckoutPayRequest =
+                StandardCheckoutPayRequest.builder()
+                        .merchantOrderId(merchantOrderId)
+                        .amount(amount)
+                        .build();
+        PhonePeResponse phonePeResponse = PhonePeResponse.<Map<String, String>>builder()
+                .code("Bad Request")
+                .message("message")
+                .data(Collections.singletonMap("a", "b"))
+                .build();
+        addStubForPostRequest(url, getHeaders(), standardCheckoutPayRequest, HttpStatus.SC_BAD_REQUEST,
+                Maps.newHashMap(), phonePeResponse);
+
+        final PhonePeException phonePeException = assertThrows(PhonePeException.class,
+                () -> standardCheckoutClient.pay(standardCheckoutPayRequest));
+        Assertions.assertEquals(400, phonePeException.getHttpStatusCode());
+        Assertions.assertEquals("Bad Request", phonePeException.getCode());
+    }
+
+    @Test
+    void testCustomPay() {
+        final String url = CustomCheckoutConstants.PAY_API;
+
+        PgPaymentRequest request =
+                PgPaymentRequest.UpiQrRequestBuilder()
+                        .merchantOrderId("MerchantOrderId")
+                        .amount(100)
+                        .build();
+        PgPaymentResponse pgPaymentResponse = PgPaymentResponse.builder()
+                .orderId("OMO2403071446458436434329")
+                .state("PENDING")
+                .expireAt(java.time.Instant.now()
+                        .getEpochSecond())
+                .redirectUrl("mercury.com")
+                .build();
+        addStubForPostRequest(url, getHeaders(), request, HttpStatus.SC_OK,
+                Maps.newHashMap(), pgPaymentResponse);
+
+        PgPaymentResponse actual = customCheckoutClient.pay(request);
+        Assertions.assertEquals(pgPaymentResponse, actual);
+    }
+
+}

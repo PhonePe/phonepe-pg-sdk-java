@@ -1,0 +1,50 @@
+.default: &default
+    only:
+        - merge_requests
+        - web
+
+.default_tag: &default_tag
+    tags:
+        - backend-docker
+image: pp-maven:3.9.5-openjdk-17
+
+stages:
+    - build
+    - pre-merge
+    - cloud_release
+
+
+build_package:
+    stage: build
+    <<: *default
+    <<: *default_tag
+    when: manual
+    allow_failure: false
+    script:
+        - mvn clean install -U
+    only:
+        - merge_requests
+    except:
+        - master
+        - develop
+
+
+"Build Sanity":
+    stage: pre-merge
+    <<: *default
+    <<: *default_tag
+    when: on_success
+    allow_failure: false
+    script:
+        - mvn clean verify -U -Pquality_check -Dsonar.pullrequest.key=$CI_MERGE_REQUEST_IID -Dsonar.pullrequest.branch=$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME -Dsonar.pullrequest.base=$CI_MERGE_REQUEST_TARGET_BRANCH_NAME
+    artifacts:
+        reports:
+            junit:
+                - target/surefire-reports/TEST-*.xml
+    except:
+        - master
+        - stage
+        - develop
+
+
+
