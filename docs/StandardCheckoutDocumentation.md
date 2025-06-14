@@ -129,7 +129,7 @@ ____
 
 ### Order Callback Handling
 
-You will receive a callback you have configured [dashboard link] TODO find the link/curl
+You will receive a callback you have configured [dashboard link]
 <br>It is important to check the validity of the callback received from PhonePe using the `validateCallback()` function.
 
 ```java
