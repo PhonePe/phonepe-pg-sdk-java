@@ -1,3 +1,18 @@
+/*
+ *  Copyright (c) 2025 Original Author(s), PhonePe India Pvt. Ltd.
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package com.phonepe.sdk.pg.common.tokenhandler;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_FORM_URLENCODED;
@@ -25,7 +40,6 @@ import okhttp3.OkHttpClient;
 @Slf4j
 public class TokenService {
 
-
     private OkHttpClient okHttpClient;
     private ObjectMapper objectMapper;
     private CredentialConfig credentialConfig;
@@ -33,14 +47,19 @@ public class TokenService {
     private static OAuthResponse oAuthResponse;
     private EventPublisher eventPublisher;
 
-    public TokenService(OkHttpClient okHttpClient, ObjectMapper objectMapper, CredentialConfig credentialConfig,
-            Env env, EventPublisher eventPublisher) {
+    public TokenService(
+            OkHttpClient okHttpClient,
+            ObjectMapper objectMapper,
+            CredentialConfig credentialConfig,
+            Env env,
+            EventPublisher eventPublisher) {
         this.okHttpClient = okHttpClient;
         this.objectMapper = objectMapper;
         this.credentialConfig = credentialConfig;
         this.env = env;
         this.eventPublisher = eventPublisher;
-        this.eventPublisher.send(BaseEvent.buildInitClientEvent(EventType.TOKEN_SERVICE_INITIALIZED));
+        this.eventPublisher.send(
+                BaseEvent.buildInitClientEvent(EventType.TOKEN_SERVICE_INITIALIZED));
     }
 
     public static void setOAuthResponse(OAuthResponse oAuthResponse) {
@@ -53,11 +72,7 @@ public class TokenService {
                         .key(Headers.CONTENT_TYPE)
                         .value(APPLICATION_FORM_URLENCODED)
                         .build(),
-                HttpHeaderPair.builder()
-                        .key(Headers.ACCEPT)
-                        .value(APPLICATION_JSON)
-                        .build()
-        );
+                HttpHeaderPair.builder().key(Headers.ACCEPT).value(APPLICATION_JSON).build());
     }
 
     public String formatCachedToken() {
@@ -65,8 +80,7 @@ public class TokenService {
     }
 
     public long getCurrentTime() {
-        return java.time.Instant.now()
-                .getEpochSecond();
+        return java.time.Instant.now().getEpochSecond();
     }
 
     @SneakyThrows
@@ -79,14 +93,22 @@ public class TokenService {
             TokenService.setOAuthResponse(fetchTokenFromPhonePe());
         } catch (Exception exception) {
             if (Objects.isNull(oAuthResponse)) {
-                log.error("No cached token, error occurred while fetching new token {}", exception.toString());
+                log.error(
+                        "No cached token, error occurred while fetching new token {}",
+                        exception.toString());
                 throw exception;
             }
-            log.info("Returning cached token, error occurred while fetching new token {}", exception.toString());
+            log.info(
+                    "Returning cached token, error occurred while fetching new token {}",
+                    exception.toString());
             eventPublisher.send(
-                    BaseEvent.buildOAuthEvent(getCurrentTime(), TokenConstants.OAUTH_GET_TOKEN,
+                    BaseEvent.buildOAuthEvent(
+                            getCurrentTime(),
+                            TokenConstants.OAUTH_GET_TOKEN,
                             EventType.OAUTH_FETCH_FAILED_USED_CACHED_TOKEN,
-                            exception, oAuthResponse.getIssuedAt(), oAuthResponse.getExpiresAt()));
+                            exception,
+                            oAuthResponse.getIssuedAt(),
+                            oAuthResponse.getExpiresAt()));
         }
         return formatCachedToken();
     }
@@ -115,8 +137,7 @@ public class TokenService {
         return HttpCommand.<OAuthResponse, FormBody>builder()
                 .client(okHttpClient)
                 .objectMapper(objectMapper)
-                .responseTypeReference(new TypeReference<OAuthResponse>() {
-                })
+                .responseTypeReference(new TypeReference<OAuthResponse>() {})
                 .methodName(HttpMethodType.POST)
                 .headers(prepareRequestHeaders())
                 .requestData(formBody)
@@ -128,11 +149,11 @@ public class TokenService {
     }
 
     private FormBody prepareFormBody(CredentialConfig credentialConfig) {
-        return new FormBody.Builder().add("client_id", credentialConfig.getClientId())
+        return new FormBody.Builder()
+                .add("client_id", credentialConfig.getClientId())
                 .add("client_secret", credentialConfig.getClientSecret())
                 .add("grant_type", TokenConstants.OAUTH_GRANT_TYPE)
                 .add("client_version", String.valueOf(credentialConfig.getClientVersion()))
                 .build();
     }
-
 }

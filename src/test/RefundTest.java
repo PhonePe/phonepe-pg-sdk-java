@@ -1,3 +1,18 @@
+/*
+ *  Copyright (c) 2025 Original Author(s), PhonePe India Pvt. Ltd.
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.google.common.collect.ImmutableMap;
@@ -19,24 +34,22 @@ import wiremock.org.apache.http.HttpStatus;
 
 public class RefundTest extends BaseSetupWithOAuth {
 
-
     @Test
     void testRefundSuccess() {
         String refundId = "234234";
         String url = StandardCheckoutConstants.REFUND_API;
-        RefundRequest refundRequest = RefundRequest.builder()
-                .merchantRefundId(refundId)
-                .originalMerchantOrderId(merchantOrderId)
-                .amount(amount)
-                .build();
-        RefundResponse refundResponse = RefundResponse.builder()
-                .refundId("34534534")
-                .state("CREATED")
-                .amount(100)
-                .build();
+        RefundRequest refundRequest =
+                RefundRequest.builder()
+                        .merchantRefundId(refundId)
+                        .originalMerchantOrderId(merchantOrderId)
+                        .amount(amount)
+                        .build();
+        RefundResponse refundResponse =
+                RefundResponse.builder().refundId("34534534").state("CREATED").amount(100).build();
         Map<String, String> headers = getHeaders();
 
-        addStubForPostRequest(url, headers, refundRequest, HttpStatus.SC_OK, Maps.newHashMap(), refundResponse);
+        addStubForPostRequest(
+                url, headers, refundRequest, HttpStatus.SC_OK, Maps.newHashMap(), refundResponse);
         RefundResponse actual = standardCheckoutClient.refund(refundRequest);
         Assertions.assertEquals(actual, refundResponse);
     }
@@ -44,17 +57,23 @@ public class RefundTest extends BaseSetupWithOAuth {
     @Test
     void testRefundStatus() {
         String refundId = "RefundId";
-        RefundStatusResponse refundStatusResponse = RefundStatusResponse.builder()
-                .merchantId("merchantId")
-                .amount(100)
-                .state("COMPLETED")
-                .merchantRefundId("RefundId")
-                .paymentDetails(Arrays.asList())
-                .originalMerchantOrderId("merchantOrderId")
-                .build();
+        RefundStatusResponse refundStatusResponse =
+                RefundStatusResponse.builder()
+                        .merchantId("merchantId")
+                        .amount(100)
+                        .state("COMPLETED")
+                        .merchantRefundId("RefundId")
+                        .paymentDetails(Arrays.asList())
+                        .originalMerchantOrderId("merchantOrderId")
+                        .build();
         String url = String.format(StandardCheckoutConstants.REFUND_STATUS_API, refundId);
-        addStubForGetRequest(url, ImmutableMap.of(), getHeaders(), HttpStatus.SC_OK,
-                ImmutableMap.of(), refundStatusResponse);
+        addStubForGetRequest(
+                url,
+                ImmutableMap.of(),
+                getHeaders(),
+                HttpStatus.SC_OK,
+                ImmutableMap.of(),
+                refundStatusResponse);
 
         RefundStatusResponse actual = standardCheckoutClient.getRefundStatus(refundId);
         Assertions.assertEquals(actual, refundStatusResponse);
@@ -66,21 +85,29 @@ public class RefundTest extends BaseSetupWithOAuth {
         long amount = 100;
         String originalMerchantOrderId = "435435634";
         String url = StandardCheckoutConstants.REFUND_API;
-        RefundRequest refundRequest = RefundRequest.builder()
-                .merchantRefundId(refundId)
-                .originalMerchantOrderId(originalMerchantOrderId)
-                .amount(amount)
-                .build();
-        PhonePeResponse phonePeResponse = PhonePeResponse.<Map<String, String>>builder()
-                .code("code")
-                .message("Not Found")
-                .data(Collections.singletonMap("a", "b"))
-                .build();
-        addStubForPostRequest(url, getHeaders(), refundRequest, HttpStatus.SC_NOT_FOUND, Maps.newHashMap(),
+        RefundRequest refundRequest =
+                RefundRequest.builder()
+                        .merchantRefundId(refundId)
+                        .originalMerchantOrderId(originalMerchantOrderId)
+                        .amount(amount)
+                        .build();
+        PhonePeResponse phonePeResponse =
+                PhonePeResponse.<Map<String, String>>builder()
+                        .code("code")
+                        .message("Not Found")
+                        .data(Collections.singletonMap("a", "b"))
+                        .build();
+        addStubForPostRequest(
+                url,
+                getHeaders(),
+                refundRequest,
+                HttpStatus.SC_NOT_FOUND,
+                Maps.newHashMap(),
                 phonePeResponse);
 
-        final PhonePeException phonePeException = assertThrows(PhonePeException.class,
-                () -> standardCheckoutClient.refund(refundRequest));
+        final PhonePeException phonePeException =
+                assertThrows(
+                        PhonePeException.class, () -> standardCheckoutClient.refund(refundRequest));
         Assertions.assertEquals(404, phonePeException.getHttpStatusCode());
         Assertions.assertEquals("Not Found", phonePeException.getMessage());
     }
@@ -89,19 +116,18 @@ public class RefundTest extends BaseSetupWithOAuth {
     void refundCustom() {
         String refundId = "234234";
         String url = CustomCheckoutConstants.REFUND_API;
-        RefundRequest refundRequest = RefundRequest.builder()
-                .merchantRefundId(refundId)
-                .originalMerchantOrderId(merchantOrderId)
-                .amount(amount)
-                .build();
-        RefundResponse refundResponse = RefundResponse.builder()
-                .refundId("34534534")
-                .state("CREATED")
-                .amount(100)
-                .build();
+        RefundRequest refundRequest =
+                RefundRequest.builder()
+                        .merchantRefundId(refundId)
+                        .originalMerchantOrderId(merchantOrderId)
+                        .amount(amount)
+                        .build();
+        RefundResponse refundResponse =
+                RefundResponse.builder().refundId("34534534").state("CREATED").amount(100).build();
         Map<String, String> headers = getHeaders();
 
-        addStubForPostRequest(url, headers, refundRequest, HttpStatus.SC_OK, Maps.newHashMap(), refundResponse);
+        addStubForPostRequest(
+                url, headers, refundRequest, HttpStatus.SC_OK, Maps.newHashMap(), refundResponse);
         RefundResponse actual = customCheckoutClient.refund(refundRequest);
         Assertions.assertEquals(actual, refundResponse);
     }
@@ -109,17 +135,23 @@ public class RefundTest extends BaseSetupWithOAuth {
     @Test
     void testRefundStatusCustom() {
         String refundId = "RefundId";
-        RefundStatusResponse refundStatusResponse = RefundStatusResponse.builder()
-                .merchantId("merchantId")
-                .amount(100)
-                .state("COMPLETED")
-                .merchantRefundId("RefundId")
-                .paymentDetails(Arrays.asList())
-                .originalMerchantOrderId("merchantOrderId")
-                .build();
+        RefundStatusResponse refundStatusResponse =
+                RefundStatusResponse.builder()
+                        .merchantId("merchantId")
+                        .amount(100)
+                        .state("COMPLETED")
+                        .merchantRefundId("RefundId")
+                        .paymentDetails(Arrays.asList())
+                        .originalMerchantOrderId("merchantOrderId")
+                        .build();
         String url = String.format(CustomCheckoutConstants.REFUND_STATUS_API, refundId);
-        addStubForGetRequest(url, ImmutableMap.of(), getHeaders(), HttpStatus.SC_OK,
-                ImmutableMap.of(), refundStatusResponse);
+        addStubForGetRequest(
+                url,
+                ImmutableMap.of(),
+                getHeaders(),
+                HttpStatus.SC_OK,
+                ImmutableMap.of(),
+                refundStatusResponse);
 
         RefundStatusResponse actual = customCheckoutClient.getRefundStatus(refundId);
         Assertions.assertEquals(actual, refundStatusResponse);
@@ -129,19 +161,18 @@ public class RefundTest extends BaseSetupWithOAuth {
     void testRefundSubscription() {
         String refundId = "234234";
         String url = SubscriptionConstants.REFUND_API;
-        RefundRequest refundRequest = RefundRequest.builder()
-                .merchantRefundId(refundId)
-                .originalMerchantOrderId(merchantOrderId)
-                .amount(amount)
-                .build();
-        RefundResponse refundResponse = RefundResponse.builder()
-                .refundId("34534534")
-                .state("CREATED")
-                .amount(100)
-                .build();
+        RefundRequest refundRequest =
+                RefundRequest.builder()
+                        .merchantRefundId(refundId)
+                        .originalMerchantOrderId(merchantOrderId)
+                        .amount(amount)
+                        .build();
+        RefundResponse refundResponse =
+                RefundResponse.builder().refundId("34534534").state("CREATED").amount(100).build();
         Map<String, String> headers = getHeadersForSubscription();
 
-        addStubForPostRequest(url, headers, refundRequest, HttpStatus.SC_OK, Maps.newHashMap(), refundResponse);
+        addStubForPostRequest(
+                url, headers, refundRequest, HttpStatus.SC_OK, Maps.newHashMap(), refundResponse);
         RefundResponse actual = subscriptionClient.refund(refundRequest);
         Assertions.assertEquals(actual, refundResponse);
     }
@@ -149,17 +180,23 @@ public class RefundTest extends BaseSetupWithOAuth {
     @Test
     void testRefundStatusSubscription() {
         String refundId = "RefundId";
-        RefundStatusResponse refundStatusResponse = RefundStatusResponse.builder()
-                .merchantId("merchantId")
-                .amount(100)
-                .state("COMPLETED")
-                .merchantRefundId("RefundId")
-                .paymentDetails(Arrays.asList())
-                .originalMerchantOrderId("merchantOrderId")
-                .build();
+        RefundStatusResponse refundStatusResponse =
+                RefundStatusResponse.builder()
+                        .merchantId("merchantId")
+                        .amount(100)
+                        .state("COMPLETED")
+                        .merchantRefundId("RefundId")
+                        .paymentDetails(Arrays.asList())
+                        .originalMerchantOrderId("merchantOrderId")
+                        .build();
         String url = String.format(SubscriptionConstants.REFUND_STATUS_API, refundId);
-        addStubForGetRequest(url, ImmutableMap.of(), getHeadersForSubscription(), HttpStatus.SC_OK,
-                ImmutableMap.of(), refundStatusResponse);
+        addStubForGetRequest(
+                url,
+                ImmutableMap.of(),
+                getHeadersForSubscription(),
+                HttpStatus.SC_OK,
+                ImmutableMap.of(),
+                refundStatusResponse);
 
         RefundStatusResponse actual = subscriptionClient.getRefundStatus(refundId);
         Assertions.assertEquals(actual, refundStatusResponse);
@@ -171,25 +208,30 @@ public class RefundTest extends BaseSetupWithOAuth {
         long amount = 100;
         String originalMerchantOrderId = "435435634";
         String url = SubscriptionConstants.REFUND_API;
-        RefundRequest refundRequest = RefundRequest.builder()
-                .merchantRefundId(refundId)
-                .originalMerchantOrderId(originalMerchantOrderId)
-                .amount(amount)
-                .build();
-        PhonePeResponse phonePeResponse = PhonePeResponse.<Map<String, String>>builder()
-                .code("code")
-                .message("Not Found")
-                .data(Collections.singletonMap("a", "b"))
-                .build();
-        addStubForPostRequest(url, getHeadersForSubscription(), refundRequest, HttpStatus.SC_NOT_FOUND,
+        RefundRequest refundRequest =
+                RefundRequest.builder()
+                        .merchantRefundId(refundId)
+                        .originalMerchantOrderId(originalMerchantOrderId)
+                        .amount(amount)
+                        .build();
+        PhonePeResponse phonePeResponse =
+                PhonePeResponse.<Map<String, String>>builder()
+                        .code("code")
+                        .message("Not Found")
+                        .data(Collections.singletonMap("a", "b"))
+                        .build();
+        addStubForPostRequest(
+                url,
+                getHeadersForSubscription(),
+                refundRequest,
+                HttpStatus.SC_NOT_FOUND,
                 Maps.newHashMap(),
                 phonePeResponse);
 
-        final PhonePeException phonePeException = assertThrows(PhonePeException.class,
-                () -> subscriptionClient.refund(refundRequest));
+        final PhonePeException phonePeException =
+                assertThrows(
+                        PhonePeException.class, () -> subscriptionClient.refund(refundRequest));
         Assertions.assertEquals(404, phonePeException.getHttpStatusCode());
         Assertions.assertEquals("Not Found", phonePeException.getMessage());
     }
-
-
 }

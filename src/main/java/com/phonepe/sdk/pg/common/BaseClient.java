@@ -1,3 +1,18 @@
+/*
+ *  Copyright (c) 2025 Original Author(s), PhonePe India Pvt. Ltd.
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package com.phonepe.sdk.pg.common;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
@@ -33,42 +48,58 @@ public abstract class BaseClient {
     protected EventPublisher eventPublisher;
     private boolean shouldPublishEvents;
 
-    protected BaseClient(String clientId, String clientSecret, Integer clientVersion, Env env,
+    protected BaseClient(
+            String clientId,
+            String clientSecret,
+            Integer clientVersion,
+            Env env,
             boolean shouldPublishEvents) {
         this.okHttpClient = new OkHttpClient();
         this.objectMapper = new ObjectMapper();
         this.env = env;
-        this.credentialConfig = CredentialConfig.builder()
-                .clientId(clientId)
-                .clientSecret(clientSecret)
-                .clientVersion(clientVersion)
-                .build();
+        this.credentialConfig =
+                CredentialConfig.builder()
+                        .clientId(clientId)
+                        .clientSecret(clientSecret)
+                        .clientVersion(clientVersion)
+                        .build();
         this.shouldPublishEvents = shouldPublishEvents;
-        this.eventPublisherFactory = new EventPublisherFactory(this.getObjectMapper(), this.getOkHttpClient(),
-                env.getEventsHostUrl());
+        this.eventPublisherFactory =
+                new EventPublisherFactory(
+                        this.getObjectMapper(), this.getOkHttpClient(), env.getEventsHostUrl());
         this.eventPublisher = this.eventPublisherFactory.getEventPublisher(shouldPublishEvents);
-        this.tokenService = new TokenService(this.okHttpClient, this.objectMapper, credentialConfig, this.env,
-                this.eventPublisher);
+        this.tokenService =
+                new TokenService(
+                        this.okHttpClient,
+                        this.objectMapper,
+                        credentialConfig,
+                        this.env,
+                        this.eventPublisher);
         this.eventPublisher.startPublishingEvents(tokenService::getAuthToken);
     }
 
     @SneakyThrows
-    protected <T, R> T requestViaAuthRefresh(HttpMethodType methodName, R requestData,
-            String url, Map<String, String> queryParams, TypeReference<T> responseTypeReference,
+    protected <T, R> T requestViaAuthRefresh(
+            HttpMethodType methodName,
+            R requestData,
+            String url,
+            Map<String, String> queryParams,
+            TypeReference<T> responseTypeReference,
             List<HttpHeaderPair> headers) {
         List<HttpHeaderPair> httpHeaders = new ArrayList<>(headers);
-        HttpCommand<T, R> httpCommand = HttpCommand.<T, R>builder()
-                .client(this.okHttpClient)
-                .objectMapper(this.objectMapper)
-                .responseTypeReference(responseTypeReference)
-                .methodName(methodName)
-                .headers(addAuthHeader(httpHeaders))
-                .requestData(requestData)
-                .hostURL(this.env.getPgHostUrl())
-                .encodingType(APPLICATION_JSON)
-                .queryParams(queryParams)
-                .url(url)
-                .build();
+        HttpCommand<T, R> httpCommand =
+                HttpCommand.<T, R>builder()
+                        .client(this.okHttpClient)
+                        .objectMapper(this.objectMapper)
+                        .responseTypeReference(responseTypeReference)
+                        .methodName(methodName)
+                        .headers(addAuthHeader(httpHeaders))
+                        .requestData(requestData)
+                        .hostURL(this.env.getPgHostUrl())
+                        .encodingType(APPLICATION_JSON)
+                        .queryParams(queryParams)
+                        .url(url)
+                        .build();
 
         try {
             return httpCommand.execute();
@@ -80,12 +111,12 @@ public abstract class BaseClient {
 
     @SneakyThrows
     protected List<HttpHeaderPair> addAuthHeader(List<HttpHeaderPair> headers) {
-        headers.add(HttpHeaderPair.builder()
-                .key(Headers.OAUTH_AUTHORIZATION)
-                .value(tokenService.getAuthToken())
-                .build());
+        headers.add(
+                HttpHeaderPair.builder()
+                        .key(Headers.OAUTH_AUTHORIZATION)
+                        .value(tokenService.getAuthToken())
+                        .build());
 
         return headers;
     }
-
 }
