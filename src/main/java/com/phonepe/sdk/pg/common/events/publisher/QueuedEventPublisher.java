@@ -1,3 +1,18 @@
+/*
+ *  Copyright (c) 2025 Original Author(s), PhonePe India Pvt. Ltd.
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package com.phonepe.sdk.pg.common.events.publisher;
 
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
@@ -35,7 +50,10 @@ public class QueuedEventPublisher implements EventPublisher {
     protected ScheduledExecutorService scheduler;
 
     @Builder
-    public QueuedEventPublisher(ObjectMapper objectMapper, OkHttpClient okHttpClient, EventQueue eventQueue,
+    public QueuedEventPublisher(
+            ObjectMapper objectMapper,
+            OkHttpClient okHttpClient,
+            EventQueue eventQueue,
             String hostUrl) {
         this.objectMapper = objectMapper;
         this.okHttpClient = okHttpClient;
@@ -53,8 +71,8 @@ public class QueuedEventPublisher implements EventPublisher {
         this.setAuthTokenSupplier(authTokenSupplier);
         if (Objects.isNull(scheduler)) {
             scheduler = Executors.newScheduledThreadPool(1);
-            this.scheduler.scheduleWithFixedDelay(this, Constants.INITIAL_DELAY, Constants.DELAY,
-                    TimeUnit.SECONDS);
+            this.scheduler.scheduleWithFixedDelay(
+                    this, Constants.INITIAL_DELAY, Constants.DELAY, TimeUnit.SECONDS);
         }
     }
 
@@ -81,7 +99,6 @@ public class QueuedEventPublisher implements EventPublisher {
             }
         } catch (Exception exception) {
             log.error("Error occurred sending events batch to backend", exception);
-
         }
     }
 
@@ -89,7 +106,9 @@ public class QueuedEventPublisher implements EventPublisher {
         final int CUR_QUEUE_SIZE = this.eventQueue.size();
         List<List<BaseEvent>> bulkEventBatch = new ArrayList<>();
         List<BaseEvent> currentBatch = new ArrayList<>();
-        for (int numEventsProcessed = 0; numEventsProcessed < CUR_QUEUE_SIZE; numEventsProcessed++) {
+        for (int numEventsProcessed = 0;
+                numEventsProcessed < CUR_QUEUE_SIZE;
+                numEventsProcessed++) {
             BaseEvent event = this.eventQueue.poll();
             if (Objects.isNull(event)) {
                 break;
@@ -109,33 +128,27 @@ public class QueuedEventPublisher implements EventPublisher {
 
     private List<HttpHeaderPair> getHeaders() {
         List<HttpHeaderPair> headers = new ArrayList<>();
-        headers.add(HttpHeaderPair.builder()
-                .key(Headers.ACCEPT)
-                .value(APPLICATION_JSON)
-                .build());
-        headers.add(HttpHeaderPair.builder()
-                .key(Constants.AUTHORIZATION)
-                .value(authTokenSupplier.get())
-                .build());
-        headers.add(HttpHeaderPair.builder()
-                .key(Headers.CONTENT_TYPE)
-                .value(APPLICATION_JSON)
-                .build());
+        headers.add(HttpHeaderPair.builder().key(Headers.ACCEPT).value(APPLICATION_JSON).build());
+        headers.add(
+                HttpHeaderPair.builder()
+                        .key(Constants.AUTHORIZATION)
+                        .value(authTokenSupplier.get())
+                        .build());
+        headers.add(
+                HttpHeaderPair.builder().key(Headers.CONTENT_TYPE).value(APPLICATION_JSON).build());
         return headers;
     }
 
     @SneakyThrows
     private void sendBatchData(List<BaseEvent> sdkEventList) {
-        BulkEvent bulkEvent = BulkEvent.builder()
-                .events(sdkEventList)
-                .build();
+        BulkEvent bulkEvent = BulkEvent.builder().events(sdkEventList).build();
         List<HttpHeaderPair> headers = getHeaders();
         HttpCommand<Object, BulkEvent> httpCommand = buildHttpCommand(headers, bulkEvent);
         httpCommand.execute();
     }
 
-    private HttpCommand<Object, BulkEvent> buildHttpCommand(final List<HttpHeaderPair> headers,
-            BulkEvent bulkEvent) {
+    private HttpCommand<Object, BulkEvent> buildHttpCommand(
+            final List<HttpHeaderPair> headers, BulkEvent bulkEvent) {
         return HttpCommand.<Object, BulkEvent>builder()
                 .methodName(HttpMethodType.POST)
                 .hostURL(this.hostUrl)

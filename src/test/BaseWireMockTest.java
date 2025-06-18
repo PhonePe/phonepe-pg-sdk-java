@@ -1,3 +1,18 @@
+/*
+ *  Copyright (c) 2025 Original Author(s), PhonePe India Pvt. Ltd.
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -21,9 +36,10 @@ public abstract class BaseWireMockTest {
 
     public final ObjectMapper mapper = new ObjectMapper();
 
-    private static final WireMockConfiguration wireMockConfiguration = new WireMockConfiguration()
-            .port(WIREMOCK_PORT);
-    protected static final WireMockServer wireMockServer = new WireMockServer(wireMockConfiguration);
+    private static final WireMockConfiguration wireMockConfiguration =
+            new WireMockConfiguration().port(WIREMOCK_PORT);
+    protected static final WireMockServer wireMockServer =
+            new WireMockServer(wireMockConfiguration);
 
     @BeforeEach
     public void baseWireMockTestRunBeforeEach() {
@@ -32,79 +48,114 @@ public abstract class BaseWireMockTest {
 
     @AfterEach
     public void baseWireMockTestExecuteAfterEach() {
-        Assertions.assertEquals(0, wireMockServer.findAllUnmatchedRequests()
-                .size());
+        Assertions.assertEquals(0, wireMockServer.findAllUnmatchedRequests().size());
         wireMockServer.stop();
     }
 
-    protected void addStubForGetRequest(final String urlPath, final int status, final Object response) {
-        addStubForGetRequest(urlPath, ImmutableMap.of(), ImmutableMap.of(), status, ImmutableMap.of(), response);
+    protected void addStubForGetRequest(
+            final String urlPath, final int status, final Object response) {
+        addStubForGetRequest(
+                urlPath, ImmutableMap.of(), ImmutableMap.of(), status, ImmutableMap.of(), response);
     }
 
     @SneakyThrows
-    protected void addStubForGetRequest(final String urlPath, final Map<String, String> queryParams,
-            final Map<String, String> requestHeaders, final int status,
-            final Map<String, String> responseHeaders, final Object response) {
+    protected void addStubForGetRequest(
+            final String urlPath,
+            final Map<String, String> queryParams,
+            final Map<String, String> requestHeaders,
+            final int status,
+            final Map<String, String> responseHeaders,
+            final Object response) {
 
         final MappingBuilder mappingBuilder = WireMock.get(WireMock.urlPathEqualTo(urlPath));
-        requestHeaders.forEach((key, value) -> mappingBuilder.withHeader(key, WireMock.containing(value)));
-        queryParams.forEach((key, value) -> mappingBuilder.withQueryParam(key, WireMock.equalTo(value)));
+        requestHeaders.forEach(
+                (key, value) -> mappingBuilder.withHeader(key, WireMock.containing(value)));
+        queryParams.forEach(
+                (key, value) -> mappingBuilder.withQueryParam(key, WireMock.equalTo(value)));
 
-        final ResponseDefinitionBuilder responseDefinitionBuilder = WireMock.aResponse()
-                .withStatus(status)
-                .withBody(
-                        response instanceof String
-                                ? (String) response
-                                : mapper.writeValueAsString(response)
-                );
+        final ResponseDefinitionBuilder responseDefinitionBuilder =
+                WireMock.aResponse()
+                        .withStatus(status)
+                        .withBody(
+                                response instanceof String
+                                        ? (String) response
+                                        : mapper.writeValueAsString(response));
         responseHeaders.forEach(responseDefinitionBuilder::withHeader);
         wireMockServer.stubFor(mappingBuilder.willReturn(responseDefinitionBuilder));
     }
 
-    protected void addStubForPostRequest(final String urlPath, final Object request, final int status,
-            final Object response) {
-        addStubForPostRequest(urlPath, ImmutableMap.of(), request, status, ImmutableMap.of(), response);
+    protected void addStubForPostRequest(
+            final String urlPath, final Object request, final int status, final Object response) {
+        addStubForPostRequest(
+                urlPath, ImmutableMap.of(), request, status, ImmutableMap.of(), response);
     }
 
-    protected void addStubForPostRequest(final String urlPath, final Map<String, String> requestHeaders,
+    protected void addStubForPostRequest(
+            final String urlPath,
+            final Map<String, String> requestHeaders,
             final Object request,
-            final int status, final Map<String, String> responseHeaders, final Object response) {
-        addStubForPostRequest(urlPath, requestHeaders, request, status, responseHeaders, response, ImmutableMap.of());
+            final int status,
+            final Map<String, String> responseHeaders,
+            final Object response) {
+        addStubForPostRequest(
+                urlPath,
+                requestHeaders,
+                request,
+                status,
+                responseHeaders,
+                response,
+                ImmutableMap.of());
     }
 
     @SneakyThrows
-    protected void addStubForPostRequest(final String urlPath, final Map<String, String> requestHeaders,
+    protected void addStubForPostRequest(
+            final String urlPath,
+            final Map<String, String> requestHeaders,
             final Object request,
-            final int status, final Map<String, String> responseHeaders, final Object response,
+            final int status,
+            final Map<String, String> responseHeaders,
+            final Object response,
             final Map<String, String> queryParams) {
-        final MappingBuilder mappingBuilder = WireMock.post(WireMock.urlPathEqualTo(urlPath))
-                .withRequestBody(
-                        equalTo(
-                                request instanceof String
-                                        ? (String) request
-                                        : mapper.writeValueAsString(request)
-                        )
-                );
+        final MappingBuilder mappingBuilder =
+                WireMock.post(WireMock.urlPathEqualTo(urlPath))
+                        .withRequestBody(
+                                equalTo(
+                                        request instanceof String
+                                                ? (String) request
+                                                : mapper.writeValueAsString(request)));
 
-        requestHeaders.forEach((key, value) -> mappingBuilder.withHeader(key, WireMock.containing(value)));
-        queryParams.forEach((key, value) -> mappingBuilder.withQueryParam(key, WireMock.equalTo(value)));
-        final ResponseDefinitionBuilder responseDefinitionBuilder = WireMock.aResponse()
-                .withStatus(status)
-                .withBody(
-                        response instanceof String
-                                ? (String) response
-                                : mapper.writeValueAsString(response)
-                );
+        requestHeaders.forEach(
+                (key, value) -> mappingBuilder.withHeader(key, WireMock.containing(value)));
+        queryParams.forEach(
+                (key, value) -> mappingBuilder.withQueryParam(key, WireMock.equalTo(value)));
+        final ResponseDefinitionBuilder responseDefinitionBuilder =
+                WireMock.aResponse()
+                        .withStatus(status)
+                        .withBody(
+                                response instanceof String
+                                        ? (String) response
+                                        : mapper.writeValueAsString(response));
 
         responseHeaders.forEach(responseDefinitionBuilder::withHeader);
-        StubMapping stubMapping = wireMockServer.stubFor(mappingBuilder.willReturn(responseDefinitionBuilder));
+        StubMapping stubMapping =
+                wireMockServer.stubFor(mappingBuilder.willReturn(responseDefinitionBuilder));
     }
 
-    protected void addStubForFormDataPostRequest(final String urlPath, final Map<String, String> requestHeaders,
+    protected void addStubForFormDataPostRequest(
+            final String urlPath,
+            final Map<String, String> requestHeaders,
             final Object request,
-            final int status, final Map<String, String> responseHeaders, final Object response) {
+            final int status,
+            final Map<String, String> responseHeaders,
+            final Object response) {
         String requestBody = formDataToString((FormBody) request);
-        addStubForPostRequest(urlPath, requestHeaders, requestBody, status, responseHeaders, response,
+        addStubForPostRequest(
+                urlPath,
+                requestHeaders,
+                requestBody,
+                status,
+                responseHeaders,
+                response,
                 ImmutableMap.of());
     }
 
@@ -114,9 +165,7 @@ public abstract class BaseWireMockTest {
             if (i > 0) {
                 builder.append("&");
             }
-            builder.append(formBody.encodedName(i))
-                    .append("=")
-                    .append(formBody.encodedValue(i));
+            builder.append(formBody.encodedName(i)).append("=").append(formBody.encodedValue(i));
         }
         return builder.toString();
     }
