@@ -10,50 +10,6 @@ Requirements:
 
 1) Java 8 or later
 
-### Maven users
-
-Add the dependency to your project's POM file:
-
-```xml
-
-<dependency>
-    <groupId>com.phonepe</groupId>
-    <artifactId>pg-sdk-java</artifactId>
-    <version>2.1.3</version>
-</dependency>
-```
-
-Add the PhonePe repository where the PhonePe SDK artifact is hosted to the distributionManagement:
-
-```xml
-
-<repositories>
-    <repository>
-        <id>io.cloudrepo</id>
-        <name>PhonePe JAVA SDK</name>
-        <url>https://phonepe.mycloudrepo.io/public/repositories/phonepe-pg-sdk-java</url>
-    </repository>
-</repositories>
-```
-
-### Gradle users
-
-Add the following to your project's build.gradle file.
-In the repositories section, add the URL for the PhonePe repository, and include the pg-sdk-java JAR in your
-dependencies.
-
-```java
-repositories {
-    maven {
-        url "https://phonepe.mycloudrepo.io/public/repositories/phonepe-pg-sdk-java"
-    }
-}
-
-dependencies {
-    implementation 'com.phonepe:pg-sdk-java:2.1.3'
-}
-```
-
 -----
 
 ## Quick start:
