@@ -3,7 +3,6 @@
 A Java library for integrating with PhonePe APIs
 
 ## Table of Contents
-- [Installation](#installation)
 - [Quick start](#quick-start)
   - [Initiate an order using Checkout Page](#initiate-an-order-using-checkout-page)
   - [Check Status of an order](#check-status-of-an-order)
@@ -22,37 +21,6 @@ A Java library for integrating with PhonePe APIs
 - [Response Models for Reference](#response-models-for-reference)
   - [PaymentRail](#paymentrail)
   - [PaymentInstrumentV2](#paymentinstrumentv2)
-
------
-
-## Installation
-
-Requirements:
-
-1) Java 17 or later
-
-### Maven users
-
-Add the dependency to your project's POM file:
-
-```xml
-<dependency>
-    <groupId>com.phonepe</groupId>
-    <artifactId>pg-sdk-java</artifactId>
-    <version>2.1.3</version>
-</dependency>
-```
-
-### Gradle users
-
-Add the following to your project's build.gradle file.
-Include the pg-sdk-java JAR in your dependencies.
-
-```java
-dependencies {
-    implementation 'com.phonepe:pg-sdk-java:2.1.3'
-}
-```
 
 -----
 
