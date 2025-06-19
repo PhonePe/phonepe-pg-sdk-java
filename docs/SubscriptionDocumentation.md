@@ -6,7 +6,7 @@
 
 Requirements:
 
-1) Java 17 or later
+1) Java 8 or later
 
 ### Maven users
 

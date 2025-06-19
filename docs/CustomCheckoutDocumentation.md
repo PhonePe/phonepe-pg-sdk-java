@@ -6,14 +6,13 @@
 
 Requirements:
 
-1) Java 17 or later
+1) Java 8 or later
 
 ### Maven users
 
 Add the dependency to your project's POM file:
 
 ```xml
-
 <dependency>
     <groupId>com.phonepe</groupId>
     <artifactId>pg-sdk-java</artifactId>

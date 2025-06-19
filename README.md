@@ -79,7 +79,7 @@ StandardCheckoutClient standardCheckoutClient = StandardCheckoutClient.getInstan
 
 ### Standard Checkout Flow
 
-To initiate a payment, create a request using the `StandardCheckoutPayRequest.Builder()`:
+To initiate a payment, create a request using the `StandardCheckoutPayRequest.builder()`:
 
 ```java
 import java.util.UUID;
@@ -91,7 +91,7 @@ String merchantOrderId = UUID.randomUUID().toString();
 long amount = 10000;  // Amount in lowest currency denomination (paise for INR)
 String redirectUrl = "https://www.yourwebsite.com/redirect";
 
-StandardCheckoutPayRequest payRequest = StandardCheckoutPayRequest.Buidler()
+StandardCheckoutPayRequest payRequest = StandardCheckoutPayRequest.builder()
     .merchantOrderId(merchantOrderId)
     .amount(amount)
     .redirectUrl(redirectUrl)
@@ -122,6 +122,8 @@ String state = orderStatusResponse.getState();
 PhonePe sends callbacks to your configured endpoint. Validate these callbacks to ensure they're authentic:
 
 ```java
+import com.phonepe.sdk.pg.common.models.response.CallbackResponse;
+
 // Credentials for Basic Authentication that you've configured in PhonePe dashboard
 String username = "<your-username>";
 String password = "<your-password>";

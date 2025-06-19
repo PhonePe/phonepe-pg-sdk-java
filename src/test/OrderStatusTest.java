@@ -683,7 +683,7 @@ public class OrderStatusTest extends BaseSetupWithOAuth {
         String url = String.format(SubscriptionConstants.ORDER_STATUS_API, merchantOrderId);
 
         String response =
-                "{\"merchantId\": \"SWIGGY8\", \"merchantOrderId\": \"MO1708797962855\","
+                "{\"merchantId\": \"MID123\", \"merchantOrderId\": \"MO1708797962855\","
                     + " \"orderId\": \"OMO2402242336055135042802\", \"state\": \"COMPLETED\","
                     + " \"amount\": 200, \"expireAt\": 170879838, \"paymentFlow\": {\"type\":"
                     + " \"SUBSCRIPTION_SETUP\", \"merchantSubscriptionId\": \"MS1708797962855\","
@@ -702,7 +702,7 @@ public class OrderStatusTest extends BaseSetupWithOAuth {
 
         OrderStatusResponse responseObject =
                 OrderStatusResponse.builder()
-                        .merchantId("SWIGGY8")
+                        .merchantId("MID123")
                         .merchantOrderId("MO1708797962855")
                         .orderId("OMO2402242336055135042802")
                         .state("COMPLETED")

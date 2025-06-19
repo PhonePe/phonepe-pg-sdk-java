@@ -3,11 +3,9 @@
 A java library for integrating with PhonePe API's
 
 ## Table of Contents
-- [Installation](#installation)
-- [Quick start](#quick-start)
-  - [Initiate an order using Checkout Page](#initiate-an-order-using-checkout-page)
-  - [Check Status of an order](#check-status-of-a-order)
-  - [Order Callback Handling](#order-callback-handling)
+- [Initiate an order using Checkout Page](#initiate-an-order-using-checkout-page)
+- [Check Status of an order](#check-status-of-a-order)
+- [Order Callback Handling](#order-callback-handling)
 - [Create Order SDK Integration](#create-order-sdk-integration)
 - [PhonePe PG JAVA SDK](#phonepe-pg-java-sdk)
   - [Class Initialization](#class-initialization)
@@ -25,71 +23,13 @@ A java library for integrating with PhonePe API's
 
 -----
 
-## Installation
-
-Requirements:
-
-1) Java 17 or later
-
-### Maven users
-
-Add the dependency to your project's POM file:
-
-```xml
-
-<dependency>
-    <groupId>com.phonepe</groupId>
-    <artifactId>pg-sdk-java</artifactId>
-    <version>2.1.3</version>
-</dependency>
-```
-
-
-### Gradle users
-
-Add the following to your project's build.gradle file.
-Include the pg-sdk-java JAR in your  dependencies.
-
-```java
-
-
-dependencies {
-    implementation 'com.phonepe:pg-sdk-java:2.1.3'
-}
-```
-
------
-
-## Quick start:
-
-To get your keys, please visit the Merchant Onboarding of PhonePe
-PG: [Merchant Onboarding](https://developer.phonepe.com/v1/docs/merchant-onboarding)
-
-You will need three things to get started: `clientId`, `clientSecret` & `clientVersion`
-
-Create an instanceof the [StandardCheckoutClient](#class-initialization) class:
-
-```java
-import com.phonepe.sdk.pg.Env;
-import com.phonepe.sdk.pg.payments.v2.StandardCheckoutClient;
-
-String clientId = "<clientId>";
-String clientSecret = "<clientSecret>";
-Integer clientVersion = 1;  //insert your client version here
-Env env = Env.SANDBOX;      //change to Env.PRODUCTION when you go live
-
-StandardCheckoutClient standardCheckoutClient = StandardCheckoutClient.getInstance(clientId, clientSecret,
-        clientVersion, env);
-```
-
-_____
 
 ### Initiate an order using Checkout Page
 
 To init a pay request, we make a request object
-using [StandardCheckoutPayRequest.Builder()](#standard-checkout-pay-request-builder)
+using [StandardCheckoutPayRequest.builder()](#standard-checkout-pay-request-builder)
 
-You will get to initiate the order using the `pay` function: [PAY](#pay-function)
+You will get to initiate the order using the `pay` function: [PAY](#standard-checkout-pay)
 
 ###### Code:
 
@@ -102,7 +42,7 @@ String merchantOrderId = UUID.randomUUID()
 long amount = 100;
 String redirectUrl = "https://www.merchant.com/redirect";
 
-StandardCheckoutPayRequest standardCheckoutPayRequest = StandardCheckoutPayRequest.Buidler()
+StandardCheckoutPayRequest standardCheckoutPayRequest = StandardCheckoutPayRequest.builder()
         .merchantOrderId(merchantOrderId)
         .amount(amount)
         .redirectUrl(redirectUrl)
@@ -238,7 +178,7 @@ This method is used to initiate a payment via the PhonePe PG
 
 ### Standard Checkout Pay Request Builder
 
-Builds Pay Page Request `StandardCheckoutPayRequest.Builder()`
+Builds Pay Page Request `StandardCheckoutPayRequest.builder()`
 
 ### Attributes
 
@@ -270,7 +210,7 @@ String merchantOrderId = UUID.randomUUID()
 long amount = 100;
 String redirectUrl = "https://redirectUrl.com";
 
-StandardCheckoutPayRequest standardCheckoutPayRequest = StandardCheckoutPayRequest.Builder()
+StandardCheckoutPayRequest standardCheckoutPayRequest = StandardCheckoutPayRequest.builder()
         .merchantOrderId(merchantOrderId)
         .amount(amount)
         .redirectUrl(redirecturl)
@@ -542,7 +482,7 @@ String merchantRefundId = UUID.randomUUID()
 String originalMerchantOrderId = "<merchantOrderId>";  //orderId for which refund should be initiated
 long amount = 100;
 
-RefundRequest refundRequest = RefundRequest.Builder()
+RefundRequest refundRequest = RefundRequest.builder()
         .merchantRefundId(merchantRefundId)
         .originalMerchantOrderId(merchantOrderId)
         .amount(amount)
