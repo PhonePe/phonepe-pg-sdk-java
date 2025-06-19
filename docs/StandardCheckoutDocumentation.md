@@ -2,6 +2,27 @@
 
 A java library for integrating with PhonePe API's
 
+## Table of Contents
+- [Installation](#installation)
+- [Quick start](#quick-start)
+  - [Initiate an order using Checkout Page](#initiate-an-order-using-checkout-page)
+  - [Check Status of an order](#check-status-of-a-order)
+  - [Order Callback Handling](#order-callback-handling)
+- [Create Order SDK Integration](#create-order-sdk-integration)
+- [PhonePe PG JAVA SDK](#phonepe-pg-java-sdk)
+  - [Class Initialization](#class-initialization)
+  - [Standard Checkout Pay](#standard-checkout-pay)
+  - [Order Status](#order-status)
+  - [Transaction Status](#transaction-status)
+  - [Callback Verification](#callback-verification)
+  - [Refund](#refund)
+  - [Refund Status](#refund-status)
+  - [SDK Order Creation](#sdk-order-creation)
+  - [Exception Handling](#exception-handling)
+- [Response Models for Reference](#response-models-for-reference)
+  - [PaymentRail](#paymentrail)
+  - [PaymentInstrumentV2](#paymentinstrumentv2)
+
 -----
 
 ## Installation
@@ -180,7 +201,7 @@ Disclaimer: For production builds don't save credentials in code.
 |----------------|-----------|-----------|-----------------------------------------------------------------------------------------------------|
 | `clientId`     | `String`  | Yes       | Client ID for secure communication with PhonePe.                                                    |
 | `clientSecret` | `String`  | Yes       | Secret provided by PhonePe. To be kept secure on the merchant side                                  |
-| `cientVersion` | `Integer` | Yes       | Client version for secure communication with PhonePe.
+| `clientVersion` | `Integer` | Yes       | Client version for secure communication with PhonePe.
 | `env`          | `Env`     | Yes       | Environment for the StandardCheckoutClient: `Env.PRODUCTION` (production), `Env.SANDBOX` (testing). |
 
 ### Throws PhonePeException:
@@ -820,8 +841,4 @@ falls under the `instrument` attribute in [PaymentDetail](#paymentdetail-propert
 |------------|-------------------------|
 | `type`     | `PaymentInstrumentType` |
 | `walletId` | `String`                |
-
-
-
-
 
