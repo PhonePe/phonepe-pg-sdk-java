@@ -1,11 +1,13 @@
 # PhonePe B2B PG SDK
 
-A java library for integrating with PhonePe API's
+A Java library for integrating with PhonePe APIs
 
 ## Table of Contents
-- [Initiate an order using Checkout Page](#initiate-an-order-using-checkout-page)
-- [Check Status of an order](#check-status-of-a-order)
-- [Order Callback Handling](#order-callback-handling)
+- [Installation](#installation)
+- [Quick start](#quick-start)
+  - [Initiate an order using Checkout Page](#initiate-an-order-using-checkout-page)
+  - [Check Status of an order](#check-status-of-an-order)
+  - [Order Callback Handling](#order-callback-handling)
 - [Create Order SDK Integration](#create-order-sdk-integration)
 - [PhonePe PG JAVA SDK](#phonepe-pg-java-sdk)
   - [Class Initialization](#class-initialization)
@@ -23,6 +25,60 @@ A java library for integrating with PhonePe API's
 
 -----
 
+## Installation
+
+Requirements:
+
+1) Java 17 or later
+
+### Maven users
+
+Add the dependency to your project's POM file:
+
+```xml
+<dependency>
+    <groupId>com.phonepe</groupId>
+    <artifactId>pg-sdk-java</artifactId>
+    <version>2.1.3</version>
+</dependency>
+```
+
+### Gradle users
+
+Add the following to your project's build.gradle file.
+Include the pg-sdk-java JAR in your dependencies.
+
+```java
+dependencies {
+    implementation 'com.phonepe:pg-sdk-java:2.1.3'
+}
+```
+
+-----
+
+## Quick start
+
+To get your keys, please visit the Merchant Onboarding of PhonePe
+PG: [Merchant Onboarding](https://developer.phonepe.com/v1/docs/merchant-onboarding)
+
+You will need three things to get started: `clientId`, `clientSecret` & `clientVersion`
+
+Create an instance of the [StandardCheckoutClient](#class-initialization) class:
+
+```java
+import com.phonepe.sdk.pg.Env;
+import com.phonepe.sdk.pg.payments.v2.StandardCheckoutClient;
+
+String clientId = "<clientId>";
+String clientSecret = "<clientSecret>";
+Integer clientVersion = 1;  //insert your client version here
+Env env = Env.SANDBOX;      //change to Env.PRODUCTION when you go live
+
+StandardCheckoutClient standardCheckoutClient = StandardCheckoutClient.getInstance(clientId, clientSecret,
+        clientVersion, env);
+```
+
+-----
 
 ### Initiate an order using Checkout Page
 
@@ -56,7 +112,7 @@ The data will be in a [StandardCheckoutPayResponse](#standardcheckoutpayresponse
 <br>The `checkoutPageUrl` you get can be handled by redirecting the user to that url on the front end.
 ____
 
-### Check Status of a order
+### Check Status of an order
 
 View the state for the order we just initiated. [checkOrderStatus](#order-status)
 
@@ -564,7 +620,7 @@ It returns a `RefundStatusResponse` Object
 | `detailedErrorCode` | `String`                                    | Detailed Error Code present only when transaction state is Failed                                                                                         |
 | `rail`              | [PaymentRail](#paymentrail)                 | Contains processing rail details under which transaction attempt is made.                                                                                 |
 | `instrument`        | [PaymentInstrumentV2](#paymentinstrumentv2) | Contains instrument details of that particular transaction Id                                                                                             |
-| `splitInstruments`  | List<[InstumentCombo](#instrumentcombo)>    | Type of transaction instrument. It can be any one of the following types:<br/>1. ACCOUNT<br/>2. CREDIT_CARD<br/>3. DEBIT_CARD<br/>4. NET_BANKING          |
+| `splitInstruments`  | List<[InstrumentCombo](#instrumentcombo)>   | Type of transaction instrument. It can be any one of the following types:<br/>1. ACCOUNT<br/>2. CREDIT_CARD<br/>3. DEBIT_CARD<br/>4. NET_BANKING          |
 
 -----
 
@@ -678,8 +734,8 @@ try{
 } catch(PhonePeException phonePeException){
 Integer httpStatusCode = phonePeException.getHttpStatusCode();
 String message = phonePeException.getMessage();
-Map<String, String> data = phonePeException.getData()
-String code = phonePeException.getCode()
+Map<String, String> data = phonePeException.getData();
+String code = phonePeException.getCode();
 }
 ```
 
