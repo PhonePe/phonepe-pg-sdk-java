@@ -1,21 +1,37 @@
-# PhonePe B2B PG SDK
+# PhonePe B2B Payment Gateway SDK for Java
 
-A java library for integrating with PhonePe API's
+[![Maven Central](https://img.shields.io/badge/Maven%20Central-v2.1.3-blue)](https://maven-badges.herokuapp.com/maven-central/com.phonepe/pg-sdk-java)
+![Java](https://img.shields.io/badge/Java-17%2B-orange)
+[![License](https://img.shields.io/badge/License-Apache%202.0-green.svg)](LICENSE)
 
------
+A Java library for seamless integration with PhonePe Payment Gateway APIs.
+
+## Table of Contents
+- [Requirements](#requirements)
+- [Installation](#installation)
+  - [Maven](#maven)
+  - [Gradle](#gradle)
+- [Quick Start](#quick-start)
+  - [Initialization](#initialization)
+  - [Standard Checkout Flow](#standard-checkout-flow)
+  - [Checking Order Status](#checking-order-status)
+  - [Handling Callbacks](#handling-callbacks)
+  - [SDK Order Integration](#sdk-order-integration)
+- [Documentation](#documentation)
+- [License](#license)
+
+## Requirements
+
+- Java 17 or later
+- Maven or Gradle build system
 
 ## Installation
 
-Requirements:
-
-1) Java 8 or later
-
-### Maven users
+### Maven
 
 Add the dependency to your project's POM file:
 
 ```xml
-
 <dependency>
     <groupId>com.phonepe</groupId>
     <artifactId>pg-sdk-java</artifactId>
@@ -23,161 +39,169 @@ Add the dependency to your project's POM file:
 </dependency>
 ```
 
-Add the PhonePe repository where the PhonePe SDK artifact is hosted to the distributionManagement:
+### Gradle
 
-```xml
+Add the following to your project's build.gradle file:
 
-<repositories>
-    <repository>
-        <id>io.cloudrepo</id>
-        <name>PhonePe JAVA SDK</name>
-        <url>https://phonepe.mycloudrepo.io/public/repositories/phonepe-pg-sdk-java</url>
-    </repository>
-</repositories>
-```
-
-### Gradle users
-
-Add the following to your project's build.gradle file.
-In the repositories section, add the URL for the PhonePe repository, and include the pg-sdk-java JAR in your
-dependencies.
-
-```java
-repositories {
-    maven {
-        url "https://phonepe.mycloudrepo.io/public/repositories/phonepe-pg-sdk-java"
-    }
-}
-
+```gradle
 dependencies {
     implementation 'com.phonepe:pg-sdk-java:2.1.3'
 }
 ```
 
------
+## Quick Start
 
-## Quick start:
+### Initialization
 
-To get your keys, please visit the Merchant Onboarding of PhonePe
-PG: [Merchant Onboarding](https://developer.phonepe.com/v1/docs/merchant-onboarding)
+Before using the SDK, you need to acquire your credentials from the [PhonePe Merchant Portal](https://developer.phonepe.com/v1/docs/merchant-onboarding).
 
-You will need three things to get started: `clientId`, `clientSecret` & `clientVersion`
-
-Create an instanceof the [StandardCheckoutClient](#class-initialization) class:
+You need three key pieces of information:
+1. `clientId` - Your merchant identifier
+2. `clientSecret` - Your authentication secret
+3. `clientVersion` - API version to use
 
 ```java
 import com.phonepe.sdk.pg.Env;
 import com.phonepe.sdk.pg.payments.v2.StandardCheckoutClient;
 
-String clientId = "<clientId>";
-String clientSecret = "<clientSecret>";
-Integer clientVersion = 1;  //insert your client version here
-Env env = Env.SANDBOX;      //change to Env.PRODUCTION when you go live
+String clientId = "<your-client-id>";
+String clientSecret = "<your-client-secret>";
+Integer clientVersion = 1;  // Your client version here
+Env env = Env.SANDBOX;      // Use Env.PRODUCTION for live transactions
 
-StandardCheckoutClient standardCheckoutClient = StandardCheckoutClient.getInstance(clientId, clientSecret,
-        clientVersion, env);
+StandardCheckoutClient standardCheckoutClient = StandardCheckoutClient.getInstance(
+    clientId, 
+    clientSecret,
+    clientVersion, 
+    env
+);
 ```
 
-_____
+### Standard Checkout Flow
 
-### Initiate an order using Checkout Page
-
-To init a pay request, we make a request object
-using [StandardCheckoutPayRequest.Buidler()](#standard-checkout-pay-request-builder)
-
-You will get to initiate the order using the `pay` function: [PAY](#pay-function)
-
-###### Code:
+To initiate a payment, create a request using the `StandardCheckoutPayRequest.Builder()`:
 
 ```java
+import java.util.UUID;
 import com.phonepe.sdk.pg.payments.v2.models.request.StandardCheckoutPayRequest;
 import com.phonepe.sdk.pg.payments.v2.models.response.StandardCheckoutPayResponse;
 
-String merchantOrderId = UUID.randomUUID()
-        .toString();
-long amount = 100;
-String redirectUrl = "https://www.merchant.com/redirect";
+// Generate a unique order ID
+String merchantOrderId = UUID.randomUUID().toString();
+long amount = 10000;  // Amount in lowest currency denomination (paise for INR)
+String redirectUrl = "https://www.yourwebsite.com/redirect";
 
-StandardCheckoutPayRequest standardCheckoutPayRequest = StandardCheckoutPayRequest.Buidler()
-        .merchantOrderId(merchantOrderId)
-        .amount(amount)
-        .redirectUrl(redirectUrl)
-        .build();
+StandardCheckoutPayRequest payRequest = StandardCheckoutPayRequest.Buidler()
+    .merchantOrderId(merchantOrderId)
+    .amount(amount)
+    .redirectUrl(redirectUrl)
+    .build();
 
-StandardCheckoutPayResponse standardCheckoutPayResponse = standardCheckoutClient.pay(standardCheckoutPayRequest);
-String checkoutPageUrl = standardCheckoutPayResponse.getRedirectUrl();
+StandardCheckoutPayResponse payResponse = standardCheckoutClient.pay(payRequest);
+String checkoutPageUrl = payResponse.getRedirectUrl();
+
+// Redirect the user to the checkoutPageUrl to complete the payment
 ```
 
-The data will be in a [StandardCheckoutPayResponse](#standardcheckoutpayresponse-properties) object.
-<br>The `checkoutPageUrl` you get can be handled by redirecting the user to that url on the front end.
-____
+### Checking Order Status
 
-### Check Status of a order
-
-View the state for the order we just initiated. [checkOrderStatus](#order-status)
+To check the status of an order:
 
 ```java
 import com.phonepe.sdk.pg.common.models.response.OrderStatusResponse;
 
-String merchantOrderId = "<merchantOrderId>";  //created at the time of order creation
+String merchantOrderId = "<your-merchant-order-id>";  // Order ID created during payment initialization
 OrderStatusResponse orderStatusResponse = standardCheckoutClient.getOrderStatus(merchantOrderId);
 String state = orderStatusResponse.getState();
+
+// Handle the state accordingly in your application
 ```
 
-You will get the data [OrderStatusResponse](#orderstatusresponse-properties) Object
-____
+### Handling Callbacks
 
-### Order Callback Handling
-
-You will receive a callback you have configured [dashboard link] TODO find the link/curl
-<br>It is important to check the validity of the callback received from PhonePe using the `validateCallback()` function.
+PhonePe sends callbacks to your configured endpoint. Validate these callbacks to ensure they're authentic:
 
 ```java
-String username = "<username>";
-String password = "<password>";
+// Credentials for Basic Authentication that you've configured in PhonePe dashboard
+String username = "<your-username>";
+String password = "<your-password>";
 
-String authorization = "<authorization";
-String responseBody = "<responseBody>";
+// Data received in the callback
+String authorization = request.getHeader("Authorization");  // Basic Authentication header
+String responseBody = request.getBody();                   // JSON body as string
 
-CallbackResponse callbackResponse = standardCheckoutClient.validateCallback(username, password, authorization,
-        responseBody);
-String orderId = callbackResponse.getPayload()
-        .getOrderId();
-String state = callbackResponse.getPayload()
-        .getState();
+try {
+    CallbackResponse callbackResponse = standardCheckoutClient.validateCallback(
+        username, 
+        password, 
+        authorization,
+        responseBody
+    );
+    
+    String orderId = callbackResponse.getPayload().getOrderId();
+    String state = callbackResponse.getPayload().getState();
+    
+    // Process the order based on its state
+} catch (PhonePeException e) {
+    // Handle invalid callback - potential security issue
+}
 ```
 
-`validateCallback` will throw PhonePeException, if the callback is invalid.
-<br>Possible refund callback states:<br> CHECKOUT_ORDER_COMPLETED,CHECKOUT_ORDER_FAILED,
-CHECKOUT_TRANSACTION_ATTEMPT_FAILED details: [link to detail handling]
+Possible callback states include:
+- `CHECKOUT_ORDER_COMPLETED` - Payment completed successfully
+- `CHECKOUT_ORDER_FAILED` - Payment failed
+- `CHECKOUT_TRANSACTION_ATTEMPT_FAILED` - Transaction attempt failed
 
-_____
+### SDK Order Integration
 
-## Create Order SDK Integration
-
-The `createSdkOrder()` function is used to create an order
+For mobile SDK integration, first create an order on your server:
 
 ```java
 import java.util.UUID;
 import com.phonepe.sdk.pg.payments.v2.models.request.CreateSdkOrderRequest;
 import com.phonepe.sdk.pg.payments.v2.models.response.CreateSdkOrderResponse;
 
-String merchantOrderId = UUID.randomUUID()
-        .toString();
-long amount = 1000;
-String redirectUrl = "https://redirectUrl.com";
+String merchantOrderId = UUID.randomUUID().toString();
+long amount = 10000;  // Amount in lowest denomination (paise for INR)
+String redirectUrl = "https://yourapp.com/callback";
 
-CreateSdkOrderRequest createSdkOrderRequest = CreateSdkOrderRequest.StandardCheckoutBuilder()
-        .merchantOrderId(merchantOrderId)
-        .amount(amount)
-        .redirectUrl(redirectUrl)
-        .build();
-CreateSdkOrderResponse createSdkOrderResponse = standardCheckoutClient.createSdkOrder(createSdkOrderRequest);
-String token = createSdkOrderResponse.getToken();
+CreateSdkOrderRequest orderRequest = CreateSdkOrderRequest.StandardCheckoutBuilder()
+    .merchantOrderId(merchantOrderId)
+    .amount(amount)
+    .redirectUrl(redirectUrl)
+    .build();
+
+CreateSdkOrderResponse orderResponse = standardCheckoutClient.createSdkOrder(orderRequest);
+String token = orderResponse.getToken();
+
+// Pass this token to your mobile app to initiate payment through the PhonePe SDK
 ```
 
-The function returns a [CreateSdkOrderResponse](#createsdkorderresponse-properties) object. Merchant should
-retrieve the token from the received response.
------
+## Documentation
 
-For more details, please visit https://developer.phonepe.com/
+For detailed API documentation, advanced features, and integration options:
+
+- [Standard Checkout Documentation](docs/StandardCheckoutDocumentation.md)
+- [Custom Checkout Documentation](docs/CustomCheckoutDocumentation.md)
+- [Subscription Documentation](docs/SubscriptionDocumentation.md)
+- [PhonePe Developer Portal](https://developer.phonepe.com/)
+
+## License
+
+This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details.
+
+```
+Copyright 2025 PhonePe Private Limited
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+```
