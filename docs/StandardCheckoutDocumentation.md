@@ -82,10 +82,10 @@ StandardCheckoutClient standardCheckoutClient = StandardCheckoutClient.getInstan
 
 ### Initiate an order using Checkout Page
 
-To init a pay request, we make a request object
-using [StandardCheckoutPayRequest.builder()](#standard-checkout-pay-request-builder)
+To initiate a pay request, create a request object
+using [StandardCheckoutPayRequest.builder()](#standard-checkout-pay-request-builder).
 
-You will get to initiate the order using the `pay` function: [PAY](#standard-checkout-pay)
+You can initiate the order using the `pay` function: [PAY](#standard-checkout-pay)
 
 ###### Code:
 
@@ -693,16 +693,16 @@ The function return a [CreateSdkOrderResponse](#createsdkorderresponse-propertie
 
 ## Exception Handling
 
-`PhonePeException` is raised by the PhonePe API's.
+`PhonePeException` is raised by the PhonePe APIs.
 
 ### Attributes
 
 | Attribute        | Type                 | Description                                                       |
 |------------------|----------------------|-------------------------------------------------------------------|
-| `httpStatusCode` | `Integer`            | The status code of the http response.                             |
-| `message`        | `String`             | The http error message.                                           |
+| `httpStatusCode` | `Integer`            | The status code of the HTTP response.                             |
+| `message`        | `String`             | The HTTP error message.                                           |
 | `data`           | `Map<String,String>` | The details of the error that happened while calling PhonePe API. |
-| `code`           | `String`             | Code sent by the PhonePe why it occurred                          |
+| `code`           | `String`             | Code sent by PhonePe explaining why it occurred                   |
 
 ### Example usage
 
