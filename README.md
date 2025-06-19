@@ -22,7 +22,7 @@ A Java library for seamless integration with PhonePe Payment Gateway APIs.
 
 ## Requirements
 
-- Java 17 or later
+- Java 8 or later
 - Maven or Gradle build system
 
 ## Installation
