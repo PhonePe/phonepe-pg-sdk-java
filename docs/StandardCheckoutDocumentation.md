@@ -84,6 +84,7 @@ ____
 
 View the state for the order we just initiated. [checkOrderStatus](#order-status)
 
+###### Code:
 ```java
 import com.phonepe.sdk.pg.common.models.response.OrderStatusResponse;
 
@@ -99,25 +100,25 @@ ____
 
 You will receive a callback which you have configured.
 <br>It is important to check the validity of the callback received from PhonePe using the `validateCallback()` function.
-
+###### Code:
 ```java
+import com.phonepe.sdk.pg.common.models.response.CallbackResponse;
+
 String username = "<username>";
 String password = "<password>";
 
-String authorization = "<authorization";
+String authorization = "<authorization>";
 String responseBody = "<responseBody>";
 
 CallbackResponse callbackResponse = standardCheckoutClient.validateCallback(username, password, authorization,
         responseBody);
-String orderId = callbackResponse.getPayload()
-        .getOrderId();
-String state = callbackResponse.getPayload()
-        .getState();
+
+String orderId = callbackResponse.getPayload().getOrderId();
+String state = callbackResponse.getPayload().getState();
 ```
 
 `validateCallback` will throw PhonePeException, if the callback is invalid.
-<br>Possible refund callback states:<br> CHECKOUT_ORDER_COMPLETED,CHECKOUT_ORDER_FAILED,
-CHECKOUT_TRANSACTION_ATTEMPT_FAILED details: [CallbackType](#callback-types)
+<br>For details: [CallbackType](#callback-types)<br> 
 
 _____
 
@@ -125,6 +126,7 @@ _____
 
 The `createSdkOrder()` function is used to create an order
 
+###### Code:
 ```java
 import java.util.UUID;
 import com.phonepe.sdk.pg.payments.v2.models.request.CreateSdkOrderRequest;
@@ -157,7 +159,7 @@ class only once.
 
 Use required credentials while initializing the object.
 
-Disclaimer: For production builds don't save credentials in code.
+**`Disclaimer: For production builds don't save credentials in code.`**
 
 ### Parameters
 
@@ -172,7 +174,7 @@ Disclaimer: For production builds don't save credentials in code.
 
 If another StandardCheckoutClient object is initialized, `PhonePeException` is thrown.
 
-### Example usage:
+###### Code:
 
 ```java
 import com.phonepe.sdk.pg.Env;
@@ -212,7 +214,7 @@ Builds Pay Page Request `StandardCheckoutPayRequest.builder()`
 | `amount`          | `long`   | Yes       | Order amount in Paisa                                           | 1. Minimum amount should be 1 Paisa                                                                                   |
 | `redirectUrl`     | `String` | No        | URL where user will be redirected after success/failed payment. | -                                                                                                                     |
 
-### Example Usage:
+###### Code:
 
 ```java
 import java.util.UUID;
@@ -272,7 +274,7 @@ Checks the status of an order.
 | merchantOrderId | `String` | Yes       | The merchant order ID for which the status is fetched.                                                                                      |
 | details         | `String` | No        | 1. True → return all attempt details under paymentDetails list <br/>2. False → return only latest attempt details under paymentDetails list |
 
-### Example usage:
+###### Code:
 
 ```java
 import com.phonepe.sdk.pg.Env;
@@ -341,7 +343,7 @@ Checks the status of a transaction.
 |-----------------|----------|-----------|---------------------------------------------------|
 | `transactionId` | `String` | Yes       | The transaction attempt id received from PhonePe. |
 
-### Example Usage:
+###### Code:
 
 ```java
 import com.phonepe.sdk.pg.Env;
@@ -383,7 +385,7 @@ You need to pass 4 parameters to the `validateCallback()` function
 | `authorization` | `String` | Yes       | Value of the `Authorization` header under the callback response |
 | `responseBody`  | `String` | Yes       | Callback response body as string.                               |
 
-### Example usage
+###### Code:
 
 ```java
 import com.phonepe.sdk.pg.Env;
@@ -405,10 +407,7 @@ String responseBody = "<responseBody>";
 CallbackResponse callbackResponse = standardCheckoutClient.validateCallback(username, password, authorization,
         responseBody);
 String callbackType = callbackResponse.getType();
-String merchantRefundId = callbackResponse.getPayload()
-        .getMerchantRefundId();
-String state = callbackResponse.getPayload()
-        .getState();
+String state = callbackResponse.getPayload().getState();
 ```
 
 ### Returns
@@ -485,7 +484,7 @@ It is used to initiate a refund using `refund()` function
 | `originalMerchantOrderId` | `String` | Yes       | Original merchant order id against which refund is required | -                                       |
 | `amount`                  | `long`   | Yes       | Amount in paisa to refund                                   | Min Value = 1, Max Value = Order Amount |
 
-### Example Usage:
+###### Code:
 
 ```java
 import com.phonepe.sdk.pg.Env;
@@ -540,7 +539,7 @@ It is used to retrieve the status of a refund using `getRefundStatus()` function
 |-----------|----------|-----------|------------------------------------------------------------------------|
 | refundId  | `String` | Yes       | Refund Id created by the merchant at the time of initiating the refund |
 
-### Example
+###### Code:
 
 ```java
 import com.phonepe.sdk.pg.Env;
@@ -612,7 +611,7 @@ Builds SDK order request
 | `amount`          | `long`   | Yes       | Amount of order in Paisa                                                      |
 | `redirectUrl`     | `String` | Yes       | The URL to which the user should be redirected after the payment is completed |
 
-### Example Usage:
+###### Code::
 
 ```java
 import com.phonepe.sdk.pg.Env;
@@ -672,7 +671,7 @@ The function return a [CreateSdkOrderResponse](#createsdkorderresponse-propertie
 | `data`           | `Map<String,String>` | The details of the error that happened while calling PhonePe API. |
 | `code`           | `String`             | Code sent by PhonePe explaining why it occurred                   |
 
-### Example usage
+###### Code:
 
 ```java
 import com.phonepe.sdk.pg.Env;
