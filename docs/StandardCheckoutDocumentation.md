@@ -8,7 +8,7 @@ A java library for integrating with PhonePe API's
 
 Requirements:
 
-1) Java 8 or later
+1) Java 17 or later
 
 ### Maven users
 
@@ -23,31 +23,14 @@ Add the dependency to your project's POM file:
 </dependency>
 ```
 
-Add the PhonePe repository where the PhonePe SDK artifact is hosted to the distributionManagement:
-
-```xml
-
-<repositories>
-    <repository>
-        <id>io.cloudrepo</id>
-        <name>PhonePe JAVA SDK</name>
-        <url>https://phonepe.mycloudrepo.io/public/repositories/phonepe-pg-sdk-java</url>
-    </repository>
-</repositories>
-```
 
 ### Gradle users
 
 Add the following to your project's build.gradle file.
-In the repositories section, add the URL for the PhonePe repository, and include the pg-sdk-java JAR in your
-dependencies.
+Include the pg-sdk-java JAR in your  dependencies.
 
 ```java
-repositories {
-    maven {
-        url "https://phonepe.mycloudrepo.io/public/repositories/phonepe-pg-sdk-java"
-    }
-}
+
 
 dependencies {
     implementation 'com.phonepe:pg-sdk-java:2.1.3'
@@ -83,7 +66,7 @@ _____
 ### Initiate an order using Checkout Page
 
 To init a pay request, we make a request object
-using [StandardCheckoutPayRequest.Buidler()](#standard-checkout-pay-request-builder)
+using [StandardCheckoutPayRequest.Builder()](#standard-checkout-pay-request-builder)
 
 You will get to initiate the order using the `pay` function: [PAY](#pay-function)
 
@@ -129,7 +112,7 @@ ____
 
 ### Order Callback Handling
 
-You will receive a callback you have configured [dashboard link] TODO find the link/curl
+You will receive a callback which you have configured.
 <br>It is important to check the validity of the callback received from PhonePe using the `validateCallback()` function.
 
 ```java
@@ -149,7 +132,7 @@ String state = callbackResponse.getPayload()
 
 `validateCallback` will throw PhonePeException, if the callback is invalid.
 <br>Possible refund callback states:<br> CHECKOUT_ORDER_COMPLETED,CHECKOUT_ORDER_FAILED,
-CHECKOUT_TRANSACTION_ATTEMPT_FAILED details: [link to detail handling]
+CHECKOUT_TRANSACTION_ATTEMPT_FAILED details: [CallbackType](#callback-types)
 
 _____
 
@@ -197,7 +180,7 @@ Disclaimer: For production builds don't save credentials in code.
 |----------------|-----------|-----------|-----------------------------------------------------------------------------------------------------|
 | `clientId`     | `String`  | Yes       | Client ID for secure communication with PhonePe.                                                    |
 | `clientSecret` | `String`  | Yes       | Secret provided by PhonePe. To be kept secure on the merchant side                                  |
-| `cientVersion` | `Integer` | Yes       | Client version for secure communication with PhonePe.                                               
+| `cientVersion` | `Integer` | Yes       | Client version for secure communication with PhonePe.
 | `env`          | `Env`     | Yes       | Environment for the StandardCheckoutClient: `Env.PRODUCTION` (production), `Env.SANDBOX` (testing). |
 
 ### Throws PhonePeException:
@@ -228,7 +211,7 @@ This method is used to initiate a payment via the PhonePe PG
 
 ### Parameters
 
-| Parameter                    | Type                         | Mandatory | Description                                                |  
+| Parameter                    | Type                         | Mandatory | Description                                                |
 |------------------------------|------------------------------|-----------|------------------------------------------------------------|
 | `standardCheckoutPayRequest` | `StandardCheckoutPayRequest` | Yes       | The request build using StandardCheckoutPayRequest Builder |
 
@@ -240,7 +223,7 @@ Builds Pay Page Request `StandardCheckoutPayRequest.Builder()`
 
 | Parameter         | Type     | Mandatory | Description                                                     | Constraints                                                                                                           |
 |-------------------|----------|-----------|-----------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------|
-| `merchantOrderId` | `String` | Yes       | The unique order ID assigned by the merchant                    | 1. Length should be less than 63 characters<br/>2. No special characters allowed except underscore “_” and hyphen “-“ |        
+| `merchantOrderId` | `String` | Yes       | The unique order ID assigned by the merchant                    | 1. Length should be less than 63 characters<br/>2. No special characters allowed except underscore “_” and hyphen “-“ |
 | `amount`          | `long`   | Yes       | Order amount in Paisa                                           | 1. Minimum amount should be 1 Paisa                                                                                   |
 | `redirectUrl`     | `String` | No        | URL where user will be redirected after success/failed payment. | -                                                                                                                     |
 
@@ -330,35 +313,35 @@ The function returns a `OrderStatusResponse` object with the following propertie
 
 ### OrderStatusResponse Properties:
 
-| Property         | Type                                             | Description                                                                                                         |  
-|------------------|--------------------------------------------------|---------------------------------------------------------------------------------------------------------------------|  
-| `orderId`        | `String`                                         | Order ID created by PhonePe.                                                                                        |  
-| `state`          | `String`                                         | State of the order. It can be in any one of the following states: <br/> 1. PENDING <br/> 2. FAILED<br/>3. COMPLETED |  
-| `amount`         | `long`                                           | Order amount in Paise                                                                                               |  
-| `expireAt`       | `long`                                           | Order expiry time in epoch                                                                                          |  
-| `paymentDetails` | List<[PaymentDetail](#paymentdetail-properties)> | Contain list of details of each transaction attempt made corresponding to this particular order                     |  
+| Property         | Type                                             | Description                                                                                                         |
+|------------------|--------------------------------------------------|---------------------------------------------------------------------------------------------------------------------|
+| `orderId`        | `String`                                         | Order ID created by PhonePe.                                                                                        |
+| `state`          | `String`                                         | State of the order. It can be in any one of the following states: <br/> 1. PENDING <br/> 2. FAILED<br/>3. COMPLETED |
+| `amount`         | `long`                                           | Order amount in Paise                                                                                               |
+| `expireAt`       | `long`                                           | Order expiry time in epoch                                                                                          |
+| `paymentDetails` | List<[PaymentDetail](#paymentdetail-properties)> | Contain list of details of each transaction attempt made corresponding to this particular order                     |
 
 ###### PaymentDetail Properties:
 
 | Property            | Type                                        | Description                                                                                                                                               |
 |---------------------|---------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `paymentMode`       | `String`                                    | Mode of Payment. It can be anyone of the following modes: <br/>1. UPI_INTENT<br/>2. UPI_COLLECT<br/>3. UPI_QR<br/>4. CARD<br/>5. TOKEN<br/>6. NET_BANKING |
-| `timestamp`         | `long`                                      | Timestamp of the attempted transaction in epoch                                                                                                           |  
+| `timestamp`         | `long`                                      | Timestamp of the attempted transaction in epoch                                                                                                           |
 | `amount`            | `long`                                      | Order amount in Paisa                                                                                                                                     |
-| `transactionId`     | `String`                                    | Transaction Id generated by the PhonePe                                                                                                                   |  
+| `transactionId`     | `String`                                    | Transaction Id generated by the PhonePe                                                                                                                   |
 | `state`             | `String`                                    | Attempted transaction state. It can be any one of the following states: <br/>1. PENDING<br/>2. COMPLETED<br/>3. FAILED                                    |
-| `errorCode`         | `String`                                    | Error code (Only present when transaction state is failed)                                                                                                |  
-| `detailedErrorCode` | `String`                                    | Detailed Error Code (Only present when transaction state is failed)                                                                                       |  
-| `rail`              | [PaymentRail](#paymentrail)                 | Contains processing rail details under which transaction attempt is made.                                                                                 |  
+| `errorCode`         | `String`                                    | Error code (Only present when transaction state is failed)                                                                                                |
+| `detailedErrorCode` | `String`                                    | Detailed Error Code (Only present when transaction state is failed)                                                                                       |
+| `rail`              | [PaymentRail](#paymentrail)                 | Contains processing rail details under which transaction attempt is made.                                                                                 |
 | `instrument`        | [PaymentInstrumentV2](#paymentinstrumentv2) | Contains instrument details of that particular transaction Id                                                                                             |
 | `splitInstruments`  | List<[InstrumentCombo](#instrumentcombo)>   | Contains split instrument details of all the transactions made                                                                                            |
 
 ### InstrumentCombo
 
-| Property     | Type                  | Description                                            |  
-|--------------|-----------------------|--------------------------------------------------------|  
-| `instrument` | `PaymentInstrumentV2` | Instrument used for the payment                        |  
-| `rails`      | `PaymentRail`         | Rail used for the payment                              |  
+| Property     | Type                  | Description                                            |
+|--------------|-----------------------|--------------------------------------------------------|
+| `instrument` | `PaymentInstrumentV2` | Instrument used for the payment                        |
+| `rails`      | `PaymentRail`         | Rail used for the payment                              |
 | `amount`     | `long`                | Amount transferred using the above instrument and rail |
 
 -----
@@ -369,9 +352,9 @@ Checks the status of a transaction.
 
 ### Parameters
 
-| Parameter       | Type     | Mandatory | Description                                       |                                                                                                          
+| Parameter       | Type     | Mandatory | Description                                       |
 |-----------------|----------|-----------|---------------------------------------------------|
-| `transactionId` | `String` | Yes       | The transaction attempt id received from PhonePe. |  
+| `transactionId` | `String` | Yes       | The transaction attempt id received from PhonePe. |
 
 ### Example Usage:
 
@@ -450,10 +433,10 @@ a `PhonePeException`
 
 ### CallbackResponse:
 
-| Property  | Type                                     | Description                                             |  
-|-----------|------------------------------------------|---------------------------------------------------------|  
-| `type`    | [CallbackType](#callback-types)          | Contains type of callback received at the merchant end. |  
-| `payload` | [CallbackData](#callbackdata-properties) | Contains callback details.                              |  
+| Property  | Type                                     | Description                                             |
+|-----------|------------------------------------------|---------------------------------------------------------|
+| `type`    | [CallbackType](#callback-types)          | Contains type of callback received at the merchant end. |
+| `payload` | [CallbackData](#callbackdata-properties) | Contains callback details.                              |
 
 ###### Callback Types
 
@@ -470,31 +453,31 @@ a `PhonePeException`
 
 | Property                  | Type                                         | Description                                                                                     |
 |---------------------------|----------------------------------------------|-------------------------------------------------------------------------------------------------|
-| `merchantId`              | `String`                                     | The merchant from which request was initiated                                                   |  
+| `merchantId`              | `String`                                     | The merchant from which request was initiated                                                   |
 | `orderId`                 | `String`                                     | Order id generated by PhonePe (Only present in case of order callbacks)                         |
 | `merchantOrderId`         | `String`                                     | Order id generated by merchant (Only present in case of order callbacks)                        |
-| `originalMerchantOrderId` | `String`                                     | Order id generated by merchant (Only present in case of refund callback)                        |  
-| `refundId`                | `String`                                     | Refund id generated by PhonePe (Only present in case of refund callback)                        |  
-| `merchantRefundId`        | `String`                                     | Refund id generated by merchant (Only present in case of refund callback)                       |  
-| `state`                   | `String`                                     | State of the ORDER/REFUND                                                                       |  
+| `originalMerchantOrderId` | `String`                                     | Order id generated by merchant (Only present in case of refund callback)                        |
+| `refundId`                | `String`                                     | Refund id generated by PhonePe (Only present in case of refund callback)                        |
+| `merchantRefundId`        | `String`                                     | Refund id generated by merchant (Only present in case of refund callback)                       |
+| `state`                   | `String`                                     | State of the ORDER/REFUND                                                                       |
 | `amount`                  | `long`                                       | Amount in Paisa of the order/refund processed                                                   |
 | `expireAt`                | `long`                                       | Expiry in epoch                                                                                 |
-| `errorCode`               | `String`                                     | Error code. (Only present when state is failed)                                                 |  
-| `detailedErrorCode`       | `String`                                     | Detailed error code. (Only present when state is failed)                                        |  
+| `errorCode`               | `String`                                     | Error code. (Only present when state is failed)                                                 |
+| `detailedErrorCode`       | `String`                                     | Detailed error code. (Only present when state is failed)                                        |
 | `metaInfo`                | `MetaInfo`                                   | Additional Information about the order                                                          |
-| `paymentDetails`          | List<[PaymentDetail](#paymentdetail-object)> | Contain list of details of each transaction attempt made corresponding to this particular order |  
+| `paymentDetails`          | List<[PaymentDetail](#paymentdetail-object)> | Contain list of details of each transaction attempt made corresponding to this particular order |
 
 ### PaymentDetail Object
 
-| Property            | Type                                        | Description                                                                                                                                               |  
-|---------------------|---------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------|  
-| `transactionId`     | `String`                                    | Transaction Id generated by the PhonePe                                                                                                                   |  
-| `paymentMode`       | `String`                                    | Mode of Payment. It can be anyone of the following modes: <br/>1. UPI_INTENT<br/>2. UPI_COLLECT<br/>3. UPI_QR<br/>4. CARD<br/>5. TOKEN<br/>6. NET_BANKING |  
-| `timestamp`         | `long`                                      | Timestamp of the attempted transaction in epoch                                                                                                           |  
-| `state`             | `String`                                    | Attempted transaction state. It can be any one of the following states: <br/>1. PENDING<br/>2. COMPLETED<br/>3. FAILED                                    |  
-| `errorCode`         | `String`                                    | Error code present only when the transaction state is Failed                                                                                              |  
-| `detailedErrorCode` | `String`                                    | Detailed Error Code present only when transaction state is Failed                                                                                         |  
-| `rail`              | [PaymentRail](#paymentrail)                 | Contains processing rail details under which transaction attempt is made.                                                                                 |  
+| Property            | Type                                        | Description                                                                                                                                               |
+|---------------------|---------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `transactionId`     | `String`                                    | Transaction Id generated by the PhonePe                                                                                                                   |
+| `paymentMode`       | `String`                                    | Mode of Payment. It can be anyone of the following modes: <br/>1. UPI_INTENT<br/>2. UPI_COLLECT<br/>3. UPI_QR<br/>4. CARD<br/>5. TOKEN<br/>6. NET_BANKING |
+| `timestamp`         | `long`                                      | Timestamp of the attempted transaction in epoch                                                                                                           |
+| `state`             | `String`                                    | Attempted transaction state. It can be any one of the following states: <br/>1. PENDING<br/>2. COMPLETED<br/>3. FAILED                                    |
+| `errorCode`         | `String`                                    | Error code present only when the transaction state is Failed                                                                                              |
+| `detailedErrorCode` | `String`                                    | Detailed Error Code present only when transaction state is Failed                                                                                         |
+| `rail`              | [PaymentRail](#paymentrail)                 | Contains processing rail details under which transaction attempt is made.                                                                                 |
 | `instrument`        | [PaymentInstrumentV2](#paymentinstrumentv2) | Contains instrument details of that particular transaction Id                                                                                             |
 
 -----
@@ -515,7 +498,7 @@ It is used to initiate a refund using `refund()` function
 |---------------------------|----------|-----------|-------------------------------------------------------------|-----------------------------------------|
 | `merchantRefundId`        | `String` | Yes       | Unique merchant refund id generated by merchant             | Max Length = 63 characters              |
 | `originalMerchantOrderId` | `String` | Yes       | Original merchant order id against which refund is required | -                                       |
-| `amount`                  | `long`   | Yes       | Amount in paisa to refund                                   | Min Value = 1, Max Value = Order Amount |              
+| `amount`                  | `long`   | Yes       | Amount in paisa to refund                                   | Min Value = 1, Max Value = Order Amount |
 
 ### Example Usage:
 
@@ -535,7 +518,7 @@ StandardCheckoutClient standardCheckoutClient = StandardCheckoutClient.getInstan
 
 String merchantRefundId = UUID.randomUUID()
         .toString();
-String originalMerchantOrderId = "<merchantOrderId>";  //orderId for which refund should be initiated 
+String originalMerchantOrderId = "<merchantOrderId>";  //orderId for which refund should be initiated
 long amount = 100;
 
 RefundRequest refundRequest = RefundRequest.Builder()
@@ -599,26 +582,26 @@ It returns a `RefundStatusResponse` Object
 
 ### RefundStatusResponse
 
-| Property                  | Type                                              | Description                                                                                          |  
-|---------------------------|---------------------------------------------------|------------------------------------------------------------------------------------------------------|  
-| `merchantId`              | `String`                                          | Merchant Id who initiated the refund                                                                 |  
-| `merchantRefundId`        | `String`                                          | Refund Id created by the merchant at the time of refund initiation                                   |  
-| `originalMerchantOrderId` | `String`                                          | Order Id for which refund has initiated. Created by the merchant at the time of order creation       |  
-| `amount`                  | `long`                                            | Amount to refund                                                                                     |  
+| Property                  | Type                                              | Description                                                                                          |
+|---------------------------|---------------------------------------------------|------------------------------------------------------------------------------------------------------|
+| `merchantId`              | `String`                                          | Merchant Id who initiated the refund                                                                 |
+| `merchantRefundId`        | `String`                                          | Refund Id created by the merchant at the time of refund initiation                                   |
+| `originalMerchantOrderId` | `String`                                          | Order Id for which refund has initiated. Created by the merchant at the time of order creation       |
+| `amount`                  | `long`                                            | Amount to refund                                                                                     |
 | `state`                   | `String`                                          | State of the refund                                                                                  |
 | `paymentDetails`          | List<[PaymentRefundDetail](#paymentrefunddetail)> | Contains the list of details of each transaction attempt made corresponding to this particular order |
 
 ###### PaymentRefundDetail
 
-| Property            | Type                                        | Description                                                                                                                                               |  
-|---------------------|---------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------|  
-| `transactionId`     | `String`                                    | Transaction Id generated by the PhonePe                                                                                                                   |  
-| `paymentMode`       | `String`                                    | Mode of Payment. It can be anyone of the following modes: <br/>1. UPI_INTENT<br/>2. UPI_COLLECT<br/>3. UPI_QR<br/>4. CARD<br/>5. TOKEN<br/>6. NET_BANKING |  
-| `timestamp`         | `long`                                      | Timestamp of the attempted transaction in epoch                                                                                                           |  
-| `state`             | `String`                                    | Attempted transaction state. It can be any one of the following states: <br/>1. PENDING<br/>2. COMPLETED<br/>3. FAILED                                    |  
-| `errorCode`         | `String`                                    | Error code present only when the transaction state is Failed                                                                                              |  
-| `detailedErrorCode` | `String`                                    | Detailed Error Code present only when transaction state is Failed                                                                                         |  
-| `rail`              | [PaymentRail](#paymentrail)                 | Contains processing rail details under which transaction attempt is made.                                                                                 |  
+| Property            | Type                                        | Description                                                                                                                                               |
+|---------------------|---------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `transactionId`     | `String`                                    | Transaction Id generated by the PhonePe                                                                                                                   |
+| `paymentMode`       | `String`                                    | Mode of Payment. It can be anyone of the following modes: <br/>1. UPI_INTENT<br/>2. UPI_COLLECT<br/>3. UPI_QR<br/>4. CARD<br/>5. TOKEN<br/>6. NET_BANKING |
+| `timestamp`         | `long`                                      | Timestamp of the attempted transaction in epoch                                                                                                           |
+| `state`             | `String`                                    | Attempted transaction state. It can be any one of the following states: <br/>1. PENDING<br/>2. COMPLETED<br/>3. FAILED                                    |
+| `errorCode`         | `String`                                    | Error code present only when the transaction state is Failed                                                                                              |
+| `detailedErrorCode` | `String`                                    | Detailed Error Code present only when transaction state is Failed                                                                                         |
+| `rail`              | [PaymentRail](#paymentrail)                 | Contains processing rail details under which transaction attempt is made.                                                                                 |
 | `instrument`        | [PaymentInstrumentV2](#paymentinstrumentv2) | Contains instrument details of that particular transaction Id                                                                                             |
 | `splitInstruments`  | List<[InstumentCombo](#instrumentcombo)>    | Type of transaction instrument. It can be any one of the following types:<br/>1. ACCOUNT<br/>2. CREDIT_CARD<br/>3. DEBIT_CARD<br/>4. NET_BANKING          |
 
@@ -682,12 +665,12 @@ The function return a [CreateSdkOrderResponse](#createsdkorderresponse-propertie
 
 ### CreateSdkOrderResponse Properties
 
-| Property   | Type     | Description                                      |  
-|------------|----------|--------------------------------------------------|  
-| `orderId`  | `String` | Order ID generated by PhonePE                    |  
-| `state`    | `String` | State of the Order. Initially it will be PENDING |  
-| `expireAt` | `long`   | Expiry time in epoch                             |  
-| `token`    | `String` | Token used to access the PG Page.                |  
+| Property   | Type     | Description                                      |
+|------------|----------|--------------------------------------------------|
+| `orderId`  | `String` | Order ID generated by PhonePE                    |
+| `state`    | `String` | State of the Order. Initially it will be PENDING |
+| `expireAt` | `long`   | Expiry time in epoch                             |
+| `token`    | `String` | Token used to access the PG Page.                |
 
 -----
 
@@ -730,10 +713,8 @@ StandardCheckoutPayRequest standardCheckoutPayRequest = StandardCheckoutPayReque
         .redirectUrl(redirectUrl)
         .build();
 try{
-StandardCheckoutPayResponse standardCheckoutPayResponse = standardCheckoutClient.pay(standardCheckoutPayRequest);
-}
-        catch(
-PhonePeException phonePeException){
+    StandardCheckoutPayResponse standardCheckoutPayResponse = standardCheckoutClient.pay(standardCheckoutPayRequest);
+} catch(PhonePeException phonePeException){
 Integer httpStatusCode = phonePeException.getHttpStatusCode();
 String message = phonePeException.getMessage();
 Map<String, String> data = phonePeException.getData()
@@ -752,7 +733,7 @@ falls under the `rail` attribute in [PaymentDetail](#paymentdetail-properties) O
 
 ###### UPI RAIL
 
-| Property           | Type              | 
+| Property           | Type              |
 |--------------------|-------------------|
 | `type`             | `PaymentRailType` |
 | `utr`              | `String`          |
@@ -761,7 +742,7 @@ falls under the `rail` attribute in [PaymentDetail](#paymentdetail-properties) O
 
 ###### PG RAIL
 
-| Property               | Type              | 
+| Property               | Type              |
 |------------------------|-------------------|
 | `type`                 | `PaymentRailType` |
 | `transctionId`         | `String`          |
@@ -770,13 +751,13 @@ falls under the `rail` attribute in [PaymentDetail](#paymentdetail-properties) O
 
 ###### PPI_WALLET RAIL
 
-| Property | Type              | 
+| Property | Type              |
 |----------|-------------------|
 | `type`   | `PaymentRailType` |
 
 ###### PPI_EGV RAIL
 
-| Property | Type              | 
+| Property | Type              |
 |----------|-------------------|
 | `type`   | `PaymentRailType` |
 
@@ -787,7 +768,7 @@ falls under the `instrument` attribute in [PaymentDetail](#paymentdetail-propert
 
 ###### ACCOUNT
 
-| Property              | Type                    | 
+| Property              | Type                    |
 |-----------------------|-------------------------|
 | `type`                | `PaymentInstrumentType` |
 | `ifsc`                | `String`                |
@@ -797,7 +778,7 @@ falls under the `instrument` attribute in [PaymentDetail](#paymentdetail-propert
 
 ###### CREDIT_CARD
 
-| Property            | Type                    | 
+| Property            | Type                    |
 |---------------------|-------------------------|
 | `type`              | `PaymentInstrumentType` |
 | `bankTransactionId` | `String`                |
@@ -807,7 +788,7 @@ falls under the `instrument` attribute in [PaymentDetail](#paymentdetail-propert
 
 ###### DEBIT_CARD
 
-| Property            | Type                    | 
+| Property            | Type                    |
 |---------------------|-------------------------|
 | `type`              | `PaymentInstrumentType` |
 | `bankTransactionId` | `String`                |
@@ -817,7 +798,7 @@ falls under the `instrument` attribute in [PaymentDetail](#paymentdetail-propert
 
 ###### NET_BANKING
 
-| Property            | Type                    | 
+| Property            | Type                    |
 |---------------------|-------------------------|
 | `type`              | `PaymentInstrumentType` |
 | `bankTransactionId` | `String`                |
@@ -827,7 +808,7 @@ falls under the `instrument` attribute in [PaymentDetail](#paymentdetail-propert
 
 ###### EGV
 
-| Property     | Type                    | 
+| Property     | Type                    |
 |--------------|-------------------------|
 | `type`       | `PaymentInstrumentType` |
 | `cardNumber` | `String`                |
@@ -835,7 +816,12 @@ falls under the `instrument` attribute in [PaymentDetail](#paymentdetail-propert
 
 ###### WALLET
 
-| Property   | Type                    | 
+| Property   | Type                    |
 |------------|-------------------------|
 | `type`     | `PaymentInstrumentType` |
 | `walletId` | `String`                |
+
+
+
+
+
