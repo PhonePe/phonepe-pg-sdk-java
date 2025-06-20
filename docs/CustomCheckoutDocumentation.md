@@ -901,22 +901,22 @@ a `PhonePeException`
 
 | Property  | Type                                     | Description                                             |  
 |-----------|------------------------------------------|---------------------------------------------------------|  
-| `type`    | [CallbackType](#callback-types)          | Contains type of callback received at the merchant end. |  
+| `event`   | [String](#callback-types)                | Contains type of callback received at the merchant end. |  
 | `payload` | [CallbackData](#callbackdata-properties) | Contains callback details.                              |  
 
-### Callback Types
+### Callback event
 
-| Callback Type                       | Context                                          |
-|-------------------------------------|--------------------------------------------------|
-| CHECKOUT_ORDER_COMPLETED            | Order Completed for checkout                     |
-| CHECKOUT_ORDER_FAILED               | Order Failed                                     |
-| CHECKOUT_TRANSACTION_ATTEMPT_FAILED | Transaction Attempt Failed for checkout          |
-| PG_ORDER_COMPLETED                  | Order Completed for PG                           |
-| PG_ORDER_FAILED                     | Order Failed for PG                              |
-| PG_TRANSACTION_ATTEMPT_FAILED       | Transaction Attempt Failed for PG                |
-| PG_REFUND_COMPLETED                 | Refund Completed for PG                          |
-| PG_REFUND_ACCEPTED                  | Refund Accepted by PhonePe and will be initiated |
-| PG_REFUND_FAILED                    | Refund Failed for PG                             |
+| Callback event                      | Description                                       |
+|-------------------------------------|---------------------------------------------------|
+| checkout.order.completed            | Order Completed for checkout                      |
+| checkout.order.failed               | Order Failed                                      |
+| checkout.transaction.attempt.failed | Transaction Attempt Failed for checkout           |
+| pg.order.completed                  | Order Completed for PG                            |
+| pg.order.failed                     | Order Failed for PG                               |
+| pg.transaction.attempt.failed       | Transaction Attempt Failed for PG                 |
+| pg.refund.completed                 | Refund Completed for PG                           |
+| pg.refund.accepted                  | Refund Accepted by PhonePe and will be initiated  |
+| pg.refund.failed                    | Refund Failed for PG                              |
 
 ### CallbackData Properties
 
