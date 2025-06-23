@@ -34,8 +34,10 @@ import com.phonepe.sdk.pg.payments.v2.models.response.StandardCheckoutPayRespons
 import com.phonepe.sdk.pg.payments.v2.standardcheckout.StandardCheckoutConstants;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -50,14 +52,31 @@ public class PayTest extends BaseSetupWithOAuth {
         String redirectUrl = "https://redirectUrl.com";
 
         List<PaymentModeConstraint> enabledPaymentModes = new ArrayList<>();
-        enabledPaymentModes.add(new UpiIntentPaymentModeConstraint());
-        enabledPaymentModes.add(new UpiCollectPaymentModeConstraint());
-        enabledPaymentModes.add(new UpiQrPaymentModeConstraint());
-        enabledPaymentModes.add(new NetBankingPaymentModeConstraint());
-        enabledPaymentModes.add(
-                new CardPaymentModeConstraint(Collections.singleton(CardType.DEBIT_CARD)));
-        enabledPaymentModes.add(
-                new CardPaymentModeConstraint(Collections.singleton(CardType.CREDIT_CARD)));
+        Set<CardType> allowedCardTypes = new HashSet<>();
+        allowedCardTypes.add(CardType.DEBIT_CARD);
+        allowedCardTypes.add(CardType.CREDIT_CARD);
+
+        PaymentModeConstraint cardPaymentModeConstraint = CardPaymentModeConstraint.builder()
+                .cardTypes(allowedCardTypes)
+                .build();
+        PaymentModeConstraint netBankingPaymentModeConstraint = NetBankingPaymentModeConstraint
+                .builder()
+                .build();
+        PaymentModeConstraint upiIntentPaymentModeConstraint = UpiIntentPaymentModeConstraint
+                .builder()
+                .build();
+        PaymentModeConstraint upiCollectPaymentModeConstraint = UpiCollectPaymentModeConstraint
+                .builder()
+                .build();
+        PaymentModeConstraint upiQrPaymentModeConstraint = UpiQrPaymentModeConstraint
+                .builder()
+                .build();
+
+        enabledPaymentModes.add(cardPaymentModeConstraint);
+        enabledPaymentModes.add(netBankingPaymentModeConstraint);
+        enabledPaymentModes.add(upiIntentPaymentModeConstraint);
+        enabledPaymentModes.add(upiCollectPaymentModeConstraint);
+        enabledPaymentModes.add(upiQrPaymentModeConstraint);
 
         PaymentModeConfig paymentModeConfig =
                 PaymentModeConfig.builder()

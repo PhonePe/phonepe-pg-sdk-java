@@ -15,11 +15,11 @@
  */
 package com.phonepe.sdk.pg.common.models.request.paymentmodeconstraints;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.phonepe.sdk.pg.common.models.PgV2InstrumentType;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -29,7 +29,7 @@ import lombok.EqualsAndHashCode;
 @JsonInclude(Include.NON_NULL)
 public class UpiCollectPaymentModeConstraint extends PaymentModeConstraint {
 
-    @JsonCreator
+    @Builder
     public UpiCollectPaymentModeConstraint() {
         super(PgV2InstrumentType.UPI_COLLECT);
     }
