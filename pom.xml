@@ -113,7 +113,7 @@
                     <artifactId>spotless-maven-plugin</artifactId>
                     <version>${spotless.version}</version>
                     <configuration>
-                        <ratchetFrom>origin/develop</ratchetFrom>
+                        <ratchetFrom>origin/main</ratchetFrom>
                         <java>
                             <includes>
                                 <include>src/main/java/**/*.java</include>
