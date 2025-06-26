@@ -1117,7 +1117,7 @@ public class CallbackTest extends BaseSetup {
     void subscriptionSetupSuccess() {
         String jsonString =
                 "{\"event\": \"subscription.setup.order.completed\", \"payload\": {\"merchantId\":"
-                    + " \"SWIGGY8\", \"merchantOrderId\": \"MO1708797962855\", \"orderId\":"
+                    + " \"MID123\", \"merchantOrderId\": \"MO1708797962855\", \"orderId\":"
                     + " \"OMO2402242336055135042802\", \"state\": \"COMPLETED\", \"amount\": 200,"
                     + " \"expireAt\": 1708798385505, \"paymentFlow\": {\"type\":"
                     + " \"SUBSCRIPTION_SETUP\", \"merchantSubscriptionId\": \"MS1708797962855\","
@@ -1141,7 +1141,7 @@ public class CallbackTest extends BaseSetup {
                         .event("subscription.setup.order.completed")
                         .payload(
                                 CallbackData.builder()
-                                        .merchantId("SWIGGY8")
+                                        .merchantId("MID123")
                                         .merchantOrderId("MO1708797962855")
                                         .orderId("OMO2402242336055135042802")
                                         .state("COMPLETED")
@@ -1223,7 +1223,7 @@ public class CallbackTest extends BaseSetup {
     void testNotifyValidate() {
         String jsonString =
                 "{\"event\": \"subscription.notification.completed\", \"payload\": {\"merchantId\":"
-                    + " \"SWIGGY8\", \"merchantOrderId\": \"MO1708797962855\", \"orderId\":"
+                    + " \"MID123\", \"merchantOrderId\": \"MO1708797962855\", \"orderId\":"
                     + " \"OMO12344\", \"amount\": 100, \"state\": \"NOTIFIED\", \"expireAt\":"
                     + " 1620891733101, \"metaInfo\": {\"udf1\": \"<some meta info of max length"
                     + " 256>\", \"udf2\": \"<some meta info of max length 256>\", \"udf3\": \"<some"
@@ -1239,7 +1239,7 @@ public class CallbackTest extends BaseSetup {
                         .event("subscription.notification.completed")
                         .payload(
                                 CallbackData.builder()
-                                        .merchantId("SWIGGY8")
+                                        .merchantId("MID123")
                                         .merchantOrderId("MO1708797962855")
                                         .orderId("OMO12344")
                                         .amount(100L)
