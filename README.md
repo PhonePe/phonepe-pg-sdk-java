@@ -92,13 +92,14 @@ You will get to initiate the order using the `pay` function: [PAY](#pay-function
 ```java
 import com.phonepe.sdk.pg.payments.v2.models.request.StandardCheckoutPayRequest;
 import com.phonepe.sdk.pg.payments.v2.models.response.StandardCheckoutPayResponse;
+import java.util.UUID;
 
 String merchantOrderId = UUID.randomUUID()
         .toString();
 long amount = 100;
 String redirectUrl = "https://www.merchant.com/redirect";
 
-StandardCheckoutPayRequest standardCheckoutPayRequest = StandardCheckoutPayRequest.Buidler()
+StandardCheckoutPayRequest standardCheckoutPayRequest = StandardCheckoutPayRequest.builder()
         .merchantOrderId(merchantOrderId)
         .amount(amount)
         .redirectUrl(redirectUrl)
@@ -133,6 +134,8 @@ You will receive a callback you have configured [dashboard link] TODO find the l
 <br>It is important to check the validity of the callback received from PhonePe using the `validateCallback()` function.
 
 ```java
+import com.phonepe.sdk.pg.common.models.response.CallbackResponse;
+
 String username = "<username>";
 String password = "<password>";
 
@@ -145,11 +148,13 @@ String orderId = callbackResponse.getPayload()
         .getOrderId();
 String state = callbackResponse.getPayload()
         .getState();
+String event = callbackResponse.getEvent();
 ```
 
 `validateCallback` will throw PhonePeException, if the callback is invalid.
-<br>Possible refund callback states:<br> CHECKOUT_ORDER_COMPLETED,CHECKOUT_ORDER_FAILED,
-CHECKOUT_TRANSACTION_ATTEMPT_FAILED details: [link to detail handling]
+<br>Possible callback events:<br> checkout.order.completed,<br>
+checkout.order.failed,<br>
+checkout.transaction.attempt.failed
 
 _____
 
