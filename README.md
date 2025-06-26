@@ -79,7 +79,7 @@ StandardCheckoutClient standardCheckoutClient = StandardCheckoutClient.getInstan
 
 ### Standard Checkout Flow
 
-To initiate a payment, create a request using the `StandardCheckoutPayRequest.builder()`:
+To initiate a payment, create a request using `StandardCheckoutPayRequest.builder()`:
 
 ```java
 import java.util.UUID;
@@ -100,7 +100,7 @@ StandardCheckoutPayRequest payRequest = StandardCheckoutPayRequest.builder()
 StandardCheckoutPayResponse payResponse = standardCheckoutClient.pay(payRequest);
 String checkoutPageUrl = payResponse.getRedirectUrl();
 
-// Redirect the user to the checkoutPageUrl to complete the payment
+// Redirect the user to checkoutPageUrl to complete the payment
 ```
 
 ### Checking Order Status
@@ -124,7 +124,7 @@ PhonePe sends callbacks to your configured endpoint. Validate these callbacks to
 ```java
 import com.phonepe.sdk.pg.common.models.response.CallbackResponse;
 
-// Credentials for Basic Authentication that you've configured in PhonePe dashboard
+// Credentials for Basic Authentication that you've configured in the PhonePe dashboard
 String username = "<your-username>";
 String password = "<your-password>";
 
@@ -151,9 +151,9 @@ try {
 ```
 
 Possible callback states include:
-- `checkout.order.completed,` - Payment completed successfully
+- `checkout.order.completed` - Payment completed successfully
 - `checkout.order.failed` - Payment failed
-- `heckout.transaction.attempt.failed` - Transaction attempt failed
+- `checkout.transaction.attempt.failed` - Transaction attempt failed
 
 ### SDK Order Integration
 
@@ -207,5 +207,3 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 ```
-
-
