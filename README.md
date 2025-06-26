@@ -142,6 +142,7 @@ try {
     
     String orderId = callbackResponse.getPayload().getOrderId();
     String state = callbackResponse.getPayload().getState();
+    String event = callbackResponse.getEvent();
     
     // Process the order based on its state
 } catch (PhonePeException e) {
@@ -150,9 +151,9 @@ try {
 ```
 
 Possible callback states include:
-- `CHECKOUT_ORDER_COMPLETED` - Payment completed successfully
-- `CHECKOUT_ORDER_FAILED` - Payment failed
-- `CHECKOUT_TRANSACTION_ATTEMPT_FAILED` - Transaction attempt failed
+- `checkout.order.completed,` - Payment completed successfully
+- `checkout.order.failed` - Payment failed
+- `heckout.transaction.attempt.failed` - Transaction attempt failed
 
 ### SDK Order Integration
 
