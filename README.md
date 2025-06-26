@@ -184,9 +184,8 @@ String token = orderResponse.getToken();
 
 For detailed API documentation, advanced features, and integration options:
 
-- [Standard Checkout Documentation](docs/StandardCheckoutDocumentation.md)
-- [Custom Checkout Documentation](docs/CustomCheckoutDocumentation.md)
-- [Subscription Documentation](docs/SubscriptionDocumentation.md)
+- [Standard Checkout Documentation](https://developer.phonepe.com/v1/reference/java-sdk-standard-checkout)
+- [Subscription Documentation](https://developer.phonepe.com/v1/reference/java-sdk-introduction-autopay)
 - [PhonePe Developer Portal](https://developer.phonepe.com/)
 
 ## License
