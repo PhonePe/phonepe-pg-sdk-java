@@ -12,11 +12,12 @@ jobs:
         container:
             image: pp-maven:3.9.5-openjdk-17
         steps:
-            - name: Run Spotless Check
-              run: mvn spotless:check
-            - name: Run Spotless Apply (on PRs only)
-              if: github.event_name == 'pull_request'
-              run: mvn spotless:apply
+            -   name: Run Spotless Check
+                run: mvn spotless:check
+
+            -   name: Run Spotless Apply (on PRs only)
+                if: github.event_name == 'pull_request'
+                run: mvn spotless:apply
     build:
         name: Build and analyze
         runs-on: ubuntu-latest
