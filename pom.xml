@@ -53,38 +53,6 @@
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-checkstyle-plugin</artifactId>
-                    <version>3.3.0</version>
-                    <executions>
-                        <execution>
-                            <id>package</id>
-                            <phase>package</phase>
-                            <goals>
-                                <goal>check</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                    <configuration>
-                        <sourceDirectories>
-                            <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
-                            <sourceDirectory>${project.build.testSourceDirectory}</sourceDirectory>
-                        </sourceDirectories>
-                        <configLocation>checkstyle.xml</configLocation>
-                        <failsOnError>true</failsOnError>
-                        <failOnViolation>true</failOnViolation>
-                        <includeTestSourceDirectory>true</includeTestSourceDirectory>
-                        <consoleOutput>true</consoleOutput>
-                    </configuration>
-                    <dependencies>
-                        <dependency>
-                            <groupId>com.puppycrawl.tools</groupId>
-                            <artifactId>checkstyle</artifactId>
-                            <version>10.12.3</version>
-                        </dependency>
-                    </dependencies>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>${maven.compiler.plugin.version}</version>
                     <configuration>
@@ -133,6 +101,14 @@
                             </googleJavaFormat>
                         </java>
                     </configuration>
+                    <executions>
+                        <execution>
+                            <id>spotless-check</id>
+                            <goals>
+                                <goal>check</goal>
+                            </goals>
+                            <phase>compile</phase> </execution>
+                    </executions>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -183,11 +159,6 @@
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
             <version>${jackson.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.github.cdimascio</groupId>
-            <artifactId>dotenv-java</artifactId>
-            <version>2.2.0</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -256,3 +227,4 @@
         </dependencies>
     </dependencyManagement>
 </project>
+
