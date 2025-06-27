@@ -9,8 +9,8 @@
     <version>2.1.3</version>
 
     <properties>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <okhttp.version>4.10.0</okhttp.version>
         <junit.version>5.7.0</junit.version>
@@ -18,11 +18,11 @@
         <jackson.version>2.16.1</jackson.version>
         <mockito.version>2.22.0</mockito.version>
         <lombok.version>1.18.22</lombok.version>
-        <guava.version>23.0</guava.version>
+        <guava.version>32.1.1-jre</guava.version>
         <javax.validation.version>2.0.1.Final</javax.validation.version>
         <commons-text.version>1.10.0</commons-text.version>
-        <commons-collection.version>4.4</commons-collection.version>
-        <common-io.version>2.8.0</common-io.version>
+        <commons-collections.version>4.4</commons-collections.version>
+        <commons-io.version>2.8.0</commons-io.version>
         <slf4j.version>1.7.32</slf4j.version>
         <commons-codec.version>1.13</commons-codec.version>
         <jersey-client.version>2.25.1</jersey-client.version>
@@ -30,17 +30,17 @@
         <json-org.version>20231013</json-org.version>
         <wiremock.standalone.version>2.27.2</wiremock.standalone.version>
         <maven.surefire.plugin.version>3.0.0-M4</maven.surefire.plugin.version>
-        <maven.compiler.version>3.8.1</maven.compiler.version>
+        <maven.compiler.plugin.version>3.8.1</maven.compiler.plugin.version>
         <sonar.plugin.version>1.2.7</sonar.plugin.version>
-        <maven.jar.plugin-version>2.4</maven.jar.plugin-version>
-        <maven.install.plugin-version>2.4</maven.install.plugin-version>
-        <maven.resources.plugin-version>2.6</maven.resources.plugin-version>
+        <maven.jar.plugin.version>2.4</maven.jar.plugin.version>
+        <maven.install.plugin.version>2.4</maven.install.plugin.version>
+        <maven.resources.plugin.version>2.6</maven.resources.plugin.version>
         <sonar.sources>src/main</sonar.sources>
         <sonar.tests>src/test</sonar.tests>
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
         <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
         <sonar.language>java</sonar.language>
-
+        <spotless.version>2.43.0</spotless.version>
     </properties>
 
     <build>
@@ -49,7 +49,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-resources-plugin</artifactId>
-                    <version>${maven.resources.plugin-version}</version>
+                    <version>${maven.resources.plugin.version}</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -86,10 +86,10 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>${maven.compiler.version}</version>
+                    <version>${maven.compiler.plugin.version}</version>
                     <configuration>
-                        <source>8</source>
-                        <target>8</target>
+                        <source>${maven.compiler.source}</source>
+                        <target>${maven.compiler.target}</target>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -100,14 +100,40 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-jar-plugin</artifactId>
-                    <version>${maven.jar.plugin-version}</version>
+                    <version>${maven.jar.plugin.version}</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-install-plugin</artifactId>
-                    <version>${maven.install.plugin-version}</version>
+                    <version>${maven.install.plugin.version}</version>
                 </plugin>
-
+                <plugin>
+                    <groupId>com.diffplug.spotless</groupId>
+                    <artifactId>spotless-maven-plugin</artifactId>
+                    <version>${spotless.version}</version>
+                    <configuration>
+                        <ratchetFrom>origin/main</ratchetFrom>
+                        <java>
+                            <includes>
+                                <include>src/main/java/**/*.java</include>
+                                <include>src/test/java/**/*.java</include>
+                            </includes>
+                            <importOrder />
+                            <endWithNewline />
+                            <removeUnusedImports />
+                            <formatAnnotations />
+                            <indent>
+                                <tabs>true</tabs>
+                                <spacesPerTab>4</spacesPerTab>
+                            </indent>
+                            <googleJavaFormat>
+                                <version>1.22.0</version>
+                                <style>AOSP</style>
+                                <reflowLongStrings>true</reflowLongStrings>
+                            </googleJavaFormat>
+                        </java>
+                    </configuration>
+                </plugin>
             </plugins>
         </pluginManagement>
         <testSourceDirectory>${project.basedir}/src/test/</testSourceDirectory>
@@ -131,7 +157,6 @@
             <artifactId>okhttp</artifactId>
             <version>${okhttp.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
@@ -141,7 +166,7 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>32.1.1-jre</version>
+            <version>${guava.version}</version>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
@@ -187,7 +212,7 @@
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>${common-io.version}</version>
+            <version>${commons-io.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -197,7 +222,7 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-collections4</artifactId>
-            <version>${commons-collection.version}</version>
+            <version>${commons-collections.version}</version>
         </dependency>
         <dependency>
             <groupId>commons-codec</groupId>
@@ -213,12 +238,6 @@
             <groupId>com.google.inject</groupId>
             <artifactId>guice</artifactId>
             <version>${guice.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>*</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.json</groupId>

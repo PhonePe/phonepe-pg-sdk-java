@@ -1,3 +1,18 @@
+/*
+ *  Copyright (c) 2025 Original Author(s), PhonePe India Pvt. Ltd.
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.google.common.collect.Maps;
@@ -12,13 +27,14 @@ import com.phonepe.sdk.pg.common.models.request.paymentmodeconstraints.UpiCollec
 import com.phonepe.sdk.pg.common.models.request.paymentmodeconstraints.UpiIntentPaymentModeConstraint;
 import com.phonepe.sdk.pg.common.models.request.paymentmodeconstraints.UpiQrPaymentModeConstraint;
 import com.phonepe.sdk.pg.common.models.response.PgPaymentResponse;
-import com.phonepe.sdk.pg.payments.v2.models.request.PaymentModeConfig;
 import com.phonepe.sdk.pg.payments.v2.customcheckout.CustomCheckoutConstants;
+import com.phonepe.sdk.pg.payments.v2.models.request.PaymentModeConfig;
 import com.phonepe.sdk.pg.payments.v2.models.request.StandardCheckoutPayRequest;
 import com.phonepe.sdk.pg.payments.v2.models.response.StandardCheckoutPayResponse;
 import com.phonepe.sdk.pg.payments.v2.standardcheckout.StandardCheckoutConstants;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -36,17 +52,37 @@ public class PayTest extends BaseSetupWithOAuth {
         String redirectUrl = "https://redirectUrl.com";
 
         List<PaymentModeConstraint> enabledPaymentModes = new ArrayList<>();
-        enabledPaymentModes.add(new UpiIntentPaymentModeConstraint());
-        enabledPaymentModes.add(new UpiCollectPaymentModeConstraint());
-        enabledPaymentModes.add(new UpiQrPaymentModeConstraint());
-        enabledPaymentModes.add(new NetBankingPaymentModeConstraint());
-        enabledPaymentModes.add(new CardPaymentModeConstraint(Collections.singleton(CardType.DEBIT_CARD)));
-        enabledPaymentModes.add(new CardPaymentModeConstraint(Collections.singleton(CardType.CREDIT_CARD)));
+        Set<CardType> allowedCardTypes = new HashSet<>();
+        allowedCardTypes.add(CardType.DEBIT_CARD);
+        allowedCardTypes.add(CardType.CREDIT_CARD);
 
-        PaymentModeConfig paymentModeConfig = PaymentModeConfig.builder()
-                .enabledPaymentModes(enabledPaymentModes)
-                .disabledPaymentModes(Collections.emptyList())
+        PaymentModeConstraint cardPaymentModeConstraint = CardPaymentModeConstraint.builder()
+                .cardTypes(allowedCardTypes)
                 .build();
+        PaymentModeConstraint netBankingPaymentModeConstraint = NetBankingPaymentModeConstraint
+                .builder()
+                .build();
+        PaymentModeConstraint upiIntentPaymentModeConstraint = UpiIntentPaymentModeConstraint
+                .builder()
+                .build();
+        PaymentModeConstraint upiCollectPaymentModeConstraint = UpiCollectPaymentModeConstraint
+                .builder()
+                .build();
+        PaymentModeConstraint upiQrPaymentModeConstraint = UpiQrPaymentModeConstraint
+                .builder()
+                .build();
+
+        enabledPaymentModes.add(cardPaymentModeConstraint);
+        enabledPaymentModes.add(netBankingPaymentModeConstraint);
+        enabledPaymentModes.add(upiIntentPaymentModeConstraint);
+        enabledPaymentModes.add(upiCollectPaymentModeConstraint);
+        enabledPaymentModes.add(upiQrPaymentModeConstraint);
+
+        PaymentModeConfig paymentModeConfig =
+                PaymentModeConfig.builder()
+                        .enabledPaymentModes(enabledPaymentModes)
+                        .disabledPaymentModes(Collections.emptyList())
+                        .build();
         StandardCheckoutPayRequest standardCheckoutPayRequest =
                 StandardCheckoutPayRequest.builder()
                         .merchantOrderId(merchantOrderId)
@@ -54,17 +90,21 @@ public class PayTest extends BaseSetupWithOAuth {
                         .redirectUrl(redirectUrl)
                         .paymentModeConfig(paymentModeConfig)
                         .build();
-        StandardCheckoutPayResponse standardCheckoutResponse = StandardCheckoutPayResponse.builder()
-                .orderId(String.valueOf(java.time.Instant.now()
-                        .getEpochSecond()))
-                .state("PENDING")
-                .expireAt(java.time.Instant.now()
-                        .getEpochSecond())
-                .redirectUrl("https://google.com")
-                .build();
+        StandardCheckoutPayResponse standardCheckoutResponse =
+                StandardCheckoutPayResponse.builder()
+                        .orderId(String.valueOf(java.time.Instant.now().getEpochSecond()))
+                        .state("PENDING")
+                        .expireAt(java.time.Instant.now().getEpochSecond())
+                        .redirectUrl("https://google.com")
+                        .build();
         Map<String, String> headers = getHeaders();
 
-        addStubForPostRequest(url, headers, standardCheckoutPayRequest, HttpStatus.SC_OK, Maps.newHashMap(),
+        addStubForPostRequest(
+                url,
+                headers,
+                standardCheckoutPayRequest,
+                HttpStatus.SC_OK,
+                Maps.newHashMap(),
                 standardCheckoutResponse);
         StandardCheckoutPayResponse actual = standardCheckoutClient.pay(standardCheckoutPayRequest);
         Assertions.assertEquals(standardCheckoutResponse, actual);
@@ -78,16 +118,24 @@ public class PayTest extends BaseSetupWithOAuth {
                         .merchantOrderId(merchantOrderId)
                         .amount(amount)
                         .build();
-        PhonePeResponse phonePeResponse = PhonePeResponse.<Map<String, String>>builder()
-                .code("Bad Request")
-                .message("message")
-                .data(Collections.singletonMap("a", "b"))
-                .build();
-        addStubForPostRequest(url, getHeaders(), standardCheckoutPayRequest, HttpStatus.SC_BAD_REQUEST,
-                Maps.newHashMap(), phonePeResponse);
+        PhonePeResponse phonePeResponse =
+                PhonePeResponse.<Map<String, String>>builder()
+                        .code("Bad Request")
+                        .message("message")
+                        .data(Collections.singletonMap("a", "b"))
+                        .build();
+        addStubForPostRequest(
+                url,
+                getHeaders(),
+                standardCheckoutPayRequest,
+                HttpStatus.SC_BAD_REQUEST,
+                Maps.newHashMap(),
+                phonePeResponse);
 
-        final PhonePeException phonePeException = assertThrows(PhonePeException.class,
-                () -> standardCheckoutClient.pay(standardCheckoutPayRequest));
+        final PhonePeException phonePeException =
+                assertThrows(
+                        PhonePeException.class,
+                        () -> standardCheckoutClient.pay(standardCheckoutPayRequest));
         Assertions.assertEquals(400, phonePeException.getHttpStatusCode());
         Assertions.assertEquals("Bad Request", phonePeException.getCode());
     }
@@ -101,18 +149,17 @@ public class PayTest extends BaseSetupWithOAuth {
                         .merchantOrderId("MerchantOrderId")
                         .amount(100)
                         .build();
-        PgPaymentResponse pgPaymentResponse = PgPaymentResponse.builder()
-                .orderId("OMO2403071446458436434329")
-                .state("PENDING")
-                .expireAt(java.time.Instant.now()
-                        .getEpochSecond())
-                .redirectUrl("mercury.com")
-                .build();
-        addStubForPostRequest(url, getHeaders(), request, HttpStatus.SC_OK,
-                Maps.newHashMap(), pgPaymentResponse);
+        PgPaymentResponse pgPaymentResponse =
+                PgPaymentResponse.builder()
+                        .orderId("OMO2403071446458436434329")
+                        .state("PENDING")
+                        .expireAt(java.time.Instant.now().getEpochSecond())
+                        .redirectUrl("mercury.com")
+                        .build();
+        addStubForPostRequest(
+                url, getHeaders(), request, HttpStatus.SC_OK, Maps.newHashMap(), pgPaymentResponse);
 
         PgPaymentResponse actual = customCheckoutClient.pay(request);
         Assertions.assertEquals(pgPaymentResponse, actual);
     }
-
 }

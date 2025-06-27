@@ -1,3 +1,18 @@
+/*
+ *  Copyright (c) 2025 Original Author(s), PhonePe India Pvt. Ltd.
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.google.common.collect.Maps;
@@ -19,11 +34,12 @@ public class CreateOrderTest extends BaseSetupWithOAuth {
     void testCreateOrder() {
         String redirectUrl = "https://google.com";
 
-        CreateSdkOrderRequest createSdkOrderRequest = CreateSdkOrderRequest.StandardCheckoutBuilder()
-                .merchantOrderId(merchantOrderId)
-                .amount(amount)
-                .redirectUrl(redirectUrl)
-                .build();
+        CreateSdkOrderRequest createSdkOrderRequest =
+                CreateSdkOrderRequest.StandardCheckoutBuilder()
+                        .merchantOrderId(merchantOrderId)
+                        .amount(amount)
+                        .redirectUrl(redirectUrl)
+                        .build();
         final String url = StandardCheckoutConstants.CREATE_ORDER_API;
         CreateSdkOrderResponse createSdkOrderResponse =
                 CreateSdkOrderResponse.builder()
@@ -33,20 +49,27 @@ public class CreateOrderTest extends BaseSetupWithOAuth {
                         .state("PENDING")
                         .build();
 
-        addStubForPostRequest(url, getHeaders(), createSdkOrderRequest, HttpStatus.SC_OK,
-                Maps.newHashMap(), createSdkOrderResponse);
+        addStubForPostRequest(
+                url,
+                getHeaders(),
+                createSdkOrderRequest,
+                HttpStatus.SC_OK,
+                Maps.newHashMap(),
+                createSdkOrderResponse);
 
-        CreateSdkOrderResponse actual = standardCheckoutClient.createSdkOrder(createSdkOrderRequest);
+        CreateSdkOrderResponse actual =
+                standardCheckoutClient.createSdkOrder(createSdkOrderRequest);
         Assertions.assertEquals(actual, createSdkOrderResponse);
     }
 
     @Test
     void testCreateOrderCustomCheckout() {
 
-        CreateSdkOrderRequest createSdkOrderRequest = CreateSdkOrderRequest.CustomCheckoutBuilder()
-                .merchantOrderId(merchantOrderId)
-                .amount(amount)
-                .build();
+        CreateSdkOrderRequest createSdkOrderRequest =
+                CreateSdkOrderRequest.CustomCheckoutBuilder()
+                        .merchantOrderId(merchantOrderId)
+                        .amount(amount)
+                        .build();
         final String url = CustomCheckoutConstants.CREATE_ORDER_API;
         CreateSdkOrderResponse createSdkOrderResponse =
                 CreateSdkOrderResponse.builder()
@@ -56,8 +79,13 @@ public class CreateOrderTest extends BaseSetupWithOAuth {
                         .state("PENDING")
                         .build();
 
-        addStubForPostRequest(url, getHeaders(), createSdkOrderRequest, HttpStatus.SC_OK,
-                Maps.newHashMap(), createSdkOrderResponse);
+        addStubForPostRequest(
+                url,
+                getHeaders(),
+                createSdkOrderRequest,
+                HttpStatus.SC_OK,
+                Maps.newHashMap(),
+                createSdkOrderResponse);
 
         CreateSdkOrderResponse actual = customCheckoutClient.createSdkOrder(createSdkOrderRequest);
         Assertions.assertEquals(actual, createSdkOrderResponse);
@@ -65,23 +93,32 @@ public class CreateOrderTest extends BaseSetupWithOAuth {
 
     @Test
     void testCreateOrderBadRequest() {
-        CreateSdkOrderRequest createSdkOrderRequest = CreateSdkOrderRequest.StandardCheckoutBuilder()
-                .merchantOrderId(merchantOrderId)
-                .amount(amount)
-                .build();
+        CreateSdkOrderRequest createSdkOrderRequest =
+                CreateSdkOrderRequest.StandardCheckoutBuilder()
+                        .merchantOrderId(merchantOrderId)
+                        .amount(amount)
+                        .build();
 
-        PhonePeResponse phonePeResponse = PhonePeResponse.<Map<String, String>>builder()
-                .code("Bad Request")
-                .message("message")
-                .data(Collections.singletonMap("a", "b"))
-                .build();
+        PhonePeResponse phonePeResponse =
+                PhonePeResponse.<Map<String, String>>builder()
+                        .code("Bad Request")
+                        .message("message")
+                        .data(Collections.singletonMap("a", "b"))
+                        .build();
         final String url = StandardCheckoutConstants.CREATE_ORDER_API;
 
-        addStubForPostRequest(url, getHeaders(), createSdkOrderRequest, HttpStatus.SC_BAD_REQUEST,
-                Maps.newHashMap(), phonePeResponse);
+        addStubForPostRequest(
+                url,
+                getHeaders(),
+                createSdkOrderRequest,
+                HttpStatus.SC_BAD_REQUEST,
+                Maps.newHashMap(),
+                phonePeResponse);
 
-        final PhonePeException phonePeException = assertThrows(PhonePeException.class,
-                () -> standardCheckoutClient.createSdkOrder(createSdkOrderRequest));
+        final PhonePeException phonePeException =
+                assertThrows(
+                        PhonePeException.class,
+                        () -> standardCheckoutClient.createSdkOrder(createSdkOrderRequest));
 
         Assertions.assertEquals(400, phonePeException.getHttpStatusCode());
         Assertions.assertEquals("Bad Request", phonePeException.getCode());
