@@ -10,8 +10,6 @@ jobs:
     prepare-code:
         name: Prepare Code
         runs-on: ubuntu-latest
-        container:
-            image: pp-maven:3.9.5-openjdk-17
         steps:
             -   name: Run Spotless Check
                 run: mvn spotless:check
