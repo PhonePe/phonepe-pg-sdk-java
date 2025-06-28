@@ -14,19 +14,14 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <okhttp.version>4.10.0</okhttp.version>
         <junit.version>5.7.0</junit.version>
-        <guice.version>5.0.1</guice.version>
         <jackson.version>2.16.1</jackson.version>
         <mockito.version>2.22.0</mockito.version>
         <lombok.version>1.18.22</lombok.version>
         <guava.version>32.1.1-jre</guava.version>
         <javax.validation.version>2.0.1.Final</javax.validation.version>
-        <commons-text.version>1.10.0</commons-text.version>
-        <commons-collections.version>4.4</commons-collections.version>
-        <commons-io.version>2.8.0</commons-io.version>
+        <javax.rs.api.version>2.1.1</javax.rs.api.version>
         <slf4j.version>1.7.32</slf4j.version>
         <commons-codec.version>1.13</commons-codec.version>
-        <jersey-client.version>2.25.1</jersey-client.version>
-        <javax.rs.api.version>2.1.1</javax.rs.api.version>
         <json-org.version>20231013</json-org.version>
         <wiremock.standalone.version>2.27.2</wiremock.standalone.version>
         <maven.surefire.plugin.version>3.0.0-M4</maven.surefire.plugin.version>
@@ -50,38 +45,6 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-resources-plugin</artifactId>
                     <version>${maven.resources.plugin.version}</version>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-checkstyle-plugin</artifactId>
-                    <version>3.3.0</version>
-                    <executions>
-                        <execution>
-                            <id>package</id>
-                            <phase>package</phase>
-                            <goals>
-                                <goal>check</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                    <configuration>
-                        <sourceDirectories>
-                            <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
-                            <sourceDirectory>${project.build.testSourceDirectory}</sourceDirectory>
-                        </sourceDirectories>
-                        <configLocation>checkstyle.xml</configLocation>
-                        <failsOnError>true</failsOnError>
-                        <failOnViolation>true</failOnViolation>
-                        <includeTestSourceDirectory>true</includeTestSourceDirectory>
-                        <consoleOutput>true</consoleOutput>
-                    </configuration>
-                    <dependencies>
-                        <dependency>
-                            <groupId>com.puppycrawl.tools</groupId>
-                            <artifactId>checkstyle</artifactId>
-                            <version>10.12.3</version>
-                        </dependency>
-                    </dependencies>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -153,6 +116,11 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
+            <groupId>javax.ws.rs</groupId>
+            <artifactId>javax.ws.rs-api</artifactId>
+            <version>${javax.rs.api.version}</version>
+        </dependency>
+        <dependency>
             <groupId>com.squareup.okhttp3</groupId>
             <artifactId>okhttp</artifactId>
             <version>${okhttp.version}</version>
@@ -205,26 +173,6 @@
             <version>${jackson.version}</version>
         </dependency>
         <dependency>
-            <groupId>javax.ws.rs</groupId>
-            <artifactId>javax.ws.rs-api</artifactId>
-            <version>${javax.rs.api.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>${commons-io.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-text</artifactId>
-            <version>${commons-text.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-collections4</artifactId>
-            <version>${commons-collections.version}</version>
-        </dependency>
-        <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
             <version>${commons-codec.version}</version>
@@ -233,11 +181,6 @@
             <groupId>javax.validation</groupId>
             <artifactId>validation-api</artifactId>
             <version>${javax.validation.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.inject</groupId>
-            <artifactId>guice</artifactId>
-            <version>${guice.version}</version>
         </dependency>
         <dependency>
             <groupId>org.json</groupId>
@@ -256,3 +199,4 @@
         </dependencies>
     </dependencyManagement>
 </project>
+
