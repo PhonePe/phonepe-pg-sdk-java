@@ -10,9 +10,9 @@ jobs:
             - name: Setup central
               uses: actions/setup-java@v4
               with:
-                  java-version: 17
+                  java-version: 8
                   cache: maven
-                  distribution: 'zulu'
+                  distribution: 'temurin'
                   server-username: ${{secrets.MAVEN_USERNAME}}
                   server-password: ${{secrets.MAVEN_PASSWORD}}
                   gpg-private-key: ${{ secrets.CENTRAL_GPG_KEY }}
