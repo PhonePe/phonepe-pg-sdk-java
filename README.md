@@ -8,7 +8,7 @@ A java library for integrating with PhonePe API's
 
 Requirements:
 
-1) Java 8 or later
+1) Java 17 or later
 
 ### Maven users
 
