@@ -1,6 +1,6 @@
 # PhonePe B2B Payment Gateway SDK for Java
 
-[![Maven Central](https://img.shields.io/badge/Maven%20Central-v2.1.3-blue)](https://maven-badges.herokuapp.com/maven-central/com.phonepe/pg-sdk-java)
+[![Maven Central](https://img.shields.io/badge/Maven%20Central-v2.1.5-blue)](https://maven-badges.herokuapp.com/maven-central/com.phonepe/pg-sdk-java)
 ![Java](https://img.shields.io/badge/Java-8%2B-orange)
 [![License](https://img.shields.io/badge/License-Apache%202.0-green.svg)](LICENSE)
 
@@ -22,7 +22,7 @@ A Java library for seamless integration with PhonePe Payment Gateway APIs.
 
 ## Requirements
 
-- Java 8 or later
+- Java 17 or later
 - Maven or Gradle build system
 
 ## Installation
@@ -35,7 +35,7 @@ Add the dependency to your project's POM file:
 <dependency>
     <groupId>com.phonepe</groupId>
     <artifactId>pg-sdk-java</artifactId>
-    <version>2.1.3</version>
+    <version>2.1.5</version>
 </dependency>
 ```
 
@@ -45,7 +45,7 @@ Add the following to your project's build.gradle file:
 
 ```gradle
 dependencies {
-    implementation 'com.phonepe:pg-sdk-java:2.1.3'
+    implementation 'com.phonepe:pg-sdk-java:2.1.5'
 }
 ```
 
