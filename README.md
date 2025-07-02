@@ -1,7 +1,7 @@
 # PhonePe B2B Payment Gateway SDK for Java
 
 [![Maven Central](https://img.shields.io/badge/Maven%20Central-v2.1.5-blue)](https://maven-badges.herokuapp.com/maven-central/com.phonepe/pg-sdk-java)
-![Java](https://img.shields.io/badge/Java-8%2B-orange)
+![Java](https://img.shields.io/badge/Java-17%2B-orange)
 [![License](https://img.shields.io/badge/License-Apache%202.0-green.svg)](LICENSE)
 
 A Java library for seamless integration with PhonePe Payment Gateway APIs.
