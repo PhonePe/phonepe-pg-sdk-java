@@ -17,6 +17,7 @@ A Java library for seamless integration with PhonePe Payment Gateway APIs.
   - [Checking Order Status](#checking-order-status)
   - [Handling Callbacks](#handling-callbacks)
   - [SDK Order Integration](#sdk-order-integration)
+- [Contributing](#contributing)
 - [Documentation](#documentation)
 - [License](#license)
 
@@ -187,6 +188,18 @@ For detailed API documentation, advanced features, and integration options:
 - [Standard Checkout Documentation](https://developer.phonepe.com/v1/reference/java-sdk-standard-checkout)
 - [Subscription Documentation](https://developer.phonepe.com/v1/reference/java-sdk-introduction-autopay)
 - [PhonePe Developer Portal](https://developer.phonepe.com/)
+
+## Contributing
+
+Contributions to PG Java SDK are welcome! Here's how you can contribute:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+Please ensure your code follows the project's coding standards and includes appropriate tests.
 
 ## License
 
