@@ -8,7 +8,7 @@
     <artifactId>pg-sdk-java</artifactId>
     <version>2.1.5</version>
     <name>B2B JAVA SDK</name>
-    <url>https://github.com/PhonePe/sentinel-ai</url>
+    <url>https://github.com/PhonePe/phonepe-pg-sdk-java</url>
     <description>Phonepe PG JAVA SDK</description>
     <inceptionYear>2025</inceptionYear>
     <scm>
@@ -22,6 +22,33 @@
         <system>GitHub Issues</system>
         <url>https://github.com/PhonePe/phonepe-pg-sdk-java/issues</url>
     </issueManagement>
+
+    <ciManagement>
+        <system>Travis CI</system>
+        <url>https://travis-ci.org/PhonePe/phonepe-pg-sdk-java</url>
+    </ciManagement>
+
+    <repositories>
+        <repository>
+            <id>clojars.org</id>
+            <url>https://clojars.org/repo</url>
+        </repository>
+        <repository>
+            <id>central</id>
+            <url>https://repo1.maven.org/maven2</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
+    </repositories>
+
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHub PhonePe Apache Maven Packages</name>
+            <url>https://maven.pkg.github.com/phonepe/phonepe-pg-sdk-java</url>
+        </repository>
+    </distributionManagement>
 
     <licenses>
         <license>
@@ -37,6 +64,9 @@
             <id>fireddd</id>
             <name>Shubhransh Jagota</name>
             <email>mailtoshubhransh@gmail.com</email>
+            <roles>
+                <role>developer</role>
+            </roles>
         </developer>
     </developers>
 
