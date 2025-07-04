@@ -7,6 +7,38 @@
     <groupId>com.phonepe</groupId>
     <artifactId>pg-sdk-java</artifactId>
     <version>2.1.5</version>
+    <name>B2B JAVA SDK</name>
+    <url>https://github.com/PhonePe/sentinel-ai</url>
+    <description>Phonepe PG JAVA SDK</description>
+    <inceptionYear>2025</inceptionYear>
+    <scm>
+        <connection>scm:git:https://github.com/PhonePe/phonepe-pg-sdk-java.git</connection>
+        <developerConnection>scm:git:https://github.com/PhonePe/phonepe-pg-sdk-java.git</developerConnection>
+        <tag>HEAD</tag>
+        <url>https://github.com/PhonePe/phonepe-pg-sdk-java</url>
+    </scm>
+
+    <issueManagement>
+        <system>GitHub Issues</system>
+        <url>https://github.com/PhonePe/phonepe-pg-sdk-java/issues</url>
+    </issueManagement>
+
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+            <distribution>repo</distribution>
+            <comments>A business-friendly OSS license</comments>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <id>fireddd</id>
+            <name>Shubhransh Jagota</name>
+            <email>mailtoshubhransh@gmail.com</email>
+        </developer>
+    </developers>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
