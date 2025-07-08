@@ -61,12 +61,17 @@
 
     <developers>
         <developer>
+            <id>sk4x0r</id>
+            <name>Santosh Patil</name>
+            <roles>
+                <role>developer</role>
+                <role>owner</role>
+            </roles>
+        </developer>
+        <developer>
             <id>fireddd</id>
             <name>Shubhransh Jagota</name>
             <email>mailtoshubhransh@gmail.com</email>
-            <roles>
-                <role>developer</role>
-            </roles>
         </developer>
     </developers>
 
