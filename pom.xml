@@ -73,6 +73,11 @@
             <name>Shubhransh Jagota</name>
             <email>mailtoshubhransh@gmail.com</email>
         </developer>
+        <developer>
+            <id>riti-vakil</id>
+            <name>Riti Vakil</name>
+            <email>ritivakil3@gmail.com</email>
+        </developer>
     </developers>
 
     <properties>
