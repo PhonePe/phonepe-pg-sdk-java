@@ -69,14 +69,18 @@
             </roles>
         </developer>
         <developer>
-            <id>fireddd</id>
-            <name>Shubhransh Jagota</name>
-            <email>mailtoshubhransh@gmail.com</email>
-        </developer>
-        <developer>
             <id>sgoel1220</id>
             <name>Shubham Goel</name>
             <email>sgoel1220@gmail.com</email>
+            <roles>
+                <role>developer</role>
+                <role>owner</role>
+            </roles>
+        </developer>
+        <developer>
+            <id>fireddd</id>
+            <name>Shubhransh Jagota</name>
+            <email>mailtoshubhransh@gmail.com</email>
         </developer>
         <developer>
             <id>riti-vakil</id>
