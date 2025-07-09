@@ -1,6 +1,6 @@
 # PhonePe B2B Payment Gateway SDK for Java
 
-[![Maven Central](https://img.shields.io/badge/Maven%20Central-v2.1.5-blue)](https://maven-badges.herokuapp.com/maven-central/com.phonepe/pg-sdk-java)
+[![Maven Central](https://img.shields.io/badge/Maven%20Central-v2.1.6-blue)](https://maven-badges.herokuapp.com/maven-central/com.phonepe/pg-sdk-java)
 ![Java](https://img.shields.io/badge/Java-17%2B-orange)
 [![License](https://img.shields.io/badge/License-Apache%202.0-green.svg)](LICENSE)
 
@@ -17,6 +17,7 @@ A Java library for seamless integration with PhonePe Payment Gateway APIs.
   - [Checking Order Status](#checking-order-status)
   - [Handling Callbacks](#handling-callbacks)
   - [SDK Order Integration](#sdk-order-integration)
+- [Contributing](#contributing)
 - [Documentation](#documentation)
 - [License](#license)
 
@@ -35,7 +36,7 @@ Add the dependency to your project's POM file:
 <dependency>
     <groupId>com.phonepe</groupId>
     <artifactId>pg-sdk-java</artifactId>
-    <version>2.1.5</version>
+    <version>2.1.6</version>
 </dependency>
 ```
 
@@ -45,7 +46,7 @@ Add the following to your project's build.gradle file:
 
 ```gradle
 dependencies {
-    implementation 'com.phonepe:pg-sdk-java:2.1.5'
+    implementation 'com.phonepe:pg-sdk-java:2.1.6'
 }
 ```
 
@@ -187,6 +188,18 @@ For detailed API documentation, advanced features, and integration options:
 - [Standard Checkout Documentation](https://developer.phonepe.com/v1/reference/java-sdk-standard-checkout)
 - [Subscription Documentation](https://developer.phonepe.com/v1/reference/java-sdk-introduction-autopay)
 - [PhonePe Developer Portal](https://developer.phonepe.com/)
+
+## Contributing
+
+Contributions to PG Java SDK are welcome! Here's how you can contribute:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+Please ensure your code follows the project's coding standards and includes appropriate tests.
 
 ## License
 
