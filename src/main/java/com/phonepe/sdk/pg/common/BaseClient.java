@@ -36,6 +36,8 @@ import lombok.Getter;
 import lombok.SneakyThrows;
 import okhttp3.OkHttpClient;
 
+import javax.validation.constraints.Max;
+
 @Getter
 public abstract class BaseClient {
 
@@ -47,6 +49,7 @@ public abstract class BaseClient {
     protected EventPublisherFactory eventPublisherFactory;
     protected EventPublisher eventPublisher;
     private boolean shouldPublishEvents;
+    protected List<HttpHeaderPair> headers;
 
     protected BaseClient(
             String clientId,
@@ -56,6 +59,7 @@ public abstract class BaseClient {
             boolean shouldPublishEvents) {
         this.okHttpClient = new OkHttpClient();
         this.objectMapper = new ObjectMapper();
+        this.headers = new List<HttpHeaderPair>();
         this.env = env;
         this.credentialConfig =
                 CredentialConfig.builder()
@@ -76,6 +80,7 @@ public abstract class BaseClient {
                         this.env,
                         this.eventPublisher);
         this.eventPublisher.startPublishingEvents(tokenService::getAuthToken);
+        this.headers = prepareHeaders();
     }
 
     @SneakyThrows
@@ -93,7 +98,7 @@ public abstract class BaseClient {
                         .objectMapper(this.objectMapper)
                         .responseTypeReference(responseTypeReference)
                         .methodName(methodName)
-                        .headers(addAuthHeader(httpHeaders))
+                        .headers(this.headers)
                         .requestData(requestData)
                         .hostURL(this.env.getPgHostUrl())
                         .encodingType(APPLICATION_JSON)
@@ -109,14 +114,30 @@ public abstract class BaseClient {
         }
     }
 
-    @SneakyThrows
-    protected List<HttpHeaderPair> addAuthHeader(List<HttpHeaderPair> headers) {
+    protected void prepareHeaders() {
         headers.add(
                 HttpHeaderPair.builder()
                         .key(Headers.OAUTH_AUTHORIZATION)
                         .value(tokenService.getAuthToken())
                         .build());
-
-        return headers;
+        headers.add(
+                HttpHeaderPair.builder().key(Headers.CONTENT_TYPE).value(APPLICATION_JSON).build());
+        headers.add(
+                HttpHeaderPair.builder().key(Headers.SOURCE).value(Headers.INTEGRATION).build());
+        headers.add(
+                HttpHeaderPair.builder()
+                        .key(Headers.SOURCE_VERSION)
+                        .value(Headers.API_VERSION)
+                        .build());
+        headers.add(
+                HttpHeaderPair.builder()
+                        .key(Headers.SOURCE_PLATFORM)
+                        .value(Headers.SDK_TYPE)
+                        .build());
+        headers.add(
+                HttpHeaderPair.builder()
+                        .key(Headers.SOURCE_PLATFORM_VERSION)
+                        .value(Headers.SDK_VERSION)
+                        .build());
     }
 }

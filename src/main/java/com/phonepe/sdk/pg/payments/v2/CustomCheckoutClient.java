@@ -48,7 +48,6 @@ import lombok.SneakyThrows;
 public class CustomCheckoutClient extends BaseClient {
 
     private static CustomCheckoutClient client;
-    private List<HttpHeaderPair> headers;
 
     private CustomCheckoutClient(
             final String clientId,
@@ -60,7 +59,7 @@ public class CustomCheckoutClient extends BaseClient {
         this.eventPublisher.send(
                 BaseEvent.buildInitClientEvent(
                         FlowType.PG, EventType.CUSTOM_CHECKOUT_CLIENT_INITIALIZED));
-        this.prepareHeaders();
+        this.addClientSpecificHeaders();
     }
 
     /**
@@ -149,8 +148,7 @@ public class CustomCheckoutClient extends BaseClient {
                             pgPaymentRequest,
                             url,
                             null,
-                            new TypeReference<PgPaymentResponse>() {},
-                            headers);
+                            new TypeReference<PgPaymentResponse>() {});
             this.eventPublisher.send(
                     BaseEvent.buildCustomCheckoutPayEvent(
                             EventState.SUCCESS, pgPaymentRequest, url, EventType.PAY_SUCCESS));
@@ -198,8 +196,7 @@ public class CustomCheckoutClient extends BaseClient {
                             Collections.singletonMap(
                                     CustomCheckoutConstants.ORDER_DETAILS,
                                     Boolean.toString(details)),
-                            new TypeReference<OrderStatusResponse>() {},
-                            headers);
+                            new TypeReference<OrderStatusResponse>() {});
             this.eventPublisher.send(
                     BaseEvent.buildOrderStatusEvent(
                             EventState.SUCCESS,
@@ -237,8 +234,7 @@ public class CustomCheckoutClient extends BaseClient {
                             refundRequest,
                             url,
                             null,
-                            new TypeReference<RefundResponse>() {},
-                            headers);
+                            new TypeReference<RefundResponse>() {});
             this.eventPublisher.send(
                     BaseEvent.buildRefundEvent(
                             EventState.SUCCESS,
@@ -276,8 +272,7 @@ public class CustomCheckoutClient extends BaseClient {
                             createSdkOrderRequest,
                             url,
                             null,
-                            new TypeReference<CreateSdkOrderResponse>() {},
-                            headers);
+                            new TypeReference<CreateSdkOrderResponse>() {});
             this.eventPublisher.send(
                     BaseEvent.buildCreateSdkOrderEvent(
                             EventState.SUCCESS,
@@ -317,8 +312,7 @@ public class CustomCheckoutClient extends BaseClient {
                             null,
                             url,
                             null,
-                            new TypeReference<OrderStatusResponse>() {},
-                            headers);
+                            new TypeReference<OrderStatusResponse>() {});
             this.eventPublisher.send(
                     BaseEvent.buildTransactionStatusEvent(
                             EventState.SUCCESS,
@@ -357,8 +351,7 @@ public class CustomCheckoutClient extends BaseClient {
                             null,
                             url,
                             null,
-                            new TypeReference<RefundStatusResponse>() {},
-                            headers);
+                            new TypeReference<RefundStatusResponse>() {});
             this.eventPublisher.send(
                     BaseEvent.buildRefundStatusEvent(
                             EventState.SUCCESS,
@@ -410,26 +403,11 @@ public class CustomCheckoutClient extends BaseClient {
     }
 
     /** Prepares the headers for CustomCheckout Client */
-    private void prepareHeaders() {
-        this.headers = new ArrayList<>();
-        headers.add(
-                HttpHeaderPair.builder().key(Headers.CONTENT_TYPE).value(APPLICATION_JSON).build());
-        headers.add(
-                HttpHeaderPair.builder().key(Headers.SOURCE).value(Headers.INTEGRATION).build());
+    private void addClientSpecificHeaders() {
         headers.add(
                 HttpHeaderPair.builder()
                         .key(Headers.SOURCE_VERSION)
                         .value(Headers.API_VERSION)
-                        .build());
-        headers.add(
-                HttpHeaderPair.builder()
-                        .key(Headers.SOURCE_PLATFORM)
-                        .value(Headers.SDK_TYPE)
-                        .build());
-        headers.add(
-                HttpHeaderPair.builder()
-                        .key(Headers.SOURCE_PLATFORM_VERSION)
-                        .value(Headers.SDK_VERSION)
                         .build());
     }
 }

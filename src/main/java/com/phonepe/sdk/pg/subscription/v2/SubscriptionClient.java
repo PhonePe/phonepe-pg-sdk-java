@@ -59,7 +59,7 @@ public class SubscriptionClient extends BaseClient {
         this.eventPublisher.send(
                 BaseEvent.buildInitClientEvent(
                         FlowType.SUBSCRIPTION, EventType.SUBSCRIPTION_CLIENT_INITIALIZED));
-        this.prepareHeaders();
+        this.addClientSpecificHeaders();
     }
 
     /**
@@ -151,8 +151,7 @@ public class SubscriptionClient extends BaseClient {
                             request,
                             url,
                             null,
-                            new TypeReference<PgPaymentResponse>() {},
-                            headers);
+                            new TypeReference<PgPaymentResponse>() {});
             this.eventPublisher.send(
                     BaseEvent.buildSubscriptionSetupEvent(
                             EventState.SUCCESS, request, url, EventType.SETUP_SUCCESS));
@@ -181,8 +180,7 @@ public class SubscriptionClient extends BaseClient {
                             request,
                             url,
                             null,
-                            new TypeReference<PgPaymentResponse>() {},
-                            headers);
+                            new TypeReference<PgPaymentResponse>() {});
             this.eventPublisher.send(
                     BaseEvent.buildSubscriptionNotifyEvent(
                             EventState.SUCCESS, request, url, EventType.NOTIFY_SUCCESS));
@@ -212,8 +210,7 @@ public class SubscriptionClient extends BaseClient {
                             request,
                             url,
                             null,
-                            new TypeReference<SubscriptionRedeemResponseV2>() {},
-                            headers);
+                            new TypeReference<SubscriptionRedeemResponseV2>() {});
             this.eventPublisher.send(
                     BaseEvent.buildSubscriptionRedeemEvent(
                             EventState.SUCCESS, merchantOrderId, url, EventType.REDEEM_SUCCESS));
@@ -249,8 +246,7 @@ public class SubscriptionClient extends BaseClient {
                             null,
                             url,
                             null,
-                            new TypeReference<SubscriptionStatusResponseV2>() {},
-                            headers);
+                            new TypeReference<SubscriptionStatusResponseV2>() {});
             this.eventPublisher.send(
                     BaseEvent.buildSubscriptionStatusEvent(
                             EventState.SUCCESS,
@@ -286,8 +282,7 @@ public class SubscriptionClient extends BaseClient {
                             null,
                             url,
                             null,
-                            new TypeReference<OrderStatusResponse>() {},
-                            headers);
+                            new TypeReference<OrderStatusResponse>() {});
             this.eventPublisher.send(
                     BaseEvent.buildOrderStatusEvent(
                             EventState.SUCCESS,
@@ -356,8 +351,7 @@ public class SubscriptionClient extends BaseClient {
                             null,
                             url,
                             null,
-                            new TypeReference<OrderStatusResponse>() {},
-                            headers);
+                            new TypeReference<OrderStatusResponse>() {});
             this.eventPublisher.send(
                     BaseEvent.buildTransactionStatusEvent(
                             EventState.SUCCESS,
@@ -395,8 +389,7 @@ public class SubscriptionClient extends BaseClient {
                             refundRequest,
                             url,
                             null,
-                            new TypeReference<RefundResponse>() {},
-                            headers);
+                            new TypeReference<RefundResponse>() {});
             this.eventPublisher.send(
                     BaseEvent.buildRefundEvent(
                             EventState.SUCCESS,
@@ -435,8 +428,7 @@ public class SubscriptionClient extends BaseClient {
                             null,
                             url,
                             null,
-                            new TypeReference<RefundStatusResponse>() {},
-                            headers);
+                            new TypeReference<RefundStatusResponse>() {});
             this.eventPublisher.send(
                     BaseEvent.buildRefundStatusEvent(
                             EventState.SUCCESS,
@@ -488,26 +480,11 @@ public class SubscriptionClient extends BaseClient {
     }
 
     /** Prepares the headers for Subscription Client */
-    private void prepareHeaders() {
-        this.headers = new ArrayList<>();
-        headers.add(
-                HttpHeaderPair.builder().key(Headers.CONTENT_TYPE).value(APPLICATION_JSON).build());
-        headers.add(
-                HttpHeaderPair.builder().key(Headers.SOURCE).value(Headers.INTEGRATION).build());
+    private void addClientSpecificHeaders() {
         headers.add(
                 HttpHeaderPair.builder()
                         .key(Headers.SOURCE_VERSION)
                         .value(Headers.SUBSCRIPTION_API_VERSION)
-                        .build());
-        headers.add(
-                HttpHeaderPair.builder()
-                        .key(Headers.SOURCE_PLATFORM)
-                        .value(Headers.SDK_TYPE)
-                        .build());
-        headers.add(
-                HttpHeaderPair.builder()
-                        .key(Headers.SOURCE_PLATFORM_VERSION)
-                        .value(Headers.SDK_VERSION)
                         .build());
     }
 }
