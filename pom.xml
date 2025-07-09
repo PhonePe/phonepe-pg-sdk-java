@@ -92,6 +92,11 @@
             <name>Riti Vakil</name>
             <email>ritivakil3@gmail.com</email>
         </developer>
+        <developer>
+            <id>Aditi-Billore</id>
+            <name>Aditi Billore</name>
+            <email>aditi.billore3@gmail.com</email>
+        </developer>
     </developers>
 
     <properties>
