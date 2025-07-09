@@ -23,11 +23,6 @@
         <url>https://github.com/PhonePe/phonepe-pg-sdk-java/issues</url>
     </issueManagement>
 
-    <ciManagement>
-        <system>Travis CI</system>
-        <url>https://travis-ci.org/PhonePe/phonepe-pg-sdk-java</url>
-    </ciManagement>
-
     <repositories>
         <repository>
             <id>clojars.org</id>
@@ -81,6 +76,10 @@
             <id>fireddd</id>
             <name>Shubhransh Jagota</name>
             <email>mailtoshubhransh@gmail.com</email>
+            <roles>
+                <role>developer</role>
+                <role>owner</role>
+            </roles>
         </developer>
         <developer>
             <id>Khushal2507</id>
