@@ -81,6 +81,10 @@
             <id>fireddd</id>
             <name>Shubhransh Jagota</name>
             <email>mailtoshubhransh@gmail.com</email>
+            <roles>
+                <role>developer</role>
+                <role>owner</role>
+            </roles>
         </developer>
         <developer>
             <id>riti-vakil</id>
