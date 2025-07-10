@@ -18,13 +18,15 @@ package com.phonepe.sdk.pg.common.models.request.paymentmodeconstraints;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.phonepe.sdk.pg.common.models.PgV2InstrumentType;
 import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
-@EqualsAndHashCode(callSuper = true)
+@Getter
+@Setter
+@JsonTypeName("NET_BANKING")
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(Include.NON_NULL)
 public class NetBankingPaymentModeConstraint extends PaymentModeConstraint {
