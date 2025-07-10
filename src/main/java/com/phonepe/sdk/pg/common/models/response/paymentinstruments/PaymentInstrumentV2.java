@@ -41,13 +41,4 @@ public abstract class PaymentInstrumentV2 {
     public PaymentInstrumentV2(PaymentInstrumentType type) {
         this.type = type;
     }
-
-    public enum PaymentInstrumentType {
-        WALLET,
-        EGV,
-        ACCOUNT,
-        CREDIT_CARD,
-        DEBIT_CARD,
-        NET_BANKING
-    }
 }
