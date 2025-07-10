@@ -131,7 +131,7 @@
         <sonar.language>java</sonar.language>
         <sonar.qualitygate.wait>true</sonar.qualitygate.wait>
         <jacoco.maven.plugin.version>0.8.7</jacoco.maven.plugin.version>
-        <maven.sonar.plugin.version>3.9.1.2184</maven.sonar.plugin.version>
+        <maven.sonar.plugin.version>5.1.0.4751</maven.sonar.plugin.version>
     </properties>
 
     <build>
