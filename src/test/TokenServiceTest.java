@@ -47,7 +47,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import wiremock.org.apache.http.HttpStatus;
 
-public class TokenServiceTest extends BaseSetup {
+class TokenServiceTest extends BaseSetup {
 
     protected String formDataToString(FormBody formBody) {
         StringBuilder builder = new StringBuilder();

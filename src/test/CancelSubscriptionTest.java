@@ -23,7 +23,7 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 import wiremock.org.apache.http.HttpStatus;
 
-public class CancelSubscriptionTest extends BaseSetupWithOAuth {
+class CancelSubscriptionTest extends BaseSetupWithOAuth {
 
     @Test
     void testCancelSubscription() {
