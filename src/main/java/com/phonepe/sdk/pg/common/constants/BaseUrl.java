@@ -31,7 +31,7 @@ public class BaseUrl {
 
     public static final String PRODUCTION_EVENTS_HOST_URL =
             "https://api.phonepe.com/apis/pg-ingestion";
-    public static final String SANDBOX_EVENTS_HOST_URL = "http://locahost";
+    public static final String SANDBOX_EVENTS_HOST_URL = "http://localhost";
 
     public static final String TESTING_URL = "http://localhost:30419";
 }
