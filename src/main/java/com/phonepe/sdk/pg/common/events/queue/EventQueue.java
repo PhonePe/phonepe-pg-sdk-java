@@ -19,22 +19,13 @@ import com.phonepe.sdk.pg.common.events.models.BaseEvent;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public interface EventQueue {
+    void add(BaseEvent data);
 
-    default void add(BaseEvent data) {}
+    boolean isEmpty();
 
-    default boolean isEmpty() {
-        return true;
-    }
+    int size();
 
-    default int size() {
-        return 0;
-    }
+    BaseEvent poll();
 
-    default BaseEvent poll() {
-        return null;
-    }
-
-    default ConcurrentLinkedQueue<BaseEvent> getQueue() {
-        return null;
-    }
+    ConcurrentLinkedQueue<BaseEvent> getQueue();
 }

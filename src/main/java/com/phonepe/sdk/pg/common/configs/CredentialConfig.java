@@ -31,5 +31,5 @@ public class CredentialConfig {
 
     @NotBlank private String clientSecret;
 
-    @NotBlank private Integer clientVersion;
+    private int clientVersion;
 }
