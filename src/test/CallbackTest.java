@@ -39,7 +39,7 @@ import java.util.Arrays;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class CallbackTest extends BaseSetup {
+class CallbackTest extends BaseSetup {
 
     @Test
     void test_ENTIRE_PG_ORDER_COMPLETED() {

@@ -28,7 +28,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import wiremock.org.apache.http.HttpStatus;
 
-public class CreateOrderTest extends BaseSetupWithOAuth {
+class CreateOrderTest extends BaseSetupWithOAuth {
 
     @Test
     void testCreateOrder() {

@@ -43,7 +43,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import wiremock.org.apache.http.HttpStatus;
 
-public class PayTest extends BaseSetupWithOAuth {
+class PayTest extends BaseSetupWithOAuth {
 
     @SneakyThrows
     @Test

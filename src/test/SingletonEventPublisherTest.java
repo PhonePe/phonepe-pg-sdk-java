@@ -20,7 +20,7 @@ import okhttp3.OkHttpClient;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class SingletonEventPublisherTest {
+class SingletonEventPublisherTest {
 
     @Test
     void testEventPublisherWithDifferentClients() {

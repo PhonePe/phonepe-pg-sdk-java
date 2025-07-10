@@ -29,7 +29,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import wiremock.org.apache.http.HttpStatus;
 
-public class SubscriptionSetupTest extends BaseSetupWithOAuth {
+class SubscriptionSetupTest extends BaseSetupWithOAuth {
 
     @Test
     void testSetupViaUpiIntentSuccess() {

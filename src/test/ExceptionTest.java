@@ -24,7 +24,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import wiremock.org.apache.http.HttpStatus;
 
-public class ExceptionTest extends BaseSetupWithOAuth {
+class ExceptionTest extends BaseSetupWithOAuth {
 
     @Test
     void testR999() {

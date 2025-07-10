@@ -30,7 +30,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import wiremock.org.apache.http.HttpStatus;
 
-public class SubscriptionNotifyTest extends BaseSetupWithOAuth {
+class SubscriptionNotifyTest extends BaseSetupWithOAuth {
 
     @Test
     void testNotifySuccess() {
