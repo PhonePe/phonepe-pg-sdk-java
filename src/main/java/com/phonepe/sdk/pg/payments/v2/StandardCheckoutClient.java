@@ -61,7 +61,7 @@ public class StandardCheckoutClient extends BaseClient {
         this.eventPublisher.send(
                 BaseEvent.buildInitClientEvent(
                         FlowType.PG_CHECKOUT, EventType.STANDARD_CHECKOUT_CLIENT_INITIALIZED));
-        this.prepareHeaders();
+        this.addClientSpecificHeaders();
     }
 
     /**
@@ -151,8 +151,7 @@ public class StandardCheckoutClient extends BaseClient {
                             standardCheckoutPayRequest,
                             url,
                             null,
-                            new TypeReference<StandardCheckoutPayResponse>() {},
-                            headers);
+                            new TypeReference<StandardCheckoutPayResponse>() {});
             this.eventPublisher.send(
                     BaseEvent.buildStandardCheckoutPayEvent(
                             EventState.SUCCESS,
@@ -204,8 +203,7 @@ public class StandardCheckoutClient extends BaseClient {
                             Collections.singletonMap(
                                     StandardCheckoutConstants.ORDER_DETAILS,
                                     Boolean.toString(details)),
-                            new TypeReference<OrderStatusResponse>() {},
-                            headers);
+                            new TypeReference<OrderStatusResponse>() {});
             this.eventPublisher.send(
                     BaseEvent.buildOrderStatusEvent(
                             EventState.SUCCESS,
@@ -243,8 +241,7 @@ public class StandardCheckoutClient extends BaseClient {
                             refundRequest,
                             url,
                             null,
-                            new TypeReference<RefundResponse>() {},
-                            headers);
+                            new TypeReference<RefundResponse>() {});
             this.eventPublisher.send(
                     BaseEvent.buildRefundEvent(
                             EventState.SUCCESS,
@@ -282,8 +279,7 @@ public class StandardCheckoutClient extends BaseClient {
                             createSdkOrderRequest,
                             url,
                             null,
-                            new TypeReference<CreateSdkOrderResponse>() {},
-                            headers);
+                            new TypeReference<CreateSdkOrderResponse>() {});
             this.eventPublisher.send(
                     BaseEvent.buildCreateSdkOrderEvent(
                             EventState.SUCCESS,
@@ -322,8 +318,7 @@ public class StandardCheckoutClient extends BaseClient {
                             null,
                             url,
                             null,
-                            new TypeReference<OrderStatusResponse>() {},
-                            headers);
+                            new TypeReference<OrderStatusResponse>() {});
             this.eventPublisher.send(
                     BaseEvent.buildTransactionStatusEvent(
                             EventState.SUCCESS,
@@ -362,8 +357,7 @@ public class StandardCheckoutClient extends BaseClient {
                             null,
                             url,
                             null,
-                            new TypeReference<RefundStatusResponse>() {},
-                            headers);
+                            new TypeReference<RefundStatusResponse>() {});
             this.eventPublisher.send(
                     BaseEvent.buildRefundStatusEvent(
                             EventState.SUCCESS,
@@ -416,26 +410,11 @@ public class StandardCheckoutClient extends BaseClient {
     }
 
     /** Prepares the headers for StandardCheckout Client */
-    private void prepareHeaders() {
-        this.headers = new ArrayList<>();
-        headers.add(
-                HttpHeaderPair.builder().key(Headers.CONTENT_TYPE).value(APPLICATION_JSON).build());
-        headers.add(
-                HttpHeaderPair.builder().key(Headers.SOURCE).value(Headers.INTEGRATION).build());
+    private void addClientSpecificHeaders() {
         headers.add(
                 HttpHeaderPair.builder()
                         .key(Headers.SOURCE_VERSION)
                         .value(Headers.API_VERSION)
-                        .build());
-        headers.add(
-                HttpHeaderPair.builder()
-                        .key(Headers.SOURCE_PLATFORM)
-                        .value(Headers.SDK_TYPE)
-                        .build());
-        headers.add(
-                HttpHeaderPair.builder()
-                        .key(Headers.SOURCE_PLATFORM_VERSION)
-                        .value(Headers.SDK_VERSION)
                         .build());
     }
 }
