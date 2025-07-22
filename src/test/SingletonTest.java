@@ -45,16 +45,10 @@ public class SingletonTest extends BaseSetupWithOAuth {
     void testSingletonWithDiffParameters() {
         StandardCheckoutClient standardCheckoutClient1 =
                 StandardCheckoutClient.getInstance(clientId, clientSecret, clientVersion, env);
-        PhonePeException phonePeException =
-                assertThrows(
-                        PhonePeException.class,
-                        () ->
-                                StandardCheckoutClient.getInstance(
-                                        "clientId2", "clientSecret2", 1, Env.TEST));
-        Assertions.assertEquals(
-                phonePeException.getMessage(),
-                "Cannot re-initialize StandardCheckoutClient. Please utilize the existing Client"
-                        + " object with required credentials");
+        StandardCheckoutClient standardCheckoutClient2 = StandardCheckoutClient.getInstance(
+                "clientId2", "clientSecret2", 1, Env.TEST);
+        Assertions.assertNotNull(standardCheckoutClient2);
+        Assertions.assertNotEquals(standardCheckoutClient1, standardCheckoutClient2);
     }
 
     @Test

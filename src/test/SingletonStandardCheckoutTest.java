@@ -16,15 +16,12 @@
 import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.phonepe.sdk.pg.Env;
 import com.phonepe.sdk.pg.common.constants.Headers;
-import com.phonepe.sdk.pg.common.exception.PhonePeException;
 import com.phonepe.sdk.pg.common.tokenhandler.OAuthResponse;
-import com.phonepe.sdk.pg.common.tokenhandler.TokenService;
 import com.phonepe.sdk.pg.payments.v2.StandardCheckoutClient;
 import com.phonepe.sdk.pg.payments.v2.models.request.StandardCheckoutPayRequest;
 import com.phonepe.sdk.pg.payments.v2.models.response.StandardCheckoutPayResponse;
@@ -59,22 +56,17 @@ public class SingletonStandardCheckoutTest extends BaseSetup {
     void testSingletonWithDiffParameters() {
         StandardCheckoutClient standardCheckoutClient1 =
                 StandardCheckoutClient.getInstance(clientId, clientSecret, clientVersion, env);
-        PhonePeException phonePeException =
-                assertThrows(
-                        PhonePeException.class,
-                        () ->
-                                StandardCheckoutClient.getInstance(
-                                        "clientId2", "clientSecret2", 1, Env.TEST));
-        Assertions.assertEquals(
-                phonePeException.getMessage(),
-                "Cannot re-initialize StandardCheckoutClient. Please utilize the existing Client"
-                        + " object with required credentials");
+        StandardCheckoutClient standardCheckoutClient2 =
+                StandardCheckoutClient.getInstance("clientId2", "clientSecret2", 1, Env.TEST);
+        Assertions.assertNotEquals(standardCheckoutClient1, standardCheckoutClient2);
+        Assertions.assertNotNull(standardCheckoutClient1);
+        Assertions.assertNotNull(standardCheckoutClient2);
     }
 
     @Test
-    void testMultipleClientSingleAuthCall() {
+    void testMultipleSameClientSingleAuthCall() {
         wireMockServer.resetRequests();
-        TokenService.setOAuthResponse(null);
+        standardCheckoutClient.getTokenService().setOAuthResponse(null);
         String redirectUrl = "https://redirectUrl.com";
         StandardCheckoutPayRequest standardCheckoutPayRequest =
                 StandardCheckoutPayRequest.builder()
@@ -135,6 +127,94 @@ public class SingletonStandardCheckoutTest extends BaseSetup {
         actual = standardCheckoutClient4.pay(standardCheckoutPayRequest);
 
         wireMockServer.verify(1, postRequestedFor(urlPathMatching(authUrl)));
+    }
+
+    @Test
+    void testMultipleDifferentClientSingleAuthCall() {
+        String clientId = "clientId_for_auth1";
+        String clientSecret = "clientSecret_for_auth1";
+        String clientId1 = "clientId_for_auth2";
+        String clientSecret1 = "clientSecret_for_auth2";
+        int clientVersion = 1;
+
+        FormBody formBody =
+                new FormBody.Builder()
+                        .add("client_id", clientId)
+                        .add("client_secret", clientSecret)
+                        .add("grant_type", "client_credentials")
+                        .add("client_version", String.valueOf(clientVersion))
+                        .build();
+
+        FormBody formBody1 =
+                new FormBody.Builder()
+                        .add("client_id", clientId1)
+                        .add("client_secret", clientSecret1)
+                        .add("grant_type", "client_credentials")
+                        .add("client_version", String.valueOf(clientVersion))
+                        .build();
+
+        wireMockServer.resetRequests();
+        String redirectUrl = "https://redirectUrl.com";
+        StandardCheckoutPayRequest standardCheckoutPayRequest =
+                StandardCheckoutPayRequest.builder()
+                        .merchantOrderId("merchantOrderId")
+                        .amount(100)
+                        .redirectUrl(redirectUrl)
+                        .build();
+
+        StandardCheckoutPayResponse standardCheckoutResponse =
+                StandardCheckoutPayResponse.builder()
+                        .orderId(String.valueOf(java.time.Instant.now().getEpochSecond()))
+                        .state("PENDING")
+                        .expireAt(java.time.Instant.now().getEpochSecond())
+                        .redirectUrl("https://google.com")
+                        .build();
+
+        long currentTime = java.time.Instant.now().getEpochSecond();
+        OAuthResponse oAuthResponse =
+                OAuthResponse.builder()
+                        .accessToken("accessToken")
+                        .encryptedAccessToken("encryptedAccessToken")
+                        .expiresAt(currentTime + 200)
+                        .expiresIn(453543)
+                        .issuedAt(currentTime)
+                        .refreshToken("refreshToken")
+                        .tokenType("O-Bearer")
+                        .sessionExpiresAt(currentTime + 200)
+                        .build();
+
+        StandardCheckoutClient standardCheckoutClient1 =
+                StandardCheckoutClient.getInstance(clientId, clientSecret, clientVersion, env);
+        StandardCheckoutClient standardCheckoutClient2 =
+                StandardCheckoutClient.getInstance(clientId1, clientSecret1, clientVersion, env);
+
+        final String url = StandardCheckoutConstants.PAY_API;
+        addStubForPostRequest(
+                url,
+                getHeaders(),
+                standardCheckoutPayRequest,
+                HttpStatus.SC_OK,
+                Maps.newHashMap(),
+                standardCheckoutResponse);
+        addStubForFormDataPostRequest(
+                authUrl,
+                getAuthHeaders(),
+                formBody,
+                HttpStatus.SC_OK,
+                Maps.newHashMap(),
+                oAuthResponse);
+        addStubForFormDataPostRequest(
+                authUrl,
+                getAuthHeaders(),
+                formBody1,
+                HttpStatus.SC_OK,
+                Maps.newHashMap(),
+                oAuthResponse);
+        StandardCheckoutPayResponse actual =
+                standardCheckoutClient1.pay(standardCheckoutPayRequest);
+        actual = standardCheckoutClient2.pay(standardCheckoutPayRequest);
+
+        wireMockServer.verify(2, postRequestedFor(urlPathMatching(authUrl)));
     }
 
     public Map<String, String> getHeaders() {

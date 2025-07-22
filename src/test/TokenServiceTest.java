@@ -71,7 +71,7 @@ public class TokenServiceTest extends BaseSetup {
     TokenService spyTokenService = spy(tokenService);
 
     @Test
-    void testFailFirstFetch() throws JsonProcessingException, InterruptedException {
+    void testFailFirstFetch() throws JsonProcessingException {
         PhonePeResponse phonePeResponse =
                 PhonePeResponse.builder()
                         .code("INVALID_CLIENT")
@@ -81,7 +81,7 @@ public class TokenServiceTest extends BaseSetup {
                                 Collections.singletonMap(
                                         "errorDescription", "Client Authentication Failure"))
                         .build();
-        TokenService.setOAuthResponse(null);
+        standardCheckoutClient.getTokenService().setOAuthResponse(null);
         wireMockServer.stubFor(
                 post(urlPathMatching(authUrl))
                         .willReturn(
@@ -115,7 +115,7 @@ public class TokenServiceTest extends BaseSetup {
 
     @Test
     void testTokenRefresh() {
-        TokenService.setOAuthResponse(null);
+        standardCheckoutClient.getTokenService().setOAuthResponse(null);
         OAuthResponse oAuthResponse =
                 OAuthResponse.builder()
                         .accessToken("accessToken")
@@ -138,7 +138,7 @@ public class TokenServiceTest extends BaseSetup {
 
     @Test
     void testTokenUseCached() {
-        TokenService.setOAuthResponse(null);
+        standardCheckoutClient.getTokenService().setOAuthResponse(null);
         OAuthResponse oAuthResponse =
                 OAuthResponse.builder()
                         .accessToken("accessToken")
@@ -163,7 +163,7 @@ public class TokenServiceTest extends BaseSetup {
 
     @Test
     void testTokenCachedUseWithCurrentTime() {
-        TokenService.setOAuthResponse(null);
+        standardCheckoutClient.getTokenService().setOAuthResponse(null);
         long currentTime = java.time.Instant.now().getEpochSecond();
         long twoSecMoreCur = currentTime + 2;
         OAuthResponse oAuthResponse =
@@ -205,7 +205,7 @@ public class TokenServiceTest extends BaseSetup {
 
     @Test
     void testUseCachedThenInValidSoFetch() throws InterruptedException, JsonProcessingException {
-        TokenService.setOAuthResponse(null);
+        standardCheckoutClient.getTokenService().setOAuthResponse(null);
         long currentTime = java.time.Instant.now().getEpochSecond();
         long twoSecMoreCur = currentTime + 2;
         long fourSecMoreCur = currentTime + 4;
@@ -254,7 +254,7 @@ public class TokenServiceTest extends BaseSetup {
     @Test
     void testWhenUnauthorizedTokenForPay() {
         wireMockServer.resetRequests();
-        TokenService.setOAuthResponse(null);
+        standardCheckoutClient.getTokenService().setOAuthResponse(null);
         final String url = StandardCheckoutConstants.PAY_API;
 
         StandardCheckoutPayRequest standardCheckoutPayRequest =
@@ -327,8 +327,7 @@ public class TokenServiceTest extends BaseSetup {
     @Test
     void testWhenUnauthorizedTokenForOrder() throws JsonProcessingException {
         wireMockServer.resetRequests();
-
-        TokenService.setOAuthResponse(null);
+        standardCheckoutClient.getTokenService().setOAuthResponse(null);
         String url = String.format(StandardCheckoutConstants.ORDER_STATUS_API, merchantOrderId);
 
         PhonePeResponse phonePeResponse =
@@ -388,7 +387,7 @@ public class TokenServiceTest extends BaseSetup {
     @Test
     void testFirstFetchWorksSecondFetchFailsSendsBackOldToken() throws JsonProcessingException {
         wireMockServer.resetRequests();
-        TokenService.setOAuthResponse(null);
+        standardCheckoutClient.getTokenService().setOAuthResponse(null);
         String requestBody = formDataToString(formBody);
         wireMockServer.stubFor(
                 post(urlPathMatching(authUrl))

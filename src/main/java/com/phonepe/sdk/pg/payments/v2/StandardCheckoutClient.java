@@ -42,13 +42,14 @@ import com.phonepe.sdk.pg.payments.v2.standardcheckout.StandardCheckoutConstants
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 import lombok.SneakyThrows;
 
 /** The StandardCheckout client class provides methods for interacting with the PhonePe APIs. */
 public class StandardCheckoutClient extends BaseClient {
 
-    private static StandardCheckoutClient client;
+    private static final ConcurrentHashMap<String, StandardCheckoutClient> cachedInstances =
+            new ConcurrentHashMap<>();
     private List<HttpHeaderPair> headers;
 
     private StandardCheckoutClient(
@@ -74,7 +75,7 @@ public class StandardCheckoutClient extends BaseClient {
      *     production environment.
      * @return StandardCheckoutClient object for interacting with the PhonePe APIs
      */
-    public static synchronized StandardCheckoutClient getInstance(
+    public static StandardCheckoutClient getInstance(
             final String clientId,
             final String clientSecret,
             final Integer clientVersion,
@@ -94,44 +95,32 @@ public class StandardCheckoutClient extends BaseClient {
      *     experience
      * @return StandardCheckoutClient object for interacting with the PhonePe APIs
      */
-    public static synchronized StandardCheckoutClient getInstance(
+    private static StandardCheckoutClient getInstance(
             final String clientId,
             final String clientSecret,
             final Integer clientVersion,
             final Env env,
             boolean shouldPublishEvents)
             throws PhonePeException {
-        shouldPublishEvents = shouldPublishEvents && env == Env.PRODUCTION;
-        if (Objects.isNull(client)) {
-            client =
-                    new StandardCheckoutClient(
-                            clientId, clientSecret, clientVersion, env, shouldPublishEvents);
-            return client;
-        }
-
-        String requestedClientSHA =
+        final boolean finalShouldPublishEvents = shouldPublishEvents && env == Env.PRODUCTION;
+        final String requestedClientSHA =
                 CommonUtils.calculateSha256(
                         clientId,
                         clientSecret,
                         clientVersion,
                         env,
-                        shouldPublishEvents,
-                        FlowType.PG_CHECKOUT);
-        String cachedClientSHA =
-                CommonUtils.calculateSha256(
-                        client.getCredentialConfig().getClientId(),
-                        client.getCredentialConfig().getClientSecret(),
-                        client.getCredentialConfig().getClientVersion(),
-                        client.getEnv(),
-                        client.isShouldPublishEvents(),
+                        finalShouldPublishEvents,
                         FlowType.PG_CHECKOUT);
 
-        if (Objects.equals(requestedClientSHA, cachedClientSHA)) {
-            return client;
-        }
-        throw new PhonePeException(
-                "Cannot re-initialize StandardCheckoutClient. Please utilize the existing Client"
-                        + " object with required credentials");
+        return cachedInstances.computeIfAbsent(
+                requestedClientSHA,
+                key ->
+                        new StandardCheckoutClient(
+                                clientId,
+                                clientSecret,
+                                clientVersion,
+                                env,
+                                finalShouldPublishEvents));
     }
 
     /**

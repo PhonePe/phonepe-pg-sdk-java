@@ -32,6 +32,7 @@ import com.phonepe.sdk.pg.common.http.HttpMethodType;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import lombok.Setter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.FormBody;
@@ -44,7 +45,7 @@ public class TokenService {
     private ObjectMapper objectMapper;
     private CredentialConfig credentialConfig;
     private Env env;
-    private static OAuthResponse oAuthResponse;
+    @Setter private OAuthResponse oAuthResponse;
     private EventPublisher eventPublisher;
 
     public TokenService(
@@ -60,10 +61,6 @@ public class TokenService {
         this.eventPublisher = eventPublisher;
         this.eventPublisher.send(
                 BaseEvent.buildInitClientEvent(EventType.TOKEN_SERVICE_INITIALIZED));
-    }
-
-    public static void setOAuthResponse(OAuthResponse oAuthResponse) {
-        TokenService.oAuthResponse = oAuthResponse;
     }
 
     private List<HttpHeaderPair> prepareRequestHeaders() {
@@ -90,7 +87,7 @@ public class TokenService {
             return formatCachedToken();
         }
         try {
-            TokenService.setOAuthResponse(fetchTokenFromPhonePe());
+            this.setOAuthResponse(fetchTokenFromPhonePe());
         } catch (Exception exception) {
             if (Objects.isNull(oAuthResponse)) {
                 log.error(
@@ -126,7 +123,7 @@ public class TokenService {
 
     public void forceRefreshToken() {
         log.debug("Force Refreshing Token");
-        TokenService.setOAuthResponse(fetchTokenFromPhonePe());
+        this.setOAuthResponse(fetchTokenFromPhonePe());
     }
 
     @SneakyThrows
