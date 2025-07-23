@@ -130,7 +130,7 @@ public class SingletonCustomCheckoutTest extends BaseSetup {
         String clientId1 = "clientId1";
         String clientSecret1 = "clientSecret1";
 
-        FormBody formBody =
+        FormBody mockFormBody =
                 new FormBody.Builder()
                         .add("client_id", clientId)
                         .add("client_secret", clientSecret)
@@ -181,7 +181,7 @@ public class SingletonCustomCheckoutTest extends BaseSetup {
                 Maps.newHashMap(),
                 pgPaymentResponse);
 
-        FormBody formBody1 =
+        FormBody mockFormBody1 =
                 new FormBody.Builder()
                         .add("client_id", clientId1)
                         .add("client_secret", clientSecret1)
@@ -192,7 +192,7 @@ public class SingletonCustomCheckoutTest extends BaseSetup {
         addStubForFormDataPostRequest(
                 authUrl,
                 getAuthHeaders(),
-                formBody,
+                mockFormBody,
                 HttpStatus.SC_OK,
                 Maps.newHashMap(),
                 oAuthResponse);
@@ -200,14 +200,32 @@ public class SingletonCustomCheckoutTest extends BaseSetup {
         addStubForFormDataPostRequest(
                 authUrl,
                 getAuthHeaders(),
-                formBody1,
+                mockFormBody1,
                 HttpStatus.SC_OK,
                 Maps.newHashMap(),
                 oAuthResponse);
 
-        PgPaymentResponse actual = customCheckoutClient1.pay(pgPaymentRequest);
-        actual = customCheckoutClient2.pay(pgPaymentRequest);
+        customCheckoutClient1.pay(pgPaymentRequest);
+        customCheckoutClient2.pay(pgPaymentRequest);
 
         wireMockServer.verify(2, postRequestedFor(urlPathMatching(authUrl)));
+    }
+
+    @Test
+    void testSingletonWithDifferentEnvironments() {
+        CustomCheckoutClient customCheckoutClientProd =
+                CustomCheckoutClient.getInstance(clientId, clientSecret, clientVersion, Env.PRODUCTION);
+        CustomCheckoutClient customCheckoutClientSandbox =
+                CustomCheckoutClient.getInstance(clientId, clientSecret, clientVersion, Env.SANDBOX);
+
+        Assertions.assertNotEquals(customCheckoutClientProd, customCheckoutClientSandbox);
+
+        CustomCheckoutClient customCheckoutClientProd2 =
+                CustomCheckoutClient.getInstance(clientId, clientSecret, clientVersion, Env.PRODUCTION);
+        Assertions.assertEquals(customCheckoutClientProd, customCheckoutClientProd2);
+
+        CustomCheckoutClient customCheckoutClientSandbox2 =
+                CustomCheckoutClient.getInstance(clientId, clientSecret, clientVersion, Env.SANDBOX);
+        Assertions.assertEquals(customCheckoutClientSandbox, customCheckoutClientSandbox2);
     }
 }

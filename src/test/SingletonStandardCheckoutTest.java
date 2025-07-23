@@ -137,7 +137,7 @@ public class SingletonStandardCheckoutTest extends BaseSetup {
         String clientSecret1 = "clientSecret_for_auth2";
         int clientVersion = 1;
 
-        FormBody formBody =
+        FormBody mockFormBody =
                 new FormBody.Builder()
                         .add("client_id", clientId)
                         .add("client_secret", clientSecret)
@@ -145,7 +145,7 @@ public class SingletonStandardCheckoutTest extends BaseSetup {
                         .add("client_version", String.valueOf(clientVersion))
                         .build();
 
-        FormBody formBody1 =
+        FormBody mockFormBody1 =
                 new FormBody.Builder()
                         .add("client_id", clientId1)
                         .add("client_secret", clientSecret1)
@@ -199,20 +199,19 @@ public class SingletonStandardCheckoutTest extends BaseSetup {
         addStubForFormDataPostRequest(
                 authUrl,
                 getAuthHeaders(),
-                formBody,
+                mockFormBody,
                 HttpStatus.SC_OK,
                 Maps.newHashMap(),
                 oAuthResponse);
         addStubForFormDataPostRequest(
                 authUrl,
                 getAuthHeaders(),
-                formBody1,
+                mockFormBody1,
                 HttpStatus.SC_OK,
                 Maps.newHashMap(),
                 oAuthResponse);
-        StandardCheckoutPayResponse actual =
-                standardCheckoutClient1.pay(standardCheckoutPayRequest);
-        actual = standardCheckoutClient2.pay(standardCheckoutPayRequest);
+        standardCheckoutClient1.pay(standardCheckoutPayRequest);
+        standardCheckoutClient2.pay(standardCheckoutPayRequest);
 
         wireMockServer.verify(2, postRequestedFor(urlPathMatching(authUrl)));
     }
@@ -226,5 +225,23 @@ public class SingletonStandardCheckoutTest extends BaseSetup {
                 .put(Headers.SOURCE_PLATFORM_VERSION, Headers.SDK_VERSION)
                 .put(Headers.OAUTH_AUTHORIZATION, "O-Bearer accessToken")
                 .build();
+    }
+
+    @Test
+    void testSingletonWithDifferentEnvironments() {
+        StandardCheckoutClient standardCheckoutClientProd =
+                StandardCheckoutClient.getInstance(clientId, clientSecret, clientVersion, Env.PRODUCTION);
+        StandardCheckoutClient standardCheckoutClientSandbox =
+                StandardCheckoutClient.getInstance(clientId, clientSecret, clientVersion, Env.SANDBOX);
+
+        Assertions.assertNotEquals(standardCheckoutClientProd, standardCheckoutClientSandbox);
+
+        StandardCheckoutClient standardCheckoutClientProd2 =
+                StandardCheckoutClient.getInstance(clientId, clientSecret, clientVersion, Env.PRODUCTION);
+        Assertions.assertEquals(standardCheckoutClientProd, standardCheckoutClientProd2);
+
+        StandardCheckoutClient standardCheckoutClientSandbox2 =
+                StandardCheckoutClient.getInstance(clientId, clientSecret, clientVersion, Env.SANDBOX);
+        Assertions.assertEquals(standardCheckoutClientSandbox, standardCheckoutClientSandbox2);
     }
 }

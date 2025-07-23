@@ -15,11 +15,9 @@
  */
 import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.google.common.collect.Maps;
 import com.phonepe.sdk.pg.Env;
-import com.phonepe.sdk.pg.common.exception.PhonePeException;
 import com.phonepe.sdk.pg.common.tokenhandler.OAuthResponse;
 import com.phonepe.sdk.pg.payments.v2.StandardCheckoutClient;
 import com.phonepe.sdk.pg.payments.v2.models.request.StandardCheckoutPayRequest;
@@ -108,11 +106,10 @@ public class SingletonTest extends BaseSetupWithOAuth {
                 HttpStatus.SC_OK,
                 Maps.newHashMap(),
                 oAuthResponse);
-        StandardCheckoutPayResponse actual =
-                standardCheckoutClient1.pay(standardCheckoutPayRequest);
-        actual = standardCheckoutClient2.pay(standardCheckoutPayRequest);
-        actual = standardCheckoutClient3.pay(standardCheckoutPayRequest);
-        actual = standardCheckoutClient4.pay(standardCheckoutPayRequest);
+        standardCheckoutClient1.pay(standardCheckoutPayRequest);
+        standardCheckoutClient2.pay(standardCheckoutPayRequest);
+        standardCheckoutClient3.pay(standardCheckoutPayRequest);
+        standardCheckoutClient4.pay(standardCheckoutPayRequest);
 
         wireMockServer.verify(1, postRequestedFor(urlPathMatching(authUrl)));
     }
