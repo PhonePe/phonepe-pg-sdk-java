@@ -1,3 +1,4 @@
+
 /*
  *  Copyright (c) 2025 Original Author(s), PhonePe India Pvt. Ltd.
  *
@@ -18,7 +19,7 @@ import com.phonepe.sdk.pg.subscription.v2.SubscriptionClient;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class SingletonSubscriptionClientTest extends BaseSetup {
+class SingletonSubscriptionClientTest extends BaseSetup {
 
     @Test
     void testSingletonViaGetInstance() {
