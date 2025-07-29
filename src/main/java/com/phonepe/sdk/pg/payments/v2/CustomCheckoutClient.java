@@ -101,14 +101,14 @@ public class CustomCheckoutClient extends BaseClient {
             final Env env,
             boolean shouldPublishEvents)
             throws PhonePeException {
-        final boolean finalShouldPublishEvents = shouldPublishEvents && env == Env.PRODUCTION;
+        final boolean shouldPublishInProd = shouldPublishEvents && env == Env.PRODUCTION;
         final String requestedClientSHA =
                 CommonUtils.calculateSha256(
                         clientId,
                         clientSecret,
                         clientVersion,
                         env,
-                        shouldPublishEvents,
+                        shouldPublishInProd,
                         FlowType.PG);
 
         return cachedInstances.computeIfAbsent(
@@ -119,7 +119,7 @@ public class CustomCheckoutClient extends BaseClient {
                                 clientSecret,
                                 clientVersion,
                                 env,
-                                finalShouldPublishEvents));
+                                shouldPublishInProd));
     }
 
     /**
