@@ -94,7 +94,7 @@ public class CustomCheckoutClient extends BaseClient {
      *     experience
      * @return CustomCheckoutClient object for interacting with the PhonePe APIs
      */
-    private static CustomCheckoutClient getInstance(
+    public static CustomCheckoutClient getInstance(
             final String clientId,
             final String clientSecret,
             final Integer clientVersion,
@@ -115,11 +115,7 @@ public class CustomCheckoutClient extends BaseClient {
                 requestedClientSHA,
                 key ->
                         new CustomCheckoutClient(
-                                clientId,
-                                clientSecret,
-                                clientVersion,
-                                env,
-                                shouldPublishInProd));
+                                clientId, clientSecret, clientVersion, env, shouldPublishInProd));
     }
 
     /**

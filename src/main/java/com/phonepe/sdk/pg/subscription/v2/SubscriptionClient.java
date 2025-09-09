@@ -94,7 +94,7 @@ public class SubscriptionClient extends BaseClient {
      *     experience
      * @return SubscriptionClient object for interacting with the PhonePe APIs
      */
-    private static SubscriptionClient getInstance(
+    public static SubscriptionClient getInstance(
             final String clientId,
             final String clientSecret,
             final Integer clientVersion,
@@ -115,11 +115,7 @@ public class SubscriptionClient extends BaseClient {
                 requestedClientSHA,
                 key ->
                         new SubscriptionClient(
-                                clientId,
-                                clientSecret,
-                                clientVersion,
-                                env,
-                                shouldPublishInProd));
+                                clientId, clientSecret, clientVersion, env, shouldPublishInProd));
     }
 
     /**
