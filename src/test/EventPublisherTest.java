@@ -47,7 +47,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import wiremock.org.apache.http.HttpStatus;
 
-public class EventPublisherTest extends BaseSetupWithOAuth {
+class EventPublisherTest extends BaseSetupWithOAuth {
 
     private EventPublisher eventPublisher;
     private EventQueue eventQueue;

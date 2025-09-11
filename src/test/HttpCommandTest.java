@@ -26,7 +26,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import wiremock.org.apache.http.HttpStatus;
 
-public class HttpCommandTest extends BaseSetup {
+class HttpCommandTest extends BaseSetup {
 
     @Test
     public void testHttpCommand200() {

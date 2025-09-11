@@ -28,7 +28,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import wiremock.org.apache.http.HttpStatus;
 
-public class SingletonCustomCheckoutTest extends BaseSetup {
+class SingletonCustomCheckoutTest extends BaseSetup {
 
     FormBody formBody =
             new FormBody.Builder()

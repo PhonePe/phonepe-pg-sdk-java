@@ -22,7 +22,7 @@ import org.junit.jupiter.api.BeforeEach;
 import wiremock.org.apache.http.HttpStatus;
 
 // Cannot mock TokenService as it is getting created inside the StandardCheckoutClient
-public class BaseSetupWithOAuth extends BaseSetup {
+class BaseSetupWithOAuth extends BaseSetup {
 
     OAuthResponse oAuthResponse;
 

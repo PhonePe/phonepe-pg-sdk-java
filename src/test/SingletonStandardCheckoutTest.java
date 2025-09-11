@@ -32,7 +32,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import wiremock.org.apache.http.HttpStatus;
 
-public class SingletonStandardCheckoutTest extends BaseSetup {
+class SingletonStandardCheckoutTest extends BaseSetup {
 
     FormBody formBody =
             new FormBody.Builder()

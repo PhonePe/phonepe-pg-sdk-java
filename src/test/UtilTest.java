@@ -18,7 +18,7 @@ import com.phonepe.sdk.pg.common.CommonUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class UtilTest {
+class UtilTest {
 
     @Test
     void testSha256SuccessFor5Parameters() {
