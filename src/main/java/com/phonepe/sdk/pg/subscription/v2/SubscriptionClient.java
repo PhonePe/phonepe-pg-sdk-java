@@ -41,12 +41,13 @@ import com.phonepe.sdk.pg.subscription.v2.models.response.SubscriptionRedeemResp
 import com.phonepe.sdk.pg.subscription.v2.models.response.SubscriptionStatusResponseV2;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 import lombok.SneakyThrows;
 
 public class SubscriptionClient extends BaseClient {
 
-    private static SubscriptionClient client;
+    private static final ConcurrentHashMap<String, SubscriptionClient> cachedInstances =
+            new ConcurrentHashMap<>();
     private List<HttpHeaderPair> headers;
 
     private SubscriptionClient(
@@ -72,7 +73,7 @@ public class SubscriptionClient extends BaseClient {
      *     production environment.
      * @return SubscriptionClient object for interacting with the PhonePe APIs
      */
-    public static synchronized SubscriptionClient getInstance(
+    public static SubscriptionClient getInstance(
             final String clientId,
             final String clientSecret,
             final Integer clientVersion,
@@ -93,44 +94,28 @@ public class SubscriptionClient extends BaseClient {
      *     experience
      * @return SubscriptionClient object for interacting with the PhonePe APIs
      */
-    public static synchronized SubscriptionClient getInstance(
+    public static SubscriptionClient getInstance(
             final String clientId,
             final String clientSecret,
             final Integer clientVersion,
             final Env env,
             boolean shouldPublishEvents)
             throws PhonePeException {
-        shouldPublishEvents = shouldPublishEvents && env == Env.PRODUCTION;
-        if (Objects.isNull(client)) {
-            client =
-                    new SubscriptionClient(
-                            clientId, clientSecret, clientVersion, env, shouldPublishEvents);
-            return client;
-        }
-
-        String requestedSha256 =
+        final boolean shouldPublishInProd = shouldPublishEvents && env == Env.PRODUCTION;
+        final String requestedClientSHA =
                 CommonUtils.calculateSha256(
                         clientId,
                         clientSecret,
                         clientVersion,
                         env,
-                        shouldPublishEvents,
-                        FlowType.SUBSCRIPTION);
-        String existingSha =
-                CommonUtils.calculateSha256(
-                        client.getCredentialConfig().getClientId(),
-                        client.getCredentialConfig().getClientSecret(),
-                        client.getCredentialConfig().getClientVersion(),
-                        client.getEnv(),
-                        client.isShouldPublishEvents(),
+                        shouldPublishInProd,
                         FlowType.SUBSCRIPTION);
 
-        if (Objects.equals(requestedSha256, existingSha)) {
-            return client;
-        }
-        throw new PhonePeException(
-                "Cannot re-initialize SubscriptionClient. Please utilize the existing client object"
-                        + " with required credentials");
+        return cachedInstances.computeIfAbsent(
+                requestedClientSHA,
+                key ->
+                        new SubscriptionClient(
+                                clientId, clientSecret, clientVersion, env, shouldPublishInProd));
     }
 
     /**

@@ -140,7 +140,7 @@ public class EventPublisherTest extends BaseSetupWithOAuth {
     @Test
     void testBatchSizeWhilePushing() throws IOException {
         wireMockServer.resetRequests();
-        TokenService.setOAuthResponse(null);
+        standardCheckoutClient.getTokenService().setOAuthResponse(null);
         eventQueue.getQueue().clear();
         String apiPath = StandardCheckoutConstants.PAY_API;
         StandardCheckoutPayRequest standardCheckoutPayRequest =
@@ -229,7 +229,7 @@ public class EventPublisherTest extends BaseSetupWithOAuth {
     @Test
     void testQueueFullBatchSizePush() throws IOException {
         wireMockServer.resetRequests();
-        TokenService.setOAuthResponse(null);
+        standardCheckoutClient.getTokenService().setOAuthResponse(null);
         String apiPath = StandardCheckoutConstants.PAY_API;
         StandardCheckoutPayRequest standardCheckoutPayRequest =
                 StandardCheckoutPayRequest.builder()
@@ -364,7 +364,7 @@ public class EventPublisherTest extends BaseSetupWithOAuth {
 
     @Test
     void testSendsTokenFetchFailureEvent() throws IOException, InterruptedException {
-        TokenService.setOAuthResponse(null);
+        standardCheckoutClient.getTokenService().setOAuthResponse(null);
         wireMockServer.resetAll();
         tokenService =
                 new TokenService(okHttpClient, objectMapper, credentialConfig, env, eventPublisher);

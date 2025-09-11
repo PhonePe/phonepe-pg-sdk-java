@@ -15,15 +15,12 @@
  */
 import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.google.common.collect.Maps;
 import com.phonepe.sdk.pg.Env;
-import com.phonepe.sdk.pg.common.exception.PhonePeException;
 import com.phonepe.sdk.pg.common.models.request.PgPaymentRequest;
 import com.phonepe.sdk.pg.common.models.response.PgPaymentResponse;
 import com.phonepe.sdk.pg.common.tokenhandler.OAuthResponse;
-import com.phonepe.sdk.pg.common.tokenhandler.TokenService;
 import com.phonepe.sdk.pg.payments.v2.CustomCheckoutClient;
 import com.phonepe.sdk.pg.payments.v2.customcheckout.CustomCheckoutConstants;
 import okhttp3.FormBody;
@@ -55,23 +52,16 @@ public class SingletonCustomCheckoutTest extends BaseSetup {
     void testSingletonWithDiffParameters() {
         CustomCheckoutClient customCheckoutClient1 =
                 CustomCheckoutClient.getInstance(clientId, clientSecret, clientVersion, env);
-        PhonePeException phonePeException =
-                assertThrows(
-                        PhonePeException.class,
-                        () ->
-                                CustomCheckoutClient.getInstance(
-                                        "clientId2", "clientSecret2", 1, Env.TEST));
-        Assertions.assertEquals(
-                phonePeException.getMessage(),
-                "Cannot re-initialize CustomCheckoutClient. Please utilize the existing Client"
-                        + " object with required credentials");
+        CustomCheckoutClient customCheckoutClient2 = CustomCheckoutClient.getInstance(
+                "clientId2", "clientSecret2", 1, Env.TEST);
+        Assertions.assertNotEquals(customCheckoutClient1, customCheckoutClient2);
+        Assertions.assertNotNull(customCheckoutClient2);
     }
 
     @Test
-    void testMultipleClientSingleAuthCall() {
+    void testMultipleSameClientSingleAuthCall() {
         wireMockServer.resetRequests();
-        TokenService.setOAuthResponse(null);
-        String redirectUrl = "https://redirectUrl.com";
+        customCheckoutClient.getTokenService().setOAuthResponse(null);
         PgPaymentRequest pgPaymentRequest =
                 PgPaymentRequest.UpiQrRequestBuilder()
                         .merchantOrderId("MerchantOrderId")
@@ -129,5 +119,113 @@ public class SingletonCustomCheckoutTest extends BaseSetup {
         actual = customCheckoutClient4.pay(pgPaymentRequest);
 
         wireMockServer.verify(1, postRequestedFor(urlPathMatching(authUrl)));
+    }
+
+    @Test
+    void testMultipleDifferentClientMultipleAuthCall() {
+        String clientId = "clientId_for_auth1";
+        String clientSecret = "clientSecret_for_auth1";
+        int clientVersion = 1;
+
+        String clientId1 = "clientId1";
+        String clientSecret1 = "clientSecret1";
+
+        FormBody mockFormBody =
+                new FormBody.Builder()
+                        .add("client_id", clientId)
+                        .add("client_secret", clientSecret)
+                        .add("grant_type", "client_credentials")
+                        .add("client_version", String.valueOf(clientVersion))
+                        .build();
+
+        wireMockServer.resetRequests();
+        String redirectUrl = "https://redirectUrl.com";
+        PgPaymentRequest pgPaymentRequest =
+                PgPaymentRequest.UpiQrRequestBuilder()
+                        .merchantOrderId("MerchantOrderId")
+                        .amount(100)
+                        .build();
+
+        PgPaymentResponse pgPaymentResponse =
+                PgPaymentResponse.builder()
+                        .orderId(String.valueOf(java.time.Instant.now().getEpochSecond()))
+                        .state("PENDING")
+                        .expireAt(java.time.Instant.now().getEpochSecond())
+                        .qrData("qrData")
+                        .build();
+
+        long currentTime = java.time.Instant.now().getEpochSecond();
+        OAuthResponse oAuthResponse =
+                OAuthResponse.builder()
+                        .accessToken("accessToken")
+                        .encryptedAccessToken("encryptedAccessToken")
+                        .expiresAt(currentTime + 200)
+                        .expiresIn(453543)
+                        .issuedAt(currentTime)
+                        .refreshToken("refreshToken")
+                        .tokenType("O-Bearer")
+                        .sessionExpiresAt(currentTime + 200)
+                        .build();
+
+        CustomCheckoutClient customCheckoutClient1 =
+                CustomCheckoutClient.getInstance(clientId, clientSecret, clientVersion, env);
+        CustomCheckoutClient customCheckoutClient2 =
+                CustomCheckoutClient.getInstance(clientId1, clientSecret1, clientVersion, env);
+
+        final String url = CustomCheckoutConstants.PAY_API;
+        addStubForPostRequest(
+                url,
+                getHeaders(),
+                pgPaymentRequest,
+                HttpStatus.SC_OK,
+                Maps.newHashMap(),
+                pgPaymentResponse);
+
+        FormBody mockFormBody1 =
+                new FormBody.Builder()
+                        .add("client_id", clientId1)
+                        .add("client_secret", clientSecret1)
+                        .add("grant_type", "client_credentials")
+                        .add("client_version", String.valueOf(clientVersion))
+                        .build();
+
+        addStubForFormDataPostRequest(
+                authUrl,
+                getAuthHeaders(),
+                mockFormBody,
+                HttpStatus.SC_OK,
+                Maps.newHashMap(),
+                oAuthResponse);
+
+        addStubForFormDataPostRequest(
+                authUrl,
+                getAuthHeaders(),
+                mockFormBody1,
+                HttpStatus.SC_OK,
+                Maps.newHashMap(),
+                oAuthResponse);
+
+        customCheckoutClient1.pay(pgPaymentRequest);
+        customCheckoutClient2.pay(pgPaymentRequest);
+
+        wireMockServer.verify(2, postRequestedFor(urlPathMatching(authUrl)));
+    }
+
+    @Test
+    void testSingletonWithDifferentEnvironments() {
+        CustomCheckoutClient customCheckoutClientProd =
+                CustomCheckoutClient.getInstance(clientId, clientSecret, clientVersion, Env.PRODUCTION);
+        CustomCheckoutClient customCheckoutClientSandbox =
+                CustomCheckoutClient.getInstance(clientId, clientSecret, clientVersion, Env.SANDBOX);
+
+        Assertions.assertNotEquals(customCheckoutClientProd, customCheckoutClientSandbox);
+
+        CustomCheckoutClient customCheckoutClientProd2 =
+                CustomCheckoutClient.getInstance(clientId, clientSecret, clientVersion, Env.PRODUCTION);
+        Assertions.assertEquals(customCheckoutClientProd, customCheckoutClientProd2);
+
+        CustomCheckoutClient customCheckoutClientSandbox2 =
+                CustomCheckoutClient.getInstance(clientId, clientSecret, clientVersion, Env.SANDBOX);
+        Assertions.assertEquals(customCheckoutClientSandbox, customCheckoutClientSandbox2);
     }
 }

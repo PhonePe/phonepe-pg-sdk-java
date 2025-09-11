@@ -1,6 +1,6 @@
 # PhonePe B2B Payment Gateway SDK for Java
 
-[![Maven Central](https://img.shields.io/badge/Maven%20Central-v2.1.6-blue)](https://maven-badges.herokuapp.com/maven-central/com.phonepe/pg-sdk-java)
+[![Maven Central](https://img.shields.io/badge/Maven%20Central-v2.1.7-blue)](https://maven-badges.herokuapp.com/maven-central/com.phonepe/pg-sdk-java)
 ![Java](https://img.shields.io/badge/Java-17%2B-orange)
 [![License](https://img.shields.io/badge/License-Apache%202.0-green.svg)](LICENSE)
 
@@ -36,7 +36,7 @@ Add the dependency to your project's POM file:
 <dependency>
     <groupId>com.phonepe</groupId>
     <artifactId>pg-sdk-java</artifactId>
-    <version>2.1.6</version>
+    <version>2.1.7</version>
 </dependency>
 ```
 
@@ -46,7 +46,7 @@ Add the following to your project's build.gradle file:
 
 ```gradle
 dependencies {
-    implementation 'com.phonepe:pg-sdk-java:2.1.6'
+    implementation 'com.phonepe:pg-sdk-java:2.1.7'
 }
 ```
 
@@ -71,10 +71,10 @@ Integer clientVersion = 1;  // Your client version here
 Env env = Env.SANDBOX;      // Use Env.PRODUCTION for live transactions
 
 StandardCheckoutClient standardCheckoutClient = StandardCheckoutClient.getInstance(
-    clientId, 
-    clientSecret,
-    clientVersion, 
-    env
+        clientId,
+        clientSecret,
+        clientVersion,
+        env
 );
 ```
 
@@ -89,17 +89,17 @@ import com.phonepe.sdk.pg.payments.v2.models.response.StandardCheckoutPayRespons
 
 // Generate a unique order ID
 String merchantOrderId = UUID.randomUUID().toString();
-long amount = 10000;  // Amount in lowest currency denomination (paise for INR)
-String redirectUrl = "https://www.yourwebsite.com/redirect";
+        long amount = 10000;  // Amount in lowest currency denomination (paise for INR)
+        String redirectUrl = "https://www.yourwebsite.com/redirect";
 
-StandardCheckoutPayRequest payRequest = StandardCheckoutPayRequest.builder()
-    .merchantOrderId(merchantOrderId)
-    .amount(amount)
-    .redirectUrl(redirectUrl)
-    .build();
+        StandardCheckoutPayRequest payRequest = StandardCheckoutPayRequest.builder()
+                .merchantOrderId(merchantOrderId)
+                .amount(amount)
+                .redirectUrl(redirectUrl)
+                .build();
 
-StandardCheckoutPayResponse payResponse = standardCheckoutClient.pay(payRequest);
-String checkoutPageUrl = payResponse.getRedirectUrl();
+        StandardCheckoutPayResponse payResponse = standardCheckoutClient.pay(payRequest);
+        String checkoutPageUrl = payResponse.getRedirectUrl();
 
 // Redirect the user to checkoutPageUrl to complete the payment
 ```
@@ -127,28 +127,28 @@ import com.phonepe.sdk.pg.common.models.response.CallbackResponse;
 
 // Credentials for Basic Authentication that you've configured in the PhonePe dashboard
 String username = "<your-username>";
-String password = "<your-password>";
+        String password = "<your-password>";
 
-// Data received in the callback
-String authorization = request.getHeader("Authorization");  // Basic Authentication header
-String responseBody = request.getBody();                   // JSON body as string
+        // Data received in the callback
+        String authorization = request.getHeader("Authorization");  // Basic Authentication header
+        String responseBody = request.getBody();                   // JSON body as string
 
 try {
-    CallbackResponse callbackResponse = standardCheckoutClient.validateCallback(
-        username, 
-        password, 
-        authorization,
-        responseBody
-    );
-    
-    String orderId = callbackResponse.getPayload().getOrderId();
-    String state = callbackResponse.getPayload().getState();
-    String event = callbackResponse.getEvent();
-    
-    // Process the order based on its state
+        CallbackResponse callbackResponse = standardCheckoutClient.validateCallback(
+                username,
+                password,
+                authorization,
+                responseBody
+        );
+
+        String orderId = callbackResponse.getPayload().getOrderId();
+        String state = callbackResponse.getPayload().getState();
+        String event = callbackResponse.getEvent();
+
+        // Process the order based on its state
 } catch (PhonePeException e) {
-    // Handle invalid callback - potential security issue
-}
+        // Handle invalid callback - potential security issue
+        }
 ```
 
 Possible callback states include:
@@ -170,10 +170,10 @@ long amount = 10000;  // Amount in lowest denomination (paise for INR)
 String redirectUrl = "https://yourapp.com/callback";
 
 CreateSdkOrderRequest orderRequest = CreateSdkOrderRequest.StandardCheckoutBuilder()
-    .merchantOrderId(merchantOrderId)
-    .amount(amount)
-    .redirectUrl(redirectUrl)
-    .build();
+        .merchantOrderId(merchantOrderId)
+        .amount(amount)
+        .redirectUrl(redirectUrl)
+        .build();
 
 CreateSdkOrderResponse orderResponse = standardCheckoutClient.createSdkOrder(orderRequest);
 String token = orderResponse.getToken();

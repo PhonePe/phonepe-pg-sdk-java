@@ -42,12 +42,13 @@ import com.phonepe.sdk.pg.payments.v2.models.response.CreateSdkOrderResponse;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 import lombok.SneakyThrows;
 
 public class CustomCheckoutClient extends BaseClient {
 
-    private static CustomCheckoutClient client;
+    private static final ConcurrentHashMap<String, CustomCheckoutClient> cachedInstances =
+            new ConcurrentHashMap<>();
     private List<HttpHeaderPair> headers;
 
     private CustomCheckoutClient(
@@ -73,7 +74,7 @@ public class CustomCheckoutClient extends BaseClient {
      *     production environment.
      * @return CustomCheckoutClient object for interacting with the PhonePe APIs
      */
-    public static synchronized CustomCheckoutClient getInstance(
+    public static CustomCheckoutClient getInstance(
             final String clientId,
             final String clientSecret,
             final Integer clientVersion,
@@ -93,44 +94,28 @@ public class CustomCheckoutClient extends BaseClient {
      *     experience
      * @return CustomCheckoutClient object for interacting with the PhonePe APIs
      */
-    private static synchronized CustomCheckoutClient getInstance(
+    public static CustomCheckoutClient getInstance(
             final String clientId,
             final String clientSecret,
             final Integer clientVersion,
             final Env env,
             boolean shouldPublishEvents)
             throws PhonePeException {
-        shouldPublishEvents = shouldPublishEvents && env == Env.PRODUCTION;
-        if (Objects.isNull(client)) {
-            client =
-                    new CustomCheckoutClient(
-                            clientId, clientSecret, clientVersion, env, shouldPublishEvents);
-            return client;
-        }
-
-        String requestedSha256 =
+        final boolean shouldPublishInProd = shouldPublishEvents && env == Env.PRODUCTION;
+        final String requestedClientSHA =
                 CommonUtils.calculateSha256(
                         clientId,
                         clientSecret,
                         clientVersion,
                         env,
-                        shouldPublishEvents,
-                        FlowType.PG);
-        String existingSha =
-                CommonUtils.calculateSha256(
-                        client.getCredentialConfig().getClientId(),
-                        client.getCredentialConfig().getClientSecret(),
-                        client.getCredentialConfig().getClientVersion(),
-                        client.getEnv(),
-                        client.isShouldPublishEvents(),
+                        shouldPublishInProd,
                         FlowType.PG);
 
-        if (Objects.equals(requestedSha256, existingSha)) {
-            return client;
-        }
-        throw new PhonePeException(
-                "Cannot re-initialize CustomCheckoutClient. Please utilize the existing Client"
-                        + " object with required credentials");
+        return cachedInstances.computeIfAbsent(
+                requestedClientSHA,
+                key ->
+                        new CustomCheckoutClient(
+                                clientId, clientSecret, clientVersion, env, shouldPublishInProd));
     }
 
     /**
