@@ -42,13 +42,10 @@ import com.phonepe.sdk.pg.payments.v2.models.response.CreateSdkOrderResponse;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
 import lombok.SneakyThrows;
 
 public class CustomCheckoutClient extends BaseClient {
 
-    private static final ConcurrentHashMap<String, CustomCheckoutClient> cachedInstances =
-            new ConcurrentHashMap<>();
     private List<HttpHeaderPair> headers;
 
     private CustomCheckoutClient(
@@ -102,15 +99,6 @@ public class CustomCheckoutClient extends BaseClient {
             boolean shouldPublishEvents)
             throws PhonePeException {
         final boolean shouldPublishInProd = shouldPublishEvents && env == Env.PRODUCTION;
-        final String requestedClientSHA =
-                CommonUtils.calculateSha256(
-                        clientId,
-                        clientSecret,
-                        clientVersion,
-                        env,
-                        shouldPublishInProd,
-                        FlowType.PG);
-
         return new CustomCheckoutClient(
                 clientId, clientSecret, clientVersion, env, shouldPublishInProd);
     }

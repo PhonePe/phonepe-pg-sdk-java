@@ -41,13 +41,10 @@ import com.phonepe.sdk.pg.subscription.v2.models.response.SubscriptionRedeemResp
 import com.phonepe.sdk.pg.subscription.v2.models.response.SubscriptionStatusResponseV2;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
 import lombok.SneakyThrows;
 
 public class SubscriptionClient extends BaseClient {
 
-    private static final ConcurrentHashMap<String, SubscriptionClient> cachedInstances =
-            new ConcurrentHashMap<>();
     private List<HttpHeaderPair> headers;
 
     private SubscriptionClient(
@@ -102,15 +99,6 @@ public class SubscriptionClient extends BaseClient {
             boolean shouldPublishEvents)
             throws PhonePeException {
         final boolean shouldPublishInProd = shouldPublishEvents && env == Env.PRODUCTION;
-        final String requestedClientSHA =
-                CommonUtils.calculateSha256(
-                        clientId,
-                        clientSecret,
-                        clientVersion,
-                        env,
-                        shouldPublishInProd,
-                        FlowType.SUBSCRIPTION);
-
         return new SubscriptionClient(
                 clientId, clientSecret, clientVersion, env, shouldPublishInProd);
     }

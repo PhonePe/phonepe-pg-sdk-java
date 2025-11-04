@@ -42,14 +42,11 @@ import com.phonepe.sdk.pg.payments.v2.standardcheckout.StandardCheckoutConstants
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
 import lombok.SneakyThrows;
 
 /** The StandardCheckout client class provides methods for interacting with the PhonePe APIs. */
 public class StandardCheckoutClient extends BaseClient {
 
-    private static final ConcurrentHashMap<String, StandardCheckoutClient> cachedInstances =
-            new ConcurrentHashMap<>();
     private List<HttpHeaderPair> headers;
 
     private StandardCheckoutClient(
