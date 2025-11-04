@@ -103,20 +103,8 @@ public class StandardCheckoutClient extends BaseClient {
             boolean shouldPublishEvents)
             throws PhonePeException {
         final boolean shouldPublishInProd = shouldPublishEvents && env == Env.PRODUCTION;
-        final String requestedClientSHA =
-                CommonUtils.calculateSha256(
-                        clientId,
-                        clientSecret,
-                        clientVersion,
-                        env,
-                        shouldPublishInProd,
-                        FlowType.PG_CHECKOUT);
-
-        return cachedInstances.computeIfAbsent(
-                requestedClientSHA,
-                key ->
-                        new StandardCheckoutClient(
-                                clientId, clientSecret, clientVersion, env, shouldPublishInProd));
+        return new StandardCheckoutClient(
+                clientId, clientSecret, clientVersion, env, shouldPublishInProd);
     }
 
     /**

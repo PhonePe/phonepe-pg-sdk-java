@@ -111,11 +111,8 @@ public class SubscriptionClient extends BaseClient {
                         shouldPublishInProd,
                         FlowType.SUBSCRIPTION);
 
-        return cachedInstances.computeIfAbsent(
-                requestedClientSHA,
-                key ->
-                        new SubscriptionClient(
-                                clientId, clientSecret, clientVersion, env, shouldPublishInProd));
+        return new SubscriptionClient(
+                clientId, clientSecret, clientVersion, env, shouldPublishInProd);
     }
 
     /**

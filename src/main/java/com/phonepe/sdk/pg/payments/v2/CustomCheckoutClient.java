@@ -111,11 +111,8 @@ public class CustomCheckoutClient extends BaseClient {
                         shouldPublishInProd,
                         FlowType.PG);
 
-        return cachedInstances.computeIfAbsent(
-                requestedClientSHA,
-                key ->
-                        new CustomCheckoutClient(
-                                clientId, clientSecret, clientVersion, env, shouldPublishInProd));
+        return new CustomCheckoutClient(
+                clientId, clientSecret, clientVersion, env, shouldPublishInProd);
     }
 
     /**

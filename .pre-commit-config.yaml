@@ -1,0 +1,10 @@
+repos:
+    -   repo: local
+        hooks:
+            -   id: spotless-format
+                name: Spotless Code Formatter
+                entry: mvn spotless:check
+                language: system
+                pass_filenames: false
+                stages: [pre-commit]
+                verbose: true

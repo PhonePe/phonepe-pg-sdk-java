@@ -141,6 +141,11 @@
                 <configuration>
                     <ratchetFrom>origin/main</ratchetFrom>
                     <java>
+                        <!-- Eclipse formatter with custom rules -->
+                        <eclipse>
+                            <file>${project.basedir}/formatter_eclipse.xml</file>
+                            <version>4.26</version>
+                        </eclipse>
                         <includes>
                             <include>src/main/java/**/*.java</include>
                             <include>src/test/java/**/*.java</include>
