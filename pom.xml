@@ -143,7 +143,7 @@
                     <java>
                         <!-- Eclipse formatter with custom rules -->
                         <eclipse>
-                            <file>${project.basedir}/formatter_eclipse.xml</file>
+                            <file>${project.basedir}/formatter.xml</file>
                             <version>4.26</version>
                         </eclipse>
                         <includes>
