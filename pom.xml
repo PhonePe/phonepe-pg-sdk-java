@@ -6,7 +6,7 @@
 
     <groupId>com.phonepe</groupId>
     <artifactId>pg-sdk-java</artifactId>
-    <version>2.1.7</version>
+    <version>2.1.8</version>
     <name>B2B JAVA SDK</name>
     <url>https://github.com/PhonePe/phonepe-pg-sdk-java</url>
     <description>Phonepe PG JAVA SDK</description>
@@ -97,6 +97,11 @@
             <name>Aditi Billore</name>
             <email>aditi.billore3@gmail.com</email>
         </developer>
+        <developer>
+            <id>Yogesh-Kamble</id>
+            <name>Yogesh Kamble</name>
+            <email>ypk282000@@gmail.com</email>
+        </developer>
     </developers>
 
     <properties>
@@ -134,6 +139,32 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.2.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.4.0</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>com.diffplug.spotless</groupId>
                 <artifactId>spotless-maven-plugin</artifactId>
