@@ -99,7 +99,7 @@ public class HttpCommand<T, R> {
     /**
      * Executes the HTTP request and returns the response.
      *
-     * @return <T> the response object
+     * @return the response object
      */
     @SneakyThrows
     public T execute() {
