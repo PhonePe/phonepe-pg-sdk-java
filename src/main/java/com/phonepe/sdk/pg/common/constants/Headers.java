@@ -18,22 +18,24 @@ package com.phonepe.sdk.pg.common.constants;
 import java.io.InputStream;
 import java.util.Properties;
 import lombok.experimental.UtilityClass;
+import lombok.extern.slf4j.Slf4j;
 
 @UtilityClass
+@Slf4j
 public class Headers {
 
     private final Properties properties = new Properties();
-    private final String propertiesFileName = "/sdk.properties";
+    private final String PROPERTIES_FILE_NAME = "/sdk.properties";
 
     static {
-        try (InputStream input = Headers.class.getResourceAsStream(propertiesFileName)) {
+        try (InputStream input = Headers.class.getResourceAsStream(PROPERTIES_FILE_NAME)) {
             if (input == null) {
-                System.err.println("Could not find " + propertiesFileName);
+                log.error("Could not find {}", PROPERTIES_FILE_NAME);
             } else {
                 properties.load(input);
             }
         } catch (Exception e) {
-            System.err.println("Failed to load SDK properties: " + e.getMessage());
+            log.error("Failed to load SDK properties: {}", e.getMessage());
         }
     }
 
