@@ -13,6 +13,8 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+package headers;
+
 import org.junit.jupiter.api.Assertions;
 
 import com.phonepe.sdk.pg.common.constants.Headers;
@@ -20,13 +22,13 @@ import java.io.InputStream;
 import java.util.Properties;
 import org.junit.jupiter.api.Test;
 
-public class HeadersTest {
+class HeadersTest {
 
     /**
      * Test that SDK_VERSION is loaded from properties file and not null
      */
     @Test
-    public void testSDKVersionIsLoadedFromProperties() {
+    void testSDKVersionIsLoadedFromProperties() {
         Assertions.assertNotNull(Headers.SDK_VERSION, "SDK_VERSION should not be null");
         Assertions.assertFalse(Headers.SDK_VERSION.isEmpty(), "SDK_VERSION should not be empty");
     }
@@ -35,7 +37,7 @@ public class HeadersTest {
      * Test that SDK_VERSION follows semantic versioning format (e.g., 2.1.8)
      */
     @Test
-    public void testSDKVersionFormat() {
+    void testSDKVersionFormat() {
         Assertions.assertTrue(
                 Headers.SDK_VERSION.matches("\\d+\\.\\d+\\.\\d+"),
                 "SDK_VERSION should match semantic version format (X.Y.Z). Got: "
@@ -46,7 +48,7 @@ public class HeadersTest {
      * Test that SUBSCRIPTION_API_VERSION is loaded from properties file and not null
      */
     @Test
-    public void testSubscriptionAPIVersionIsLoadedFromProperties() {
+    void testSubscriptionAPIVersionIsLoadedFromProperties() {
         Assertions.assertNotNull(
                 Headers.SUBSCRIPTION_API_VERSION, "SUBSCRIPTION_API_VERSION should not be null");
         Assertions.assertFalse(
@@ -59,7 +61,7 @@ public class HeadersTest {
      * since they both load from the same property
      */
     @Test
-    public void testSDKVersionMatchesSubscriptionAPIVersion() {
+    void testSDKVersionMatchesSubscriptionAPIVersion() {
         Assertions.assertEquals(
                 Headers.SDK_VERSION,
                 Headers.SUBSCRIPTION_API_VERSION,
@@ -70,7 +72,7 @@ public class HeadersTest {
      * Test that properties file exists and is accessible in classpath
      */
     @Test
-    public void testPropertiesFileExists() {
+    void testPropertiesFileExists() {
         InputStream input = getClass().getResourceAsStream("/sdk.properties");
         Assertions.assertNotNull(input, "sdk.properties file should exist in classpath");
     }
@@ -80,7 +82,7 @@ public class HeadersTest {
      * (i.e., ${project.version} has been replaced with actual version)
      */
     @Test
-    public void testPropertiesFileIsFiltered() throws Exception {
+    void testPropertiesFileIsFiltered() throws Exception {
         Properties properties = new Properties();
         try (InputStream input = getClass().getResourceAsStream("/sdk.properties")) {
             Assertions.assertNotNull(input, "sdk.properties should be available");
@@ -102,7 +104,7 @@ public class HeadersTest {
      * Test that all header constants are not null
      */
     @Test
-    public void testAllConstantsAreNotNull() {
+    void testAllConstantsAreNotNull() {
         Assertions.assertNotNull(Headers.API_VERSION, "API_VERSION should not be null");
         Assertions.assertNotNull(
                 Headers.SUBSCRIPTION_API_VERSION, "SUBSCRIPTION_API_VERSION should not be null");
@@ -123,7 +125,7 @@ public class HeadersTest {
      * Test that SDK_VERSION matches the expected format and contains valid version parts
      */
     @Test
-    public void testSDKVersionComponents() {
+    void testSDKVersionComponents() {
         String[] versionParts = Headers.SDK_VERSION.split("\\.");
         Assertions.assertEquals(
                 3,
@@ -143,7 +145,7 @@ public class HeadersTest {
      * Test that Header values don't contain common problematic characters
      */
     @Test
-    public void testHeaderValuesDoNotContainProblematicCharacters() {
+    void testHeaderValuesDoNotContainProblematicCharacters() {
         // Version values should not contain whitespace or special characters
         Assertions.assertFalse(
                 Headers.SDK_VERSION.contains(" "),
@@ -160,7 +162,7 @@ public class HeadersTest {
      * match what can be read directly from the file
      */
     @Test
-    public void testStaticBlockPropertiesMatchFileContent() throws Exception {
+    void testStaticBlockPropertiesMatchFileContent() throws Exception {
         Properties fileProperties = new Properties();
         try (InputStream input = getClass().getResourceAsStream("/sdk.properties")) {
             fileProperties.load(input);
