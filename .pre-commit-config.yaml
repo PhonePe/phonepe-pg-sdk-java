@@ -9,6 +9,8 @@ repos:
                 stages: [pre-commit]
                 verbose: true
 
+            # some complex rules like missing parentheses in a if, loop statements for a single line are not applied by
+            # mvn spotless:apply so added another check that will block the commit
             -   id: spotless-format
                 name: Spotless Code Formatter
                 entry: mvn spotless:check

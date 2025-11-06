@@ -15,15 +15,32 @@
  */
 package com.phonepe.sdk.pg.common.constants;
 
+import java.io.InputStream;
+import java.util.Properties;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class Headers {
 
+    private final Properties properties = new Properties();
+    private final String propertiesFileName = "/sdk.properties";
+
+    static {
+        try (InputStream input = Headers.class.getResourceAsStream(propertiesFileName)) {
+            if (input == null) {
+                System.err.println("Could not find " + propertiesFileName);
+            } else {
+                properties.load(input);
+            }
+        } catch (Exception e) {
+            System.err.println("Failed to load SDK properties: " + e.getMessage());
+        }
+    }
+
     public static final String API_VERSION = "V2";
-    public static final String SUBSCRIPTION_API_VERSION = "2.1.8";
+    public static final String SUBSCRIPTION_API_VERSION = properties.getProperty("sdk.version");
     public static final String INTEGRATION = "API";
-    public static final String SDK_VERSION = "2.1.8";
+    public static final String SDK_VERSION = properties.getProperty("sdk.version");
     public static final String SDK_TYPE = "BACKEND_JAVA_SDK";
     public static final String SOURCE = "x-source";
     public static final String SOURCE_VERSION = "x-source-version";
