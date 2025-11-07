@@ -35,6 +35,7 @@ public class CreateSdkOrderRequest {
     private PaymentFlow paymentFlow;
     private Long expireAfter;
     private List<InstrumentConstraint> constraints;
+    private Boolean disablePaymentRetry;
 
     /**
      * Builds SDK order Request
@@ -54,11 +55,13 @@ public class CreateSdkOrderRequest {
             MetaInfo metaInfo,
             String message,
             String redirectUrl,
-            Long expireAfter) {
+            Long expireAfter,
+            Boolean disablePaymentRetry) {
         this.merchantOrderId = merchantOrderId;
         this.amount = amount;
         this.metaInfo = metaInfo;
         this.expireAfter = expireAfter;
+        this.disablePaymentRetry = disablePaymentRetry;
         MerchantUrls merchantUrls = MerchantUrls.builder().redirectUrl(redirectUrl).build();
         this.setPaymentFlow(
                 PgCheckoutPaymentFlow.builder()
@@ -83,12 +86,14 @@ public class CreateSdkOrderRequest {
             long amount,
             MetaInfo metaInfo,
             List<InstrumentConstraint> constraints,
-            Long expireAfter) {
+            Long expireAfter,
+            Boolean disablePaymentRetry) {
         this.merchantOrderId = merchantOrderId;
         this.amount = amount;
         this.metaInfo = metaInfo;
         this.expireAfter = expireAfter;
         this.constraints = constraints;
+        this.disablePaymentRetry = disablePaymentRetry;
         this.setPaymentFlow(PgPaymentFlow.builder().build());
     }
 }
