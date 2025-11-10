@@ -123,4 +123,197 @@ public class CreateOrderTest extends BaseSetupWithOAuth {
         Assertions.assertEquals(400, phonePeException.getHttpStatusCode());
         Assertions.assertEquals("Bad Request", phonePeException.getCode());
     }
+
+    @Test
+    void testCreateOrderWithDisablePaymentRetryTrue() {
+        String redirectUrl = "https://google.com";
+
+        CreateSdkOrderRequest createSdkOrderRequest =
+                CreateSdkOrderRequest.StandardCheckoutBuilder()
+                        .merchantOrderId(merchantOrderId)
+                        .amount(amount)
+                        .redirectUrl(redirectUrl)
+                        .disablePaymentRetry(true)
+                        .build();
+        final String url = StandardCheckoutConstants.CREATE_ORDER_API;
+        CreateSdkOrderResponse createSdkOrderResponse =
+                CreateSdkOrderResponse.builder()
+                        .expireAt(1432423)
+                        .orderId("orderId")
+                        .token("token")
+                        .state("PENDING")
+                        .build();
+
+        addStubForPostRequest(
+                url,
+                getHeaders(),
+                createSdkOrderRequest,
+                HttpStatus.SC_OK,
+                Maps.newHashMap(),
+                createSdkOrderResponse);
+
+        CreateSdkOrderResponse actual =
+                standardCheckoutClient.createSdkOrder(createSdkOrderRequest);
+        Assertions.assertEquals(actual, createSdkOrderResponse);
+        Assertions.assertTrue(createSdkOrderRequest.getDisablePaymentRetry());
+    }
+
+    @Test
+    void testCreateOrderWithDisablePaymentRetryFalse() {
+        String redirectUrl = "https://google.com";
+
+        CreateSdkOrderRequest createSdkOrderRequest =
+                CreateSdkOrderRequest.StandardCheckoutBuilder()
+                        .merchantOrderId(merchantOrderId)
+                        .amount(amount)
+                        .redirectUrl(redirectUrl)
+                        .disablePaymentRetry(false)
+                        .build();
+        final String url = StandardCheckoutConstants.CREATE_ORDER_API;
+        CreateSdkOrderResponse createSdkOrderResponse =
+                CreateSdkOrderResponse.builder()
+                        .expireAt(1432423)
+                        .orderId("orderId")
+                        .token("token")
+                        .state("PENDING")
+                        .build();
+
+        addStubForPostRequest(
+                url,
+                getHeaders(),
+                createSdkOrderRequest,
+                HttpStatus.SC_OK,
+                Maps.newHashMap(),
+                createSdkOrderResponse);
+
+        CreateSdkOrderResponse actual =
+                standardCheckoutClient.createSdkOrder(createSdkOrderRequest);
+        Assertions.assertEquals(actual, createSdkOrderResponse);
+        Assertions.assertFalse(createSdkOrderRequest.getDisablePaymentRetry());
+    }
+
+    @Test
+    void testCreateOrderWithDisablePaymentRetryNull() {
+        String redirectUrl = "https://google.com";
+
+        CreateSdkOrderRequest createSdkOrderRequest =
+                CreateSdkOrderRequest.StandardCheckoutBuilder()
+                        .merchantOrderId(merchantOrderId)
+                        .amount(amount)
+                        .redirectUrl(redirectUrl)
+                        .build();
+        final String url = StandardCheckoutConstants.CREATE_ORDER_API;
+        CreateSdkOrderResponse createSdkOrderResponse =
+                CreateSdkOrderResponse.builder()
+                        .expireAt(1432423)
+                        .orderId("orderId")
+                        .token("token")
+                        .state("PENDING")
+                        .build();
+
+        addStubForPostRequest(
+                url,
+                getHeaders(),
+                createSdkOrderRequest,
+                HttpStatus.SC_OK,
+                Maps.newHashMap(),
+                createSdkOrderResponse);
+
+        CreateSdkOrderResponse actual =
+                standardCheckoutClient.createSdkOrder(createSdkOrderRequest);
+        Assertions.assertEquals(actual, createSdkOrderResponse);
+        Assertions.assertNull(createSdkOrderRequest.getDisablePaymentRetry());
+    }
+
+    @Test
+    void testCreateOrderCustomCheckoutWithDisablePaymentRetryTrue() {
+
+        CreateSdkOrderRequest createSdkOrderRequest =
+                CreateSdkOrderRequest.CustomCheckoutBuilder()
+                        .merchantOrderId(merchantOrderId)
+                        .amount(amount)
+                        .disablePaymentRetry(true)
+                        .build();
+        final String url = CustomCheckoutConstants.CREATE_ORDER_API;
+        CreateSdkOrderResponse createSdkOrderResponse =
+                CreateSdkOrderResponse.builder()
+                        .expireAt(1432423)
+                        .orderId("orderId")
+                        .token("token")
+                        .state("PENDING")
+                        .build();
+
+        addStubForPostRequest(
+                url,
+                getHeaders(),
+                createSdkOrderRequest,
+                HttpStatus.SC_OK,
+                Maps.newHashMap(),
+                createSdkOrderResponse);
+
+        CreateSdkOrderResponse actual = customCheckoutClient.createSdkOrder(createSdkOrderRequest);
+        Assertions.assertEquals(actual, createSdkOrderResponse);
+        Assertions.assertTrue(createSdkOrderRequest.getDisablePaymentRetry());
+    }
+
+    @Test
+    void testCreateOrderCustomCheckoutWithDisablePaymentRetryFalse() {
+
+        CreateSdkOrderRequest createSdkOrderRequest =
+                CreateSdkOrderRequest.CustomCheckoutBuilder()
+                        .merchantOrderId(merchantOrderId)
+                        .amount(amount)
+                        .disablePaymentRetry(false)
+                        .build();
+        final String url = CustomCheckoutConstants.CREATE_ORDER_API;
+        CreateSdkOrderResponse createSdkOrderResponse =
+                CreateSdkOrderResponse.builder()
+                        .expireAt(1432423)
+                        .orderId("orderId")
+                        .token("token")
+                        .state("PENDING")
+                        .build();
+
+        addStubForPostRequest(
+                url,
+                getHeaders(),
+                createSdkOrderRequest,
+                HttpStatus.SC_OK,
+                Maps.newHashMap(),
+                createSdkOrderResponse);
+
+        CreateSdkOrderResponse actual = customCheckoutClient.createSdkOrder(createSdkOrderRequest);
+        Assertions.assertEquals(actual, createSdkOrderResponse);
+        Assertions.assertFalse(createSdkOrderRequest.getDisablePaymentRetry());
+    }
+
+    @Test
+    void testCreateOrderCustomCheckoutWithDisablePaymentRetryNull() {
+
+        CreateSdkOrderRequest createSdkOrderRequest =
+                CreateSdkOrderRequest.CustomCheckoutBuilder()
+                        .merchantOrderId(merchantOrderId)
+                        .amount(amount)
+                        .build();
+        final String url = CustomCheckoutConstants.CREATE_ORDER_API;
+        CreateSdkOrderResponse createSdkOrderResponse =
+                CreateSdkOrderResponse.builder()
+                        .expireAt(1432423)
+                        .orderId("orderId")
+                        .token("token")
+                        .state("PENDING")
+                        .build();
+
+        addStubForPostRequest(
+                url,
+                getHeaders(),
+                createSdkOrderRequest,
+                HttpStatus.SC_OK,
+                Maps.newHashMap(),
+                createSdkOrderResponse);
+
+        CreateSdkOrderResponse actual = customCheckoutClient.createSdkOrder(createSdkOrderRequest);
+        Assertions.assertEquals(actual, createSdkOrderResponse);
+        Assertions.assertNull(createSdkOrderRequest.getDisablePaymentRetry());
+    }
 }

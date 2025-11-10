@@ -1,0 +1,20 @@
+repos:
+    -   repo: local
+        hooks:
+            -   id: spotless-apply
+                name: Spotless Code Formatter (Apply)
+                entry: mvn spotless:apply
+                language: system
+                pass_filenames: false
+                stages: [pre-commit]
+                verbose: true
+
+            # some complex rules like missing parentheses in a if, loop statements for a single line are not applied by
+            # mvn spotless:apply so added another check that will block the commit
+            -   id: spotless-check
+                name: Spotless Code Formatter (Check)
+                entry: mvn spotless:check
+                language: system
+                pass_filenames: false
+                stages: [pre-commit]
+                verbose: true
