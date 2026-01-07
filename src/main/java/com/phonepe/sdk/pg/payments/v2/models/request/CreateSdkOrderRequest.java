@@ -56,7 +56,8 @@ public class CreateSdkOrderRequest {
             String message,
             String redirectUrl,
             Long expireAfter,
-            Boolean disablePaymentRetry) {
+            Boolean disablePaymentRetry,
+            PaymentModeConfig paymentModeConfig) {
         this.merchantOrderId = merchantOrderId;
         this.amount = amount;
         this.metaInfo = metaInfo;
@@ -66,6 +67,7 @@ public class CreateSdkOrderRequest {
         this.setPaymentFlow(
                 PgCheckoutPaymentFlow.builder()
                         .message(message)
+                        .paymentModeConfig(paymentModeConfig)
                         .merchantUrls(merchantUrls)
                         .build());
     }
