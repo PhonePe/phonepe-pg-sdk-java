@@ -18,12 +18,19 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import com.google.common.collect.Maps;
 import com.phonepe.sdk.pg.common.exception.PhonePeException;
 import com.phonepe.sdk.pg.common.http.PhonePeResponse;
+import com.phonepe.sdk.pg.common.models.request.paymentmodeconstraints.CardPaymentModeConstraint;
+import com.phonepe.sdk.pg.common.models.request.paymentmodeconstraints.CardType;
+import com.phonepe.sdk.pg.common.models.request.paymentmodeconstraints.UpiIntentPaymentModeConstraint;
 import com.phonepe.sdk.pg.payments.v2.customcheckout.CustomCheckoutConstants;
 import com.phonepe.sdk.pg.payments.v2.models.request.CreateSdkOrderRequest;
+import com.phonepe.sdk.pg.payments.v2.models.request.PaymentModeConfig;
+import com.phonepe.sdk.pg.payments.v2.models.request.PgCheckoutPaymentFlow;
 import com.phonepe.sdk.pg.payments.v2.models.response.CreateSdkOrderResponse;
 import com.phonepe.sdk.pg.payments.v2.standardcheckout.StandardCheckoutConstants;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import wiremock.org.apache.http.HttpStatus;
@@ -315,5 +322,86 @@ public class CreateOrderTest extends BaseSetupWithOAuth {
         CreateSdkOrderResponse actual = customCheckoutClient.createSdkOrder(createSdkOrderRequest);
         Assertions.assertEquals(actual, createSdkOrderResponse);
         Assertions.assertNull(createSdkOrderRequest.getDisablePaymentRetry());
+    }
+
+    @Test
+    void testCreateOrderWithPaymentModeConfig() {
+        String redirectUrl = "https://google.com";
+        PaymentModeConfig paymentModeConfig =
+                PaymentModeConfig.builder()
+                        .enabledPaymentModes(List.of(
+                                CardPaymentModeConstraint.builder().cardTypes(Set.of(CardType.CREDIT_CARD)).build(),
+                                UpiIntentPaymentModeConstraint.builder().build()))
+                        .build();
+
+        CreateSdkOrderRequest createSdkOrderRequest =
+                CreateSdkOrderRequest.StandardCheckoutBuilder()
+                        .merchantOrderId(merchantOrderId)
+                        .amount(amount)
+                        .redirectUrl(redirectUrl)
+                        .paymentModeConfig(paymentModeConfig)
+                        .build();
+        final String url = StandardCheckoutConstants.CREATE_ORDER_API;
+        CreateSdkOrderResponse createSdkOrderResponse =
+                CreateSdkOrderResponse.builder()
+                        .expireAt(1432423)
+                        .orderId("orderId")
+                        .token("token")
+                        .state("PENDING")
+                        .build();
+
+        addStubForPostRequest(
+                url,
+                getHeaders(),
+                createSdkOrderRequest,
+                HttpStatus.SC_OK,
+                Maps.newHashMap(),
+                createSdkOrderResponse);
+
+        CreateSdkOrderResponse actual =
+                standardCheckoutClient.createSdkOrder(createSdkOrderRequest);
+        Assertions.assertEquals(actual, createSdkOrderResponse);
+        PgCheckoutPaymentFlow pgCheckoutPaymentFlow = (PgCheckoutPaymentFlow)createSdkOrderRequest.getPaymentFlow();
+        Assertions.assertNotNull(pgCheckoutPaymentFlow.getPaymentModeConfig());
+        Assertions.assertEquals(
+                paymentModeConfig.getEnabledPaymentModes(),
+                pgCheckoutPaymentFlow.getPaymentModeConfig().getEnabledPaymentModes());
+        Assertions.assertEquals(
+                paymentModeConfig.getDisabledPaymentModes(),
+                pgCheckoutPaymentFlow.getPaymentModeConfig().getDisabledPaymentModes());
+    }
+
+    @Test
+    void testCreateOrderWithNullPaymentModeConfig() {
+        String redirectUrl = "https://google.com";
+
+        CreateSdkOrderRequest createSdkOrderRequest =
+                CreateSdkOrderRequest.StandardCheckoutBuilder()
+                        .merchantOrderId(merchantOrderId)
+                        .amount(amount)
+                        .redirectUrl(redirectUrl)
+                        .build();
+        final String url = StandardCheckoutConstants.CREATE_ORDER_API;
+        CreateSdkOrderResponse createSdkOrderResponse =
+                CreateSdkOrderResponse.builder()
+                        .expireAt(1432423)
+                        .orderId("orderId")
+                        .token("token")
+                        .state("PENDING")
+                        .build();
+
+        addStubForPostRequest(
+                url,
+                getHeaders(),
+                createSdkOrderRequest,
+                HttpStatus.SC_OK,
+                Maps.newHashMap(),
+                createSdkOrderResponse);
+
+        CreateSdkOrderResponse actual =
+                standardCheckoutClient.createSdkOrder(createSdkOrderRequest);
+        Assertions.assertEquals(actual, createSdkOrderResponse);
+        PgCheckoutPaymentFlow pgCheckoutPaymentFlow = (PgCheckoutPaymentFlow)createSdkOrderRequest.getPaymentFlow();
+        Assertions.assertNull(pgCheckoutPaymentFlow.getPaymentModeConfig());
     }
 }
