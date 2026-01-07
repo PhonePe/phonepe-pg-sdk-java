@@ -31,6 +31,7 @@ public class StandardCheckoutPayRequest {
     private MetaInfo metaInfo;
     private PaymentFlow paymentFlow;
     private Long expireAfter;
+    private Boolean disablePaymentRetry;
 
     /**
      * Builds Standard Checkout Pay Request
@@ -49,7 +50,8 @@ public class StandardCheckoutPayRequest {
             MetaInfo metaInfo,
             String message,
             Long expireAfter,
-            PaymentModeConfig paymentModeConfig) {
+            PaymentModeConfig paymentModeConfig,
+            Boolean disablePaymentRetry) {
         this.merchantOrderId = merchantOrderId;
         this.amount = amount;
         this.metaInfo = metaInfo;
@@ -61,5 +63,6 @@ public class StandardCheckoutPayRequest {
                         .merchantUrls(merchantUrls)
                         .paymentModeConfig(paymentModeConfig)
                         .build());
+        this.disablePaymentRetry = disablePaymentRetry;
     }
 }

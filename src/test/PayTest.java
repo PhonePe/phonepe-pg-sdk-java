@@ -162,4 +162,105 @@ public class PayTest extends BaseSetupWithOAuth {
         PgPaymentResponse actual = customCheckoutClient.pay(request);
         Assertions.assertEquals(pgPaymentResponse, actual);
     }
+
+    @SneakyThrows
+    @Test
+    void testStandardCheckoutPayWithDisablePaymentRetryTrue() {
+        final String url = StandardCheckoutConstants.PAY_API;
+        String redirectUrl = "https://redirectUrl.com";
+
+        StandardCheckoutPayRequest standardCheckoutPayRequest =
+                StandardCheckoutPayRequest.builder()
+                        .merchantOrderId(merchantOrderId)
+                        .amount(amount)
+                        .disablePaymentRetry(true)
+                        .redirectUrl(redirectUrl)
+                        .build();
+        StandardCheckoutPayResponse standardCheckoutResponse =
+                StandardCheckoutPayResponse.builder()
+                        .orderId(String.valueOf(java.time.Instant.now().getEpochSecond()))
+                        .state("PENDING")
+                        .expireAt(java.time.Instant.now().getEpochSecond())
+                        .redirectUrl("https://google.com")
+                        .build();
+        Map<String, String> headers = getHeaders();
+
+        addStubForPostRequest(
+                url,
+                headers,
+                standardCheckoutPayRequest,
+                HttpStatus.SC_OK,
+                Maps.newHashMap(),
+                standardCheckoutResponse);
+        StandardCheckoutPayResponse actual = standardCheckoutClient.pay(standardCheckoutPayRequest);
+        Assertions.assertEquals(standardCheckoutResponse, actual);
+        Assertions.assertTrue(standardCheckoutPayRequest.getDisablePaymentRetry());
+    }
+
+    @SneakyThrows
+    @Test
+    void testStandardCheckoutPayWithDisablePaymentRetryFalse() {
+        final String url = StandardCheckoutConstants.PAY_API;
+        String redirectUrl = "https://redirectUrl.com";
+
+        StandardCheckoutPayRequest standardCheckoutPayRequest =
+                StandardCheckoutPayRequest.builder()
+                        .merchantOrderId(merchantOrderId)
+                        .amount(amount)
+                        .disablePaymentRetry(false)
+                        .redirectUrl(redirectUrl)
+                        .build();
+        StandardCheckoutPayResponse standardCheckoutResponse =
+                StandardCheckoutPayResponse.builder()
+                        .orderId(String.valueOf(java.time.Instant.now().getEpochSecond()))
+                        .state("PENDING")
+                        .expireAt(java.time.Instant.now().getEpochSecond())
+                        .redirectUrl("https://google.com")
+                        .build();
+        Map<String, String> headers = getHeaders();
+
+        addStubForPostRequest(
+                url,
+                headers,
+                standardCheckoutPayRequest,
+                HttpStatus.SC_OK,
+                Maps.newHashMap(),
+                standardCheckoutResponse);
+        StandardCheckoutPayResponse actual = standardCheckoutClient.pay(standardCheckoutPayRequest);
+        Assertions.assertEquals(standardCheckoutResponse, actual);
+        Assertions.assertFalse(standardCheckoutPayRequest.getDisablePaymentRetry());
+    }
+
+    @SneakyThrows
+    @Test
+    void testStandardCheckoutPayWithDisablePaymentRetryNull() {
+        final String url = StandardCheckoutConstants.PAY_API;
+        String redirectUrl = "https://redirectUrl.com";
+
+        StandardCheckoutPayRequest standardCheckoutPayRequest =
+                StandardCheckoutPayRequest.builder()
+                        .merchantOrderId(merchantOrderId)
+                        .amount(amount)
+                        .redirectUrl(redirectUrl)
+                        .build();
+        StandardCheckoutPayResponse standardCheckoutResponse =
+                StandardCheckoutPayResponse.builder()
+                        .orderId(String.valueOf(java.time.Instant.now().getEpochSecond()))
+                        .state("PENDING")
+                        .expireAt(java.time.Instant.now().getEpochSecond())
+                        .redirectUrl("https://google.com")
+                        .build();
+        Map<String, String> headers = getHeaders();
+
+        addStubForPostRequest(
+                url,
+                headers,
+                standardCheckoutPayRequest,
+                HttpStatus.SC_OK,
+                Maps.newHashMap(),
+                standardCheckoutResponse);
+        StandardCheckoutPayResponse actual = standardCheckoutClient.pay(standardCheckoutPayRequest);
+        Assertions.assertEquals(standardCheckoutResponse, actual);
+        Assertions.assertNull(standardCheckoutPayRequest.getDisablePaymentRetry());
+    }
 }

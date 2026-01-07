@@ -34,7 +34,7 @@ class HeadersTest {
     }
 
     /**
-     * Test that SDK_VERSION follows semantic versioning format (e.g., 2.1.8)
+     * Test that SDK_VERSION follows semantic versioning format
      */
     @Test
     void testSDKVersionFormat() {
