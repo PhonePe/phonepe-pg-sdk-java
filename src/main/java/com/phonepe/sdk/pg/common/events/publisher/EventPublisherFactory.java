@@ -28,8 +28,20 @@ public class EventPublisherFactory {
     private final ObjectMapper objectMapper;
     private final OkHttpClient okHttpClient;
     private final String hostUrl;
-    private static EventPublisher cachedEventPublisher;
+    private static volatile EventPublisher cachedEventPublisher;
+    private static final EventPublisher NO_OP_EVENT_PUBLISHER =
+            new EventPublisher() {
+                @Override
+                public void run() {}
+            };
 
+    /**
+     * Constructs an EventPublisherFactory with required dependencies.
+     *
+     * @param objectMapper the Jackson ObjectMapper
+     * @param okHttpClient the OkHttpClient
+     * @param hostUrl the event host URL
+     */
     public EventPublisherFactory(
             final ObjectMapper objectMapper,
             final OkHttpClient okHttpClient,
@@ -39,13 +51,12 @@ public class EventPublisherFactory {
         this.hostUrl = hostUrl;
     }
 
-    public static void setCachedEventPublisher(EventPublisher eventPublisher) {
+    public static synchronized void setCachedEventPublisher(EventPublisher eventPublisher) {
         EventPublisherFactory.cachedEventPublisher = eventPublisher;
     }
 
-    public EventPublisher getEventPublisher(boolean shouldPublishEvents) {
+    public synchronized EventPublisher getEventPublisher(boolean shouldPublishEvents) {
         if (shouldPublishEvents) {
-            // For different clients, the eventSender should be same
             if (Objects.isNull(cachedEventPublisher)) {
                 EventPublisherFactory.setCachedEventPublisher(
                         QueuedEventPublisher.builder()
@@ -58,9 +69,6 @@ public class EventPublisherFactory {
             }
             return EventPublisherFactory.cachedEventPublisher;
         }
-        return new EventPublisher() {
-            @Override
-            public void run() {}
-        };
+        return NO_OP_EVENT_PUBLISHER;
     }
 }
