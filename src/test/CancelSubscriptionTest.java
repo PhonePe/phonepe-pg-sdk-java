@@ -56,4 +56,19 @@ public class CancelSubscriptionTest extends BaseSetupWithOAuth {
 
         wireMockServer.verify(exactly(1), postRequestedFor(urlPathMatching(url)));
     }
+
+    @Test
+    void testCancelSubscriptionIfNoContentResponseReceived() {
+        wireMockServer.resetRequests();
+        String merchantSubscriptionId = "c61d7378-a081-44ab-9559-ad8563a24b49";
+        String url = String.format(SubscriptionConstants.CANCEL_API, merchantSubscriptionId);
+
+        Map<String, String> headers = getHeadersForSubscription();
+
+        addStubForPostRequest(url, headers, null, HttpStatus.SC_NO_CONTENT, Maps.newHashMap(), "");
+
+        subscriptionClient.cancelSubscription(merchantSubscriptionId);
+
+        wireMockServer.verify(exactly(1), postRequestedFor(urlPathMatching(url)));
+    }
 }
