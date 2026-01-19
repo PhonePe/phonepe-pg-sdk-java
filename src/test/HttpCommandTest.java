@@ -13,6 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -22,6 +23,8 @@ import com.phonepe.sdk.pg.common.http.HttpCommand;
 import com.phonepe.sdk.pg.common.http.HttpMethodType;
 import com.phonepe.sdk.pg.common.http.PhonePeResponse;
 import java.util.Map;
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import wiremock.org.apache.http.HttpStatus;
@@ -73,5 +76,25 @@ public class HttpCommandTest extends BaseSetup {
                 assertThrows(PhonePeException.class, () -> httpCommand.execute());
         Assertions.assertEquals(404, phonePeException.getHttpStatusCode());
         Assertions.assertEquals("Not Found", phonePeException.getMessage());
+    }
+
+    @Test
+    void testHttpCommand204() {
+        String sampleJson = "{\"state\":\"PENDING\"}";
+        RequestBody requestBody = RequestBody.create(
+                sampleJson.getBytes(), MediaType.parse(APPLICATION_JSON));
+        HttpCommand<Void, RequestBody> httpCommand =
+                HttpCommand.<Void, RequestBody>builder()
+                        .hostURL("http://localhost:30419")
+                        .client(okHttpClient)
+                        .requestData(requestBody)
+                        .objectMapper(mapper)
+                        .responseTypeReference(new TypeReference<>() {})
+                        .url("/testing")
+                        .methodName(HttpMethodType.POST)
+                        .build();
+        addStubForPostRequest("/testing", sampleJson, HttpStatus.SC_NO_CONTENT, "");
+        Void result = httpCommand.execute();
+        Assertions.assertNull(result);
     }
 }

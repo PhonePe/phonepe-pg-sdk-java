@@ -48,121 +48,125 @@ import okhttp3.Response;
 @Slf4j
 public class HttpCommand<T, R> {
 
-    private final OkHttpClient client;
-    @NotNull private final String hostURL;
-    @NotNull private String url;
-    private List<HttpHeaderPair> headers;
-    private final ObjectMapper objectMapper;
-    private final TypeReference<T> responseTypeReference;
-    private final R requestData;
-    private final String encodingType;
-    @NotBlank private final HttpMethodType methodName;
-    private Map<String, String> queryParams;
+	private final OkHttpClient client;
+	@NotNull private final String hostURL;
+	@NotNull private String url;
+	private List<HttpHeaderPair> headers;
+	private final ObjectMapper objectMapper;
+	private final TypeReference<T> responseTypeReference;
+	private final R requestData;
+	private final String encodingType;
+	@NotBlank
+	private final HttpMethodType methodName;
+	private Map<String, String> queryParams;
 
-    /**
-     * Returns the request body containing the serialized data.
-     *
-     * @return the request body as a RequestBody object
-     */
-    @SneakyThrows
-    private RequestBody prepareRequestBody() {
-        if (Objects.equals(encodingType, APPLICATION_JSON)) {
-            return RequestBody.create(
-                    objectMapper.writeValueAsBytes(requestData), MediaType.parse(encodingType));
-        }
+	/**
+	 * Returns the request body containing the serialized data.
+	 *
+	 * @return the request body as a RequestBody object
+	 */
+	@SneakyThrows
+	private RequestBody prepareRequestBody() {
+		if (Objects.equals(encodingType, APPLICATION_JSON)) {
+			return RequestBody.create(
+					objectMapper.writeValueAsBytes(requestData), MediaType.parse(encodingType));
+		}
 
-        if (Objects.equals(encodingType, APPLICATION_FORM_URLENCODED)) {
-            return (RequestBody) requestData;
-        }
-        return (RequestBody) requestData;
-    }
+		if (Objects.equals(encodingType, APPLICATION_FORM_URLENCODED)) {
+			return (RequestBody) requestData;
+		}
+		return (RequestBody) requestData;
+	}
 
-    /**
-     * Constructs an HTTP URL by appending the provided URL to the base host URL.
-     *
-     * @param url the URL to append to the base host URL
-     * @return the constructed HttpUrl object
-     * @throws IllegalArgumentException if the base host URL or the provided URL is invalid
-     */
-    private HttpUrl prepareHttpURL(String url) {
-        HttpUrl.Builder urlBuilder =
-                Objects.requireNonNull(HttpUrl.parse(String.format("%s%s", this.hostURL, url)))
-                        .newBuilder();
-        if (!Objects.isNull(queryParams)) {
-            for (Map.Entry<String, String> param : queryParams.entrySet()) {
-                urlBuilder.addQueryParameter(param.getKey(), param.getValue());
-            }
-        }
-        return HttpUrl.get(urlBuilder.build().toString());
-    }
+	/**
+	 * Constructs an HTTP URL by appending the provided URL to the base host URL.
+	 *
+	 * @param url the URL to append to the base host URL
+	 * @return the constructed HttpUrl object
+	 * @throws IllegalArgumentException if the base host URL or the provided URL is invalid
+	 */
+	private HttpUrl prepareHttpURL(String url) {
+		HttpUrl.Builder urlBuilder = Objects.requireNonNull(HttpUrl.parse(String.format("%s%s", this.hostURL, url)))
+				.newBuilder();
+		if (!Objects.isNull(queryParams)) {
+			for (Map.Entry<String, String> param : queryParams.entrySet()) {
+				urlBuilder.addQueryParameter(param.getKey(), param.getValue());
+			}
+		}
+		return HttpUrl.get(urlBuilder.build()
+				.toString());
+	}
 
-    /**
-     * Executes the HTTP request and returns the response.
-     *
-     * @return the response object
-     */
-    @SneakyThrows
-    public T execute() {
-        log.info("Calling {} : {}{}", methodName, hostURL, url);
-        final HttpUrl httpUrl = prepareHttpURL(this.url);
-        final Request httpRequest = prepareRequest(httpUrl);
-        final Response response = client.newCall(httpRequest).execute();
-        return handleResponse(response);
-    }
+	/**
+	 * Executes the HTTP request and returns the response.
+	 *
+	 * @return the response object
+	 */
+	@SneakyThrows
+	public T execute() {
+		log.info("Calling {} : {}{}", methodName, hostURL, url);
+		final HttpUrl httpUrl = prepareHttpURL(this.url);
+		final Request httpRequest = prepareRequest(httpUrl);
+		final Response response = client.newCall(httpRequest)
+				.execute();
+		return handleResponse(response);
+	}
 
-    @SneakyThrows
-    public T handleResponse(Response response) {
-        int responseCode = response.code();
-        final byte[] responseBody =
-                Objects.nonNull(response.body()) ? response.body().bytes() : null;
+	@SneakyThrows
+	public T handleResponse(Response response) {
+		int responseCode = response.code();
+		final byte[] responseBody = Objects.nonNull(response.body()) ? response.body()
+				.bytes() : null;
+		if (responseCode == 204) {
+			return null;
+		}
+		if (responseCode >= 200 && responseCode <= 299) {
+			return objectMapper.readValue(responseBody, responseTypeReference);
+		}
+		try {
+			PhonePeResponse phonePeResponse = objectMapper.readValue(responseBody, PhonePeResponse.class);
+			if (ExceptionMapper.codeToException.containsKey(responseCode)) {
+				ExceptionMapper.prepareCodeToException(
+						responseCode, response.message(), phonePeResponse);
+			} else if (responseCode >= 400 && responseCode <= 499) {
+				throw new ClientError(responseCode, response.message(), phonePeResponse);
+			} else if (responseCode >= 500 && responseCode <= 599) {
+				throw new ServerError(responseCode, response.message(), phonePeResponse);
+			}
+			throw new PhonePeException(responseCode, response.message(), phonePeResponse);
+		} catch (JsonProcessingException jsonProcessingException) {
+			throw new PhonePeException(responseCode, response.message());
+		}
+	}
 
-        if (responseCode >= 200 && responseCode <= 299) {
-            return objectMapper.readValue(responseBody, responseTypeReference);
-        }
-        try {
-            PhonePeResponse phonePeResponse =
-                    objectMapper.readValue(responseBody, PhonePeResponse.class);
-            if (ExceptionMapper.codeToException.containsKey(responseCode)) {
-                ExceptionMapper.prepareCodeToException(
-                        responseCode, response.message(), phonePeResponse);
-            } else if (responseCode >= 400 && responseCode <= 499) {
-                throw new ClientError(responseCode, response.message(), phonePeResponse);
-            } else if (responseCode >= 500 && responseCode <= 599) {
-                throw new ServerError(responseCode, response.message(), phonePeResponse);
-            }
-            throw new PhonePeException(responseCode, response.message(), phonePeResponse);
-        } catch (JsonProcessingException jsonProcessingException) {
-            throw new PhonePeException(responseCode, response.message());
-        }
-    }
-
-    /**
-     * Constructs an HTTP request based on the provided HTTP URL, method name, and headers.
-     *
-     * @param httpUrl the HTTP URL for the request
-     * @return the constructed Request object
-     * @throws PhonePeException if the method name is not supported
-     */
-    public Request prepareRequest(final HttpUrl httpUrl) {
-        if (methodName == HttpMethodType.POST) {
-            final Request.Builder requestBuilder =
-                    new Request.Builder().url(httpUrl).post(prepareRequestBody());
-            if (!Objects.isNull(headers)) {
-                for (HttpHeaderPair httpHeader : headers) {
-                    requestBuilder.header(httpHeader.getKey(), httpHeader.getValue());
-                }
-            }
-            return requestBuilder.build();
-        } else if (methodName == HttpMethodType.GET) {
-            final Request.Builder requestBuilder = new Request.Builder().url(httpUrl).get();
-            if (!Objects.isNull(headers)) {
-                for (HttpHeaderPair httpHeader : headers) {
-                    requestBuilder.header(httpHeader.getKey(), httpHeader.getValue());
-                }
-            }
-            return requestBuilder.build();
-        } else {
-            throw new PhonePeException(405, "Method Not Supported");
-        }
-    }
+	/**
+	 * Constructs an HTTP request based on the provided HTTP URL, method name, and headers.
+	 *
+	 * @param httpUrl the HTTP URL for the request
+	 * @return the constructed Request object
+	 * @throws PhonePeException if the method name is not supported
+	 */
+	public Request prepareRequest(final HttpUrl httpUrl) {
+		if (methodName == HttpMethodType.POST) {
+			final Request.Builder requestBuilder = new Request.Builder().url(httpUrl)
+					.post(prepareRequestBody());
+			if (!Objects.isNull(headers)) {
+				for (HttpHeaderPair httpHeader : headers) {
+					requestBuilder.header(httpHeader.getKey(), httpHeader.getValue());
+				}
+			}
+			return requestBuilder.build();
+		} else if (methodName == HttpMethodType.GET) {
+			final Request.Builder requestBuilder = new Request.Builder().url(httpUrl)
+					.get();
+			if (!Objects.isNull(headers)) {
+				for (HttpHeaderPair httpHeader : headers) {
+					requestBuilder.header(httpHeader.getKey(), httpHeader.getValue());
+				}
+			}
+			return requestBuilder.build();
+		} else {
+			throw new PhonePeException(405, "Method Not Supported");
+		}
+	}
 }

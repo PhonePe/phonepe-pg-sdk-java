@@ -195,11 +195,6 @@
                             <tabs>true</tabs>
                             <spacesPerTab>4</spacesPerTab>
                         </indent>
-                        <googleJavaFormat>
-                            <version>1.22.0</version>
-                            <style>AOSP</style>
-                            <reflowLongStrings>true</reflowLongStrings>
-                        </googleJavaFormat>
                     </java>
                 </configuration>
                 <executions>
