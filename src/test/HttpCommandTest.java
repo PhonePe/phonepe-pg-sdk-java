@@ -16,7 +16,6 @@
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.common.collect.ImmutableMap;
 import com.phonepe.sdk.pg.common.exception.PhonePeException;
@@ -80,7 +79,7 @@ public class HttpCommandTest extends BaseSetup {
     }
 
     @Test
-    public void testHttpCommand204() throws JsonProcessingException {
+    void testHttpCommand204() {
         String sampleJson = "{\"state\":\"PENDING\"}";
         RequestBody requestBody = RequestBody.create(
                 sampleJson.getBytes(), MediaType.parse(APPLICATION_JSON));
