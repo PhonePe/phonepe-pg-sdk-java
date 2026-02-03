@@ -21,10 +21,12 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.SneakyThrows;
+import lombok.experimental.UtilityClass;
 
+@UtilityClass
 public class ExceptionMapper {
 
-    public static Map<Integer, Class<?>> codeToException =
+    public final Map<Integer, Class<?>> codeToException =
             Stream.of(
                             new AbstractMap.SimpleEntry<>(400, BadRequest.class),
                             new AbstractMap.SimpleEntry<>(401, UnauthorizedAccess.class),
