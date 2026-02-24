@@ -177,4 +177,43 @@ class UpiCollectPayViaPhoneNumberRequestBuilderTest {
                         .PHONE_NUMBER,
                 details.getType());
     }
+
+    @Test
+    void testXDeviceOsIsSetWhenProvided() {
+        PgPaymentRequest request =
+                PgPaymentRequest.UpiCollectPayViaPhoneNumberRequestBuilder()
+                        .merchantOrderId("ORDER_PHONE_011")
+                        .amount(1100L)
+                        .phoneNumber("9777777777")
+                        .xDeviceOs("ANDROID")
+                        .build();
+
+        Assertions.assertEquals("ANDROID", request.getXDeviceOs());
+    }
+
+    @Test
+    void testXDeviceOsIsNullWhenNotProvided() {
+        PgPaymentRequest request =
+                PgPaymentRequest.UpiCollectPayViaPhoneNumberRequestBuilder()
+                        .merchantOrderId("ORDER_PHONE_012")
+                        .amount(1200L)
+                        .phoneNumber("9888888888")
+                        .build();
+
+        Assertions.assertNull(request.getXDeviceOs());
+    }
+
+    @Test
+    void testXDeviceOsNotInJsonSerialization() throws Exception {
+        PgPaymentRequest request =
+                PgPaymentRequest.UpiCollectPayViaPhoneNumberRequestBuilder()
+                        .merchantOrderId("ORDER_PHONE_013")
+                        .amount(1300L)
+                        .phoneNumber("9999999999")
+                        .xDeviceOs("IOS")
+                        .build();
+
+        String json = new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsString(request);
+        Assertions.assertFalse(json.contains("xDeviceOs"));
+    }
 }

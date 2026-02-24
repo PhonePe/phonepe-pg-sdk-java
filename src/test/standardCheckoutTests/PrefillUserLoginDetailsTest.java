@@ -1,4 +1,4 @@
-package standardCheckoutTests;/*
+/*
  *  Copyright (c) 2025 Original Author(s), PhonePe India Pvt. Ltd.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,6 +13,7 @@ package standardCheckoutTests;/*
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+package standardCheckoutTests;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;

@@ -156,4 +156,43 @@ class UpiCollectPayViaVpaRequestBuilderTest {
 
         Assertions.assertNull(request.getConstraints());
     }
+
+    @Test
+    void testXDeviceOsIsSetWhenProvided() {
+        PgPaymentRequest request =
+                PgPaymentRequest.UpiCollectPayViaVpaRequestBuilder()
+                        .merchantOrderId("ORDER_VPA_010")
+                        .amount(1000L)
+                        .vpa("user@upi")
+                        .xDeviceOs("ANDROID")
+                        .build();
+
+        Assertions.assertEquals("ANDROID", request.getXDeviceOs());
+    }
+
+    @Test
+    void testXDeviceOsIsNullWhenNotProvided() {
+        PgPaymentRequest request =
+                PgPaymentRequest.UpiCollectPayViaVpaRequestBuilder()
+                        .merchantOrderId("ORDER_VPA_011")
+                        .amount(1100L)
+                        .vpa("user@upi")
+                        .build();
+
+        Assertions.assertNull(request.getXDeviceOs());
+    }
+
+    @Test
+    void testXDeviceOsNotInJsonSerialization() throws Exception {
+        PgPaymentRequest request =
+                PgPaymentRequest.UpiCollectPayViaVpaRequestBuilder()
+                        .merchantOrderId("ORDER_VPA_012")
+                        .amount(1200L)
+                        .vpa("user@upi")
+                        .xDeviceOs("IOS")
+                        .build();
+
+        String json = new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsString(request);
+        Assertions.assertFalse(json.contains("xDeviceOs"));
+    }
 }
