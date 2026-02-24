@@ -15,6 +15,7 @@
  */
 package com.phonepe.sdk.pg.common.models.request;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.phonepe.sdk.pg.common.models.MetaInfo;
@@ -58,6 +59,8 @@ public class PgPaymentRequest {
     private DeviceContext deviceContext;
     private Long expireAfter;
     private Long expireAt;
+
+    @JsonIgnore private String xDeviceOs;
 
     private PgPaymentRequest(
             String merchantOrderId,
@@ -107,8 +110,10 @@ public class PgPaymentRequest {
             List<InstrumentConstraint> constraints,
             String vpa,
             String message,
-            Long expireAfter) {
+            Long expireAfter,
+            String xDeviceOs) {
         this(merchantOrderId, amount, metaInfo, constraints, expireAfter);
+        this.xDeviceOs = xDeviceOs;
         this.paymentFlow =
                 PgPaymentFlow.builder()
                         .paymentMode(
@@ -130,8 +135,10 @@ public class PgPaymentRequest {
             String phoneNumber,
             List<InstrumentConstraint> constraints,
             String message,
-            Long expireAfter) {
+            Long expireAfter,
+            String xDeviceOs) {
         this(merchantOrderId, amount, metaInfo, constraints, expireAfter);
+        this.xDeviceOs = xDeviceOs;
         this.paymentFlow =
                 PgPaymentFlow.builder()
                         .paymentMode(

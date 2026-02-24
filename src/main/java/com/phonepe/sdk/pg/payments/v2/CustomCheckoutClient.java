@@ -113,6 +113,15 @@ public class CustomCheckoutClient extends BaseClient {
     public PgPaymentResponse pay(PgPaymentRequest pgPaymentRequest) {
         String url = CustomCheckoutConstants.PAY_API;
         try {
+            List<HttpHeaderPair> requestHeaders = headers;
+            if (pgPaymentRequest.getXDeviceOs() != null) {
+                requestHeaders = new ArrayList<>(headers);
+                requestHeaders.add(
+                        HttpHeaderPair.builder()
+                                .key(Headers.X_DEVICE_OS)
+                                .value(pgPaymentRequest.getXDeviceOs())
+                                .build());
+            }
             PgPaymentResponse pgPaymentResponse =
                     requestViaAuthRefresh(
                             HttpMethodType.POST,
@@ -120,7 +129,7 @@ public class CustomCheckoutClient extends BaseClient {
                             url,
                             null,
                             new TypeReference<PgPaymentResponse>() {},
-                            headers);
+                            requestHeaders);
             this.eventPublisher.send(
                     BaseEvent.buildCustomCheckoutPayEvent(
                             EventState.SUCCESS, pgPaymentRequest, url, EventType.PAY_SUCCESS));
