@@ -1,4 +1,4 @@
-/*
+package standardCheckoutTests;/*
  *  Copyright (c) 2025 Original Author(s), PhonePe India Pvt. Ltd.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,7 +29,7 @@ import org.junit.jupiter.api.DisplayName;
  * - JSON serialization/deserialization
  * - Edge cases and null handling
  */
-public class PrefillUserLoginDetailsTest {
+class PrefillUserLoginDetailsTest {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final String redirectUrl = "https://merchant.com/callback";
