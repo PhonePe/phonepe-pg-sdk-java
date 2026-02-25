@@ -57,7 +57,9 @@ public class PgPaymentRequest {
 	private List<InstrumentConstraint> constraints;
 
 	private DeviceContext deviceContext;
+
 	private Long expireAfter;
+
 	private Long expireAt;
 
 	@JsonIgnore
