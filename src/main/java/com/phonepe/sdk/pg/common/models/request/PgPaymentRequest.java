@@ -63,7 +63,7 @@ public class PgPaymentRequest {
 	private Long expireAt;
 
 	@JsonIgnore
-	private String xDeviceOs;
+	private String deviceOs;
 
 	private PgPaymentRequest(
 			String merchantOrderId,
@@ -112,9 +112,9 @@ public class PgPaymentRequest {
 			String vpa,
 			String message,
 			Long expireAfter,
-			String xDeviceOs) {
+			String deviceOs) {
 		this(merchantOrderId, amount, metaInfo, constraints, expireAfter);
-		this.xDeviceOs = xDeviceOs;
+		this.deviceOs = deviceOs;
 		this.paymentFlow = PgPaymentFlow.builder()
 				.paymentMode(
 						CollectPaymentV2Instrument.builder()
@@ -137,9 +137,9 @@ public class PgPaymentRequest {
 			List<InstrumentConstraint> constraints,
 			String message,
 			Long expireAfter,
-			String xDeviceOs) {
+			String deviceOs) {
 		this(merchantOrderId, amount, metaInfo, constraints, expireAfter);
-		this.xDeviceOs = xDeviceOs;
+		this.deviceOs = deviceOs;
 		this.paymentFlow = PgPaymentFlow.builder()
 				.paymentMode(
 						CollectPaymentV2Instrument.builder()

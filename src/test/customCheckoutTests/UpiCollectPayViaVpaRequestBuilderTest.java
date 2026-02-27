@@ -164,10 +164,10 @@ class UpiCollectPayViaVpaRequestBuilderTest {
                         .merchantOrderId("ORDER_VPA_010")
                         .amount(1000L)
                         .vpa("user@upi")
-                        .xDeviceOs("ANDROID")
+                        .deviceOs("ANDROID")
                         .build();
 
-        Assertions.assertEquals("ANDROID", request.getXDeviceOs());
+        Assertions.assertEquals("ANDROID", request.getDeviceOs());
     }
 
     @Test
@@ -179,7 +179,7 @@ class UpiCollectPayViaVpaRequestBuilderTest {
                         .vpa("user@upi")
                         .build();
 
-        Assertions.assertNull(request.getXDeviceOs());
+        Assertions.assertNull(request.getDeviceOs());
     }
 
     @Test
@@ -189,10 +189,10 @@ class UpiCollectPayViaVpaRequestBuilderTest {
                         .merchantOrderId("ORDER_VPA_012")
                         .amount(1200L)
                         .vpa("user@upi")
-                        .xDeviceOs("IOS")
+                        .deviceOs("IOS")
                         .build();
 
         String json = new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsString(request);
-        Assertions.assertFalse(json.contains("xDeviceOs"));
+        Assertions.assertFalse(json.contains("deviceOs"));
     }
 }
