@@ -344,7 +344,7 @@ public class PayTest extends BaseSetupWithOAuth {
     void testStandardCheckoutPayWithPrefillUserLoginDetails() {
         final String url = StandardCheckoutConstants.PAY_API;
         String redirectUrl = "https://redirectUrl.com";
-        String prefiledMobileNumber = "+919090909009";
+        String prefilledMobileNumber = "+919090909009";
 
         PrefillUserLoginDetails prefillUserLoginDetails = PrefillUserLoginDetails.builder()
                 .phoneNumber("+919090909009")
@@ -375,7 +375,7 @@ public class PayTest extends BaseSetupWithOAuth {
         StandardCheckoutPayResponse actual = standardCheckoutClient.pay(standardCheckoutPayRequest);
         Assertions.assertEquals(standardCheckoutResponse, actual);
         Assertions.assertNotNull(standardCheckoutPayRequest.getPrefillUserLoginDetails());
-        Assertions.assertEquals(prefiledMobileNumber, standardCheckoutPayRequest.getPrefillUserLoginDetails().getPhoneNumber());
+        Assertions.assertEquals(prefilledMobileNumber, standardCheckoutPayRequest.getPrefillUserLoginDetails().getPhoneNumber());
     }
 
     @SneakyThrows

@@ -25,5 +25,5 @@ import lombok.Data;
 @JsonInclude(Include.NON_NULL)
 public class PrefillUserLoginDetails {
 
-	String phoneNumber;
+	private String phoneNumber;
 }
