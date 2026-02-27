@@ -67,7 +67,7 @@ public class PgPaymentRequest {
     // this header is now being incorporated directly into the request builder
     // instead of being managed as a separate value.
     @JsonIgnore
-    private String deviceOs;
+    private String deviceOS;
 
     private PgPaymentRequest(
             String merchantOrderId,
@@ -117,9 +117,9 @@ public class PgPaymentRequest {
             String vpa,
             String message,
             Long expireAfter,
-            String deviceOs) {
+            String deviceOS) {
         this(merchantOrderId, amount, metaInfo, constraints, expireAfter);
-        this.deviceOs = deviceOs;
+        this.deviceOS = deviceOS;
         this.paymentFlow = PgPaymentFlow.builder()
                 .paymentMode(
                         CollectPaymentV2Instrument.builder()
@@ -143,9 +143,9 @@ public class PgPaymentRequest {
             List<InstrumentConstraint> constraints,
             String message,
             Long expireAfter,
-            String deviceOs) {
+            String deviceOS) {
         this(merchantOrderId, amount, metaInfo, constraints, expireAfter);
-        this.deviceOs = deviceOs;
+        this.deviceOS = deviceOS;
         this.paymentFlow = PgPaymentFlow.builder()
                 .paymentMode(
                         CollectPaymentV2Instrument.builder()

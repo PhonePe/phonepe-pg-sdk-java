@@ -176,7 +176,7 @@ public class PayTest extends BaseSetupWithOAuth {
                         .merchantOrderId("MerchantOrderId")
                         .amount(100)
                         .vpa("user@upi")
-                        .deviceOs("ANDROID")
+                        .deviceOS("ANDROID")
                         .build();
         PgPaymentResponse pgPaymentResponse =
                 PgPaymentResponse.builder()
@@ -230,7 +230,7 @@ public class PayTest extends BaseSetupWithOAuth {
                         .merchantOrderId("MerchantOrderId")
                         .amount(100)
                         .vpa("user@upi")
-                        .deviceOs("ANDROID")
+                        .deviceOS("ANDROID")
                         .build();
 
         String json = objectMapper.writeValueAsString(request);

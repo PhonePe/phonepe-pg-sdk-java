@@ -111,13 +111,13 @@ public class CustomCheckoutClient extends BaseClient {
         String url = CustomCheckoutConstants.PAY_API;
         try {
             List<HttpHeaderPair> requestHeaders = headers;
-            if (pgPaymentRequest.getDeviceOs() != null && pgPaymentRequest.getDeviceOs()
+            if (pgPaymentRequest.getDeviceOS() != null && !pgPaymentRequest.getDeviceOS()
                     .isBlank()) {
                 requestHeaders = new ArrayList<>(headers);
                 requestHeaders.add(
                         HttpHeaderPair.builder()
                                 .key(Headers.X_DEVICE_OS)
-                                .value(pgPaymentRequest.getDeviceOs())
+                                .value(pgPaymentRequest.getDeviceOS())
                                 .build());
             }
             PgPaymentResponse pgPaymentResponse = requestViaAuthRefresh(

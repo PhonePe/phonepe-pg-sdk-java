@@ -185,10 +185,10 @@ class UpiCollectPayViaPhoneNumberRequestBuilderTest {
                         .merchantOrderId("ORDER_PHONE_011")
                         .amount(1100L)
                         .phoneNumber("9777777777")
-                        .deviceOs("ANDROID")
+                        .deviceOS("ANDROID")
                         .build();
 
-        Assertions.assertEquals("ANDROID", request.getDeviceOs());
+        Assertions.assertEquals("ANDROID", request.getDeviceOS());
     }
 
     @Test
@@ -200,7 +200,7 @@ class UpiCollectPayViaPhoneNumberRequestBuilderTest {
                         .phoneNumber("9888888888")
                         .build();
 
-        Assertions.assertNull(request.getDeviceOs());
+        Assertions.assertNull(request.getDeviceOS());
     }
 
     @Test
@@ -210,7 +210,7 @@ class UpiCollectPayViaPhoneNumberRequestBuilderTest {
                         .merchantOrderId("ORDER_PHONE_013")
                         .amount(1300L)
                         .phoneNumber("9999999999")
-                        .deviceOs("IOS")
+                        .deviceOS("IOS")
                         .build();
 
         String json = new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsString(request);
