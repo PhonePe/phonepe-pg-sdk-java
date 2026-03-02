@@ -16,6 +16,7 @@
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.google.common.collect.Maps;
+import com.phonepe.sdk.pg.common.constants.Headers;
 import com.phonepe.sdk.pg.common.exception.PhonePeException;
 import com.phonepe.sdk.pg.common.http.PhonePeResponse;
 import com.phonepe.sdk.pg.common.models.request.PgPaymentRequest;
@@ -29,11 +30,13 @@ import com.phonepe.sdk.pg.common.models.request.paymentmodeconstraints.UpiQrPaym
 import com.phonepe.sdk.pg.common.models.response.PgPaymentResponse;
 import com.phonepe.sdk.pg.payments.v2.customcheckout.CustomCheckoutConstants;
 import com.phonepe.sdk.pg.payments.v2.models.request.PaymentModeConfig;
+import com.phonepe.sdk.pg.payments.v2.models.request.PrefillUserLoginDetails;
 import com.phonepe.sdk.pg.payments.v2.models.request.StandardCheckoutPayRequest;
 import com.phonepe.sdk.pg.payments.v2.models.response.StandardCheckoutPayResponse;
 import com.phonepe.sdk.pg.payments.v2.standardcheckout.StandardCheckoutConstants;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -165,6 +168,78 @@ public class PayTest extends BaseSetupWithOAuth {
 
     @SneakyThrows
     @Test
+    void testCustomPayUpiCollectWithXDeviceOsHeader() {
+        final String url = CustomCheckoutConstants.PAY_API;
+
+        PgPaymentRequest request =
+                PgPaymentRequest.UpiCollectPayViaVpaRequestBuilder()
+                        .merchantOrderId("MerchantOrderId")
+                        .amount(100)
+                        .vpa("user@upi")
+                        .deviceOS("ANDROID")
+                        .build();
+        PgPaymentResponse pgPaymentResponse =
+                PgPaymentResponse.builder()
+                        .orderId("OMO2403071446458436434329")
+                        .state("PENDING")
+                        .expireAt(java.time.Instant.now().getEpochSecond())
+                        .redirectUrl("mercury.com")
+                        .build();
+
+        Map<String, String> headers = new HashMap<>(getHeaders());
+        headers.put(Headers.X_DEVICE_OS, "ANDROID");
+
+        addStubForPostRequest(
+                url, headers, request, HttpStatus.SC_OK, Maps.newHashMap(), pgPaymentResponse);
+
+        PgPaymentResponse actual = customCheckoutClient.pay(request);
+        Assertions.assertEquals(pgPaymentResponse, actual);
+    }
+
+    @SneakyThrows
+    @Test
+    void testCustomPayUpiCollectWithoutXDeviceOsHeader() {
+        final String url = CustomCheckoutConstants.PAY_API;
+
+        PgPaymentRequest request =
+                PgPaymentRequest.UpiCollectPayViaVpaRequestBuilder()
+                        .merchantOrderId("MerchantOrderId")
+                        .amount(100)
+                        .vpa("user@upi")
+                        .build();
+        PgPaymentResponse pgPaymentResponse =
+                PgPaymentResponse.builder()
+                        .orderId("OMO2403071446458436434329")
+                        .state("PENDING")
+                        .expireAt(java.time.Instant.now().getEpochSecond())
+                        .redirectUrl("mercury.com")
+                        .build();
+
+        addStubForPostRequest(
+                url, getHeaders(), request, HttpStatus.SC_OK, Maps.newHashMap(), pgPaymentResponse);
+
+        PgPaymentResponse actual = customCheckoutClient.pay(request);
+        Assertions.assertEquals(pgPaymentResponse, actual);
+    }
+
+    @SneakyThrows
+    @Test
+    void testCustomPayUpiCollectXDeviceOsNotInRequestBody() {
+        PgPaymentRequest request =
+                PgPaymentRequest.UpiCollectPayViaVpaRequestBuilder()
+                        .merchantOrderId("MerchantOrderId")
+                        .amount(100)
+                        .vpa("user@upi")
+                        .deviceOS("ANDROID")
+                        .build();
+
+        String json = objectMapper.writeValueAsString(request);
+        Assertions.assertFalse(json.contains("xDeviceOs"),
+                "xDeviceOs should not be serialized into the request body");
+    }
+
+    @SneakyThrows
+    @Test
     void testStandardCheckoutPayWithDisablePaymentRetryTrue() {
         final String url = StandardCheckoutConstants.PAY_API;
         String redirectUrl = "https://redirectUrl.com";
@@ -262,5 +337,114 @@ public class PayTest extends BaseSetupWithOAuth {
         StandardCheckoutPayResponse actual = standardCheckoutClient.pay(standardCheckoutPayRequest);
         Assertions.assertEquals(standardCheckoutResponse, actual);
         Assertions.assertNull(standardCheckoutPayRequest.getDisablePaymentRetry());
+    }
+
+    @SneakyThrows
+    @Test
+    void testStandardCheckoutPayWithPrefillUserLoginDetails() {
+        final String url = StandardCheckoutConstants.PAY_API;
+        String redirectUrl = "https://redirectUrl.com";
+        String prefilledMobileNumber = "+919090909009";
+
+        PrefillUserLoginDetails prefillUserLoginDetails = PrefillUserLoginDetails.builder()
+                .phoneNumber("+919090909009")
+                .build();
+        StandardCheckoutPayRequest standardCheckoutPayRequest =
+                StandardCheckoutPayRequest.builder()
+                        .merchantOrderId(merchantOrderId)
+                        .amount(amount)
+                        .prefillUserLoginDetails(prefillUserLoginDetails)
+                        .redirectUrl(redirectUrl)
+                        .build();
+        StandardCheckoutPayResponse standardCheckoutResponse =
+                StandardCheckoutPayResponse.builder()
+                        .orderId(String.valueOf(java.time.Instant.now().getEpochSecond()))
+                        .state("PENDING")
+                        .expireAt(java.time.Instant.now().getEpochSecond())
+                        .redirectUrl("https://google.com")
+                        .build();
+        Map<String, String> headers = getHeaders();
+
+        addStubForPostRequest(
+                url,
+                headers,
+                standardCheckoutPayRequest,
+                HttpStatus.SC_OK,
+                Maps.newHashMap(),
+                standardCheckoutResponse);
+        StandardCheckoutPayResponse actual = standardCheckoutClient.pay(standardCheckoutPayRequest);
+        Assertions.assertEquals(standardCheckoutResponse, actual);
+        Assertions.assertNotNull(standardCheckoutPayRequest.getPrefillUserLoginDetails());
+        Assertions.assertEquals(prefilledMobileNumber, standardCheckoutPayRequest.getPrefillUserLoginDetails().getPhoneNumber());
+    }
+
+    @SneakyThrows
+    @Test
+    void testStandardCheckoutPayWithEmptyPrefillUserLoginDetails() {
+        final String url = StandardCheckoutConstants.PAY_API;
+        String redirectUrl = "https://redirectUrl.com";
+
+        PrefillUserLoginDetails prefillUserLoginDetails = PrefillUserLoginDetails.builder()
+                .build();
+        StandardCheckoutPayRequest standardCheckoutPayRequest =
+                StandardCheckoutPayRequest.builder()
+                        .merchantOrderId(merchantOrderId)
+                        .amount(amount)
+                        .prefillUserLoginDetails(prefillUserLoginDetails)
+                        .redirectUrl(redirectUrl)
+                        .build();
+        StandardCheckoutPayResponse standardCheckoutResponse =
+                StandardCheckoutPayResponse.builder()
+                        .orderId(String.valueOf(java.time.Instant.now().getEpochSecond()))
+                        .state("PENDING")
+                        .expireAt(java.time.Instant.now().getEpochSecond())
+                        .redirectUrl("https://google.com")
+                        .build();
+        Map<String, String> headers = getHeaders();
+
+        addStubForPostRequest(
+                url,
+                headers,
+                standardCheckoutPayRequest,
+                HttpStatus.SC_OK,
+                Maps.newHashMap(),
+                standardCheckoutResponse);
+        StandardCheckoutPayResponse actual = standardCheckoutClient.pay(standardCheckoutPayRequest);
+        Assertions.assertEquals(standardCheckoutResponse, actual);
+        Assertions.assertNotNull(standardCheckoutPayRequest.getPrefillUserLoginDetails());
+        Assertions.assertNull(standardCheckoutPayRequest.getPrefillUserLoginDetails().getPhoneNumber());
+    }
+
+    @SneakyThrows
+    @Test
+    void testStandardCheckoutPayWithoutPrefillUserLoginDetails() {
+        final String url = StandardCheckoutConstants.PAY_API;
+        String redirectUrl = "https://redirectUrl.com";
+
+        StandardCheckoutPayRequest standardCheckoutPayRequest =
+                StandardCheckoutPayRequest.builder()
+                        .merchantOrderId(merchantOrderId)
+                        .amount(amount)
+                        .redirectUrl(redirectUrl)
+                        .build();
+        StandardCheckoutPayResponse standardCheckoutResponse =
+                StandardCheckoutPayResponse.builder()
+                        .orderId(String.valueOf(java.time.Instant.now().getEpochSecond()))
+                        .state("PENDING")
+                        .expireAt(java.time.Instant.now().getEpochSecond())
+                        .redirectUrl("https://google.com")
+                        .build();
+        Map<String, String> headers = getHeaders();
+
+        addStubForPostRequest(
+                url,
+                headers,
+                standardCheckoutPayRequest,
+                HttpStatus.SC_OK,
+                Maps.newHashMap(),
+                standardCheckoutResponse);
+        StandardCheckoutPayResponse actual = standardCheckoutClient.pay(standardCheckoutPayRequest);
+        Assertions.assertEquals(standardCheckoutResponse, actual);
+        Assertions.assertNull(standardCheckoutPayRequest.getPrefillUserLoginDetails());
     }
 }
