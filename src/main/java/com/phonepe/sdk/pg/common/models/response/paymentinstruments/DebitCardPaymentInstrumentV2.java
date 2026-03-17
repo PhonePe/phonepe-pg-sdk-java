@@ -25,22 +25,22 @@ import lombok.EqualsAndHashCode;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DebitCardPaymentInstrumentV2 extends PaymentInstrumentV2 {
 
-    private String bankTransactionId;
-    private String bankId;
-    private String brn;
-    private String arn;
+	private String bankTransactionId;
+	private String bankId;
+	private String brn;
+	private String arn;
 
-    public DebitCardPaymentInstrumentV2() {
-        super(PaymentInstrumentType.DEBIT_CARD);
-    }
+	public DebitCardPaymentInstrumentV2() {
+		super(PaymentInstrumentType.DEBIT_CARD);
+	}
 
-    @Builder
-    public DebitCardPaymentInstrumentV2(
-            String bankTransactionId, String bankId, String brn, String arn) {
-        super(PaymentInstrumentType.DEBIT_CARD);
-        this.bankTransactionId = bankTransactionId;
-        this.bankId = bankId;
-        this.brn = brn;
-        this.arn = arn;
-    }
+	@Builder
+	public DebitCardPaymentInstrumentV2(
+			String bankTransactionId, String bankId, String brn, String arn) {
+		super(PaymentInstrumentType.DEBIT_CARD);
+		this.bankTransactionId = bankTransactionId;
+		this.bankId = bankId;
+		this.brn = brn;
+		this.arn = arn;
+	}
 }

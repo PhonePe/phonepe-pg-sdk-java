@@ -27,40 +27,40 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class BoundedConcurrentLinkedQueue implements EventQueue {
 
-    private ConcurrentLinkedQueue<BaseEvent> queue;
-    private int maxSize;
+	private ConcurrentLinkedQueue<BaseEvent> queue;
+	private int maxSize;
 
-    public BoundedConcurrentLinkedQueue(int maxSize) {
-        this.queue = new ConcurrentLinkedQueue<>();
-        this.maxSize = maxSize;
-    }
+	public BoundedConcurrentLinkedQueue(int maxSize) {
+		this.queue = new ConcurrentLinkedQueue<>();
+		this.maxSize = maxSize;
+	}
 
-    @Override
-    public void add(BaseEvent data) {
-        if (queue.size() < maxSize && Objects.nonNull(data)) {
-            queue.add(data);
-        } else {
-            log.error("Reached queue max size, skipping event {}", data.getEventName());
-        }
-    }
+	@Override
+	public void add(BaseEvent data) {
+		if (queue.size() < maxSize && Objects.nonNull(data)) {
+			queue.add(data);
+		} else {
+			log.error("Reached queue max size, skipping event {}", data.getEventName());
+		}
+	}
 
-    @Override
-    public boolean isEmpty() {
-        return queue.isEmpty();
-    }
+	@Override
+	public boolean isEmpty() {
+		return queue.isEmpty();
+	}
 
-    @Override
-    public int size() {
-        return queue.size();
-    }
+	@Override
+	public int size() {
+		return queue.size();
+	}
 
-    @Override
-    public BaseEvent poll() {
-        return queue.poll();
-    }
+	@Override
+	public BaseEvent poll() {
+		return queue.poll();
+	}
 
-    @Override
-    public ConcurrentLinkedQueue<BaseEvent> getQueue() {
-        return queue;
-    }
+	@Override
+	public ConcurrentLinkedQueue<BaseEvent> getQueue() {
+		return queue;
+	}
 }

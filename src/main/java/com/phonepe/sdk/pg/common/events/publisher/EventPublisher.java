@@ -20,9 +20,12 @@ import java.util.function.Supplier;
 
 public interface EventPublisher extends Runnable {
 
-    default void setAuthTokenSupplier(Supplier<String> authTokenSuppplier) {}
+	default void setAuthTokenSupplier(Supplier<String> authTokenSuppplier) {
+	}
 
-    default void startPublishingEvents(Supplier<String> authTokenSupplier) {}
+	default void startPublishingEvents(Supplier<String> authTokenSupplier) {
+	}
 
-    default void send(BaseEvent baseEvent) {}
+	default void send(BaseEvent baseEvent) {
+	}
 }

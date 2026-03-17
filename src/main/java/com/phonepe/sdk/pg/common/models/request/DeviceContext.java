@@ -27,6 +27,6 @@ import lombok.Data;
 @JsonInclude(Include.NON_NULL)
 public class DeviceContext {
 
-    private String deviceOS;
-    private String merchantCallBackScheme;
+	private String deviceOS;
+	private String merchantCallBackScheme;
 }

@@ -22,10 +22,10 @@ import lombok.Data;
 @Data
 public class NewCardDetails {
 
-    private String encryptedCardNumber;
-    private Long encryptionKeyId;
-    private String cardHolderName;
-    private Expiry expiry;
-    private String encryptedCvv;
-    private BillingAddress billingAddress;
+	private String encryptedCardNumber;
+	private Long encryptionKeyId;
+	private String cardHolderName;
+	private Expiry expiry;
+	private String encryptedCvv;
+	private BillingAddress billingAddress;
 }

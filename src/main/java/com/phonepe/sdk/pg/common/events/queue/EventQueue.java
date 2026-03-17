@@ -20,21 +20,22 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public interface EventQueue {
 
-    default void add(BaseEvent data) {}
+	default void add(BaseEvent data) {
+	}
 
-    default boolean isEmpty() {
-        return true;
-    }
+	default boolean isEmpty() {
+		return true;
+	}
 
-    default int size() {
-        return 0;
-    }
+	default int size() {
+		return 0;
+	}
 
-    default BaseEvent poll() {
-        return null;
-    }
+	default BaseEvent poll() {
+		return null;
+	}
 
-    default ConcurrentLinkedQueue<BaseEvent> getQueue() {
-        return null;
-    }
+	default ConcurrentLinkedQueue<BaseEvent> getQueue() {
+		return null;
+	}
 }

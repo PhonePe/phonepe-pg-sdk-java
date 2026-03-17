@@ -27,13 +27,13 @@ import lombok.EqualsAndHashCode;
 @JsonInclude(Include.NON_NULL)
 public class NetBankingPaymentV2Instrument extends PaymentV2Instrument {
 
-    private String bankId;
-    private String merchantUserId;
+	private String bankId;
+	private String merchantUserId;
 
-    @Builder
-    public NetBankingPaymentV2Instrument(String bankId, String merchantUserId) {
-        super(PgV2InstrumentType.NET_BANKING);
-        this.bankId = bankId;
-        this.merchantUserId = merchantUserId;
-    }
+	@Builder
+	public NetBankingPaymentV2Instrument(String bankId, String merchantUserId) {
+		super(PgV2InstrumentType.NET_BANKING);
+		this.bankId = bankId;
+		this.merchantUserId = merchantUserId;
+	}
 }

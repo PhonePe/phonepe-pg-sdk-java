@@ -29,8 +29,8 @@ import lombok.EqualsAndHashCode;
 @JsonInclude(Include.NON_NULL)
 public class UpiIntentPaymentModeConstraint extends PaymentModeConstraint {
 
-    @Builder
-    public UpiIntentPaymentModeConstraint() {
-        super(PgV2InstrumentType.UPI_INTENT);
-    }
+	@Builder
+	public UpiIntentPaymentModeConstraint() {
+		super(PgV2InstrumentType.UPI_INTENT);
+	}
 }

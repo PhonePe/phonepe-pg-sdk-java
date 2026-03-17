@@ -27,15 +27,15 @@ import lombok.EqualsAndHashCode;
 @JsonInclude(Include.NON_NULL)
 public class IntentPaymentV2Instrument extends PaymentV2Instrument {
 
-    private String targetApp;
+	private String targetApp;
 
-    public IntentPaymentV2Instrument() {
-        super(PgV2InstrumentType.UPI_INTENT);
-    }
+	public IntentPaymentV2Instrument() {
+		super(PgV2InstrumentType.UPI_INTENT);
+	}
 
-    @Builder
-    public IntentPaymentV2Instrument(String targetApp) {
-        super(PgV2InstrumentType.UPI_INTENT);
-        this.targetApp = targetApp;
-    }
+	@Builder
+	public IntentPaymentV2Instrument(String targetApp) {
+		super(PgV2InstrumentType.UPI_INTENT);
+		this.targetApp = targetApp;
+	}
 }

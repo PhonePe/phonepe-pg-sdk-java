@@ -28,8 +28,8 @@ import lombok.NoArgsConstructor;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CreateSdkOrderResponse {
 
-    private String orderId;
-    private String state;
-    private long expireAt;
-    private String token;
+	private String orderId;
+	private String state;
+	private long expireAt;
+	private String token;
 }

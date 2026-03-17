@@ -29,8 +29,8 @@ import lombok.EqualsAndHashCode;
 @JsonInclude(Include.NON_NULL)
 public class NetBankingPaymentModeConstraint extends PaymentModeConstraint {
 
-    @Builder
-    public NetBankingPaymentModeConstraint() {
-        super(PgV2InstrumentType.NET_BANKING);
-    }
+	@Builder
+	public NetBankingPaymentModeConstraint() {
+		super(PgV2InstrumentType.NET_BANKING);
+	}
 }

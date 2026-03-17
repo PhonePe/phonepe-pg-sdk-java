@@ -32,14 +32,14 @@ import lombok.NoArgsConstructor;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PaymentRefundDetail {
 
-    private String transactionId;
-    private PgV2InstrumentType paymentMode;
-    private long timestamp;
-    private long amount;
-    private String state;
-    private String errorCode;
-    private String detailedErrorCode;
-    private PaymentInstrumentV2 instrument;
-    private PaymentRail rail;
-    private List<InstrumentCombo> splitInstruments;
+	private String transactionId;
+	private PgV2InstrumentType paymentMode;
+	private long timestamp;
+	private long amount;
+	private String state;
+	private String errorCode;
+	private String detailedErrorCode;
+	private PaymentInstrumentV2 instrument;
+	private PaymentRail rail;
+	private List<InstrumentCombo> splitInstruments;
 }

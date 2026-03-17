@@ -28,31 +28,31 @@ import lombok.EqualsAndHashCode;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SubscriptionRedemptionPaymentFlowResponse extends PaymentFlowResponse {
 
-    private String merchantSubscriptionId;
-    private RedemptionRetryStrategy redemptionRetryStrategy;
-    private boolean autoDebit;
-    private Long validAfter;
-    private Long validUpto;
-    private Long notifiedAt;
+	private String merchantSubscriptionId;
+	private RedemptionRetryStrategy redemptionRetryStrategy;
+	private boolean autoDebit;
+	private Long validAfter;
+	private Long validUpto;
+	private Long notifiedAt;
 
-    public SubscriptionRedemptionPaymentFlowResponse() {
-        super(PaymentFlowType.SUBSCRIPTION_REDEMPTION);
-    }
+	public SubscriptionRedemptionPaymentFlowResponse() {
+		super(PaymentFlowType.SUBSCRIPTION_REDEMPTION);
+	}
 
-    @Builder
-    public SubscriptionRedemptionPaymentFlowResponse(
-            String merchantSubscriptionId,
-            RedemptionRetryStrategy redemptionRetryStrategy,
-            boolean autoDebit,
-            Long validAfter,
-            Long validUpto,
-            Long notifiedAt) {
-        super(PaymentFlowType.SUBSCRIPTION_REDEMPTION);
-        this.merchantSubscriptionId = merchantSubscriptionId;
-        this.redemptionRetryStrategy = redemptionRetryStrategy;
-        this.autoDebit = autoDebit;
-        this.validAfter = validAfter;
-        this.validUpto = validUpto;
-        this.notifiedAt = notifiedAt;
-    }
+	@Builder
+	public SubscriptionRedemptionPaymentFlowResponse(
+			String merchantSubscriptionId,
+			RedemptionRetryStrategy redemptionRetryStrategy,
+			boolean autoDebit,
+			Long validAfter,
+			Long validUpto,
+			Long notifiedAt) {
+		super(PaymentFlowType.SUBSCRIPTION_REDEMPTION);
+		this.merchantSubscriptionId = merchantSubscriptionId;
+		this.redemptionRetryStrategy = redemptionRetryStrategy;
+		this.autoDebit = autoDebit;
+		this.validAfter = validAfter;
+		this.validUpto = validUpto;
+		this.notifiedAt = notifiedAt;
+	}
 }

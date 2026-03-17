@@ -29,8 +29,8 @@ import lombok.EqualsAndHashCode;
 @JsonInclude(Include.NON_NULL)
 public class UpiQrPaymentModeConstraint extends PaymentModeConstraint {
 
-    @Builder
-    public UpiQrPaymentModeConstraint() {
-        super(PgV2InstrumentType.UPI_QR);
-    }
+	@Builder
+	public UpiQrPaymentModeConstraint() {
+		super(PgV2InstrumentType.UPI_QR);
+	}
 }

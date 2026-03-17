@@ -27,9 +27,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CredentialConfig {
 
-    @NotBlank private String clientId;
+	@NotBlank
+	private String clientId;
 
-    @NotBlank private String clientSecret;
+	@NotBlank
+	private String clientSecret;
 
-    @NotBlank private Integer clientVersion;
+	@NotBlank
+	private Integer clientVersion;
 }

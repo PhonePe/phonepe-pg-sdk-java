@@ -25,22 +25,22 @@ import lombok.EqualsAndHashCode;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class NetBankingPaymentInstrumentV2 extends PaymentInstrumentV2 {
 
-    private String bankTransactionId;
-    private String bankId;
-    private String brn;
-    private String arn;
+	private String bankTransactionId;
+	private String bankId;
+	private String brn;
+	private String arn;
 
-    public NetBankingPaymentInstrumentV2() {
-        super(PaymentInstrumentType.NET_BANKING);
-    }
+	public NetBankingPaymentInstrumentV2() {
+		super(PaymentInstrumentType.NET_BANKING);
+	}
 
-    @Builder
-    public NetBankingPaymentInstrumentV2(
-            String bankTransactionId, String bankId, String brn, String arn) {
-        super(PaymentInstrumentType.NET_BANKING);
-        this.bankTransactionId = bankTransactionId;
-        this.bankId = bankId;
-        this.brn = brn;
-        this.arn = arn;
-    }
+	@Builder
+	public NetBankingPaymentInstrumentV2(
+			String bankTransactionId, String bankId, String brn, String arn) {
+		super(PaymentInstrumentType.NET_BANKING);
+		this.bankTransactionId = bankTransactionId;
+		this.bankId = bankId;
+		this.brn = brn;
+		this.arn = arn;
+	}
 }

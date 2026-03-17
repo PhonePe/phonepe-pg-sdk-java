@@ -25,13 +25,13 @@ import lombok.Data;
 @Builder
 public class TokenDetails {
 
-    private String encryptedToken;
-    private String encryptedCvv;
-    private long encryptionKeyId;
-    private Expiry expiry;
-    private String cryptogram;
-    private String panSuffix;
-    private String cardHolderName;
-    private String eci;
-    private String atc;
+	private String encryptedToken;
+	private String encryptedCvv;
+	private long encryptionKeyId;
+	private Expiry expiry;
+	private String cryptogram;
+	private String panSuffix;
+	private String cardHolderName;
+	private String eci;
+	private String atc;
 }

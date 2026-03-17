@@ -25,21 +25,21 @@ import lombok.EqualsAndHashCode;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UpiPaymentRail extends PaymentRail {
 
-    private String utr;
-    private String upiTransactionId;
-    private String vpa;
-    private String umn;
+	private String utr;
+	private String upiTransactionId;
+	private String vpa;
+	private String umn;
 
-    public UpiPaymentRail() {
-        super(PaymentRailType.UPI);
-    }
+	public UpiPaymentRail() {
+		super(PaymentRailType.UPI);
+	}
 
-    @Builder
-    public UpiPaymentRail(String utr, String upiTransactionId, String vpa, String umn) {
-        super(PaymentRailType.UPI);
-        this.vpa = vpa;
-        this.utr = utr;
-        this.upiTransactionId = upiTransactionId;
-        this.umn = umn;
-    }
+	@Builder
+	public UpiPaymentRail(String utr, String upiTransactionId, String vpa, String umn) {
+		super(PaymentRailType.UPI);
+		this.vpa = vpa;
+		this.utr = utr;
+		this.upiTransactionId = upiTransactionId;
+		this.umn = umn;
+	}
 }

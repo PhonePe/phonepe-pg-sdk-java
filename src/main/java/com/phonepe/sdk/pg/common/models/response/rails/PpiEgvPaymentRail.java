@@ -25,8 +25,8 @@ import lombok.EqualsAndHashCode;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PpiEgvPaymentRail extends PaymentRail {
 
-    @Builder
-    public PpiEgvPaymentRail() {
-        super(PaymentRailType.PPI_EGV);
-    }
+	@Builder
+	public PpiEgvPaymentRail() {
+		super(PaymentRailType.PPI_EGV);
+	}
 }

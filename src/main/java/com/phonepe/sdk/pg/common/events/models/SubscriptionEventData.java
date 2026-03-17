@@ -26,7 +26,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class SubscriptionEventData {
 
-    private String merchantSubscriptionId;
-    private Long subscriptionExpireAt;
-    private Long orderExpireAt;
+	private String merchantSubscriptionId;
+	private Long subscriptionExpireAt;
+	private Long orderExpireAt;
 }

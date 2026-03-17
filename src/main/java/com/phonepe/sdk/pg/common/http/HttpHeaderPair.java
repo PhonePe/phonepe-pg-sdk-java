@@ -26,6 +26,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class HttpHeaderPair {
 
-    private String key;
-    private String value;
+	private String key;
+	private String value;
 }

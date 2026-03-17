@@ -28,18 +28,18 @@ import lombok.EqualsAndHashCode;
 @JsonInclude(Include.NON_NULL)
 public class SubscriptionRedemptionPaymentFlow extends PaymentFlow {
 
-    private String merchantSubscriptionId;
-    private RedemptionRetryStrategy redemptionRetryStrategy;
-    private boolean autoDebit;
+	private String merchantSubscriptionId;
+	private RedemptionRetryStrategy redemptionRetryStrategy;
+	private boolean autoDebit;
 
-    @Builder
-    public SubscriptionRedemptionPaymentFlow(
-            String merchantSubscriptionId,
-            RedemptionRetryStrategy redemptionRetryStrategy,
-            boolean autoDebit) {
-        super(PaymentFlowType.SUBSCRIPTION_REDEMPTION);
-        this.merchantSubscriptionId = merchantSubscriptionId;
-        this.redemptionRetryStrategy = redemptionRetryStrategy;
-        this.autoDebit = autoDebit;
-    }
+	@Builder
+	public SubscriptionRedemptionPaymentFlow(
+			String merchantSubscriptionId,
+			RedemptionRetryStrategy redemptionRetryStrategy,
+			boolean autoDebit) {
+		super(PaymentFlowType.SUBSCRIPTION_REDEMPTION);
+		this.merchantSubscriptionId = merchantSubscriptionId;
+		this.redemptionRetryStrategy = redemptionRetryStrategy;
+		this.autoDebit = autoDebit;
+	}
 }

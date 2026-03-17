@@ -26,11 +26,11 @@ import lombok.EqualsAndHashCode;
 @JsonInclude(Include.NON_NULL)
 public class VpaCollectPaymentDetails extends CollectPaymentDetails {
 
-    private String vpa;
+	private String vpa;
 
-    @Builder
-    public VpaCollectPaymentDetails(String vpa) {
-        super(CollectPaymentDetailsType.VPA);
-        this.vpa = vpa;
-    }
+	@Builder
+	public VpaCollectPaymentDetails(String vpa) {
+		super(CollectPaymentDetailsType.VPA);
+		this.vpa = vpa;
+	}
 }

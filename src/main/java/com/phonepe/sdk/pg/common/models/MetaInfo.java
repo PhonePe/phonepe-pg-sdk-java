@@ -31,9 +31,9 @@ import lombok.NoArgsConstructor;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MetaInfo {
 
-    private String udf1;
-    private String udf2;
-    private String udf3;
-    private String udf4;
-    private String udf5;
+	private String udf1;
+	private String udf2;
+	private String udf3;
+	private String udf4;
+	private String udf5;
 }

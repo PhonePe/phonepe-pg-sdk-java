@@ -25,15 +25,15 @@ import lombok.EqualsAndHashCode;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class WalletPaymentInstrumentV2 extends PaymentInstrumentV2 {
 
-    private String walletId;
+	private String walletId;
 
-    public WalletPaymentInstrumentV2() {
-        super(PaymentInstrumentType.WALLET);
-    }
+	public WalletPaymentInstrumentV2() {
+		super(PaymentInstrumentType.WALLET);
+	}
 
-    @Builder
-    public WalletPaymentInstrumentV2(String walletId) {
-        super(PaymentInstrumentType.WALLET);
-        this.walletId = walletId;
-    }
+	@Builder
+	public WalletPaymentInstrumentV2(String walletId) {
+		super(PaymentInstrumentType.WALLET);
+		this.walletId = walletId;
+	}
 }

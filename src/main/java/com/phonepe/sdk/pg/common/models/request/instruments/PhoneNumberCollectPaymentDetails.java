@@ -26,11 +26,11 @@ import lombok.EqualsAndHashCode;
 @JsonInclude(Include.NON_NULL)
 public class PhoneNumberCollectPaymentDetails extends CollectPaymentDetails {
 
-    private String phoneNumber;
+	private String phoneNumber;
 
-    @Builder
-    public PhoneNumberCollectPaymentDetails(String phoneNumber) {
-        super(CollectPaymentDetailsType.PHONE_NUMBER);
-        this.phoneNumber = phoneNumber;
-    }
+	@Builder
+	public PhoneNumberCollectPaymentDetails(String phoneNumber) {
+		super(CollectPaymentDetailsType.PHONE_NUMBER);
+		this.phoneNumber = phoneNumber;
+	}
 }
