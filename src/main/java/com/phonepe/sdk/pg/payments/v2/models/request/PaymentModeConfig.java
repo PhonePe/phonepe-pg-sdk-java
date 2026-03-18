@@ -27,18 +27,18 @@ import lombok.Data;
 @JsonInclude(Include.NON_NULL)
 public class PaymentModeConfig {
 
-    List<PaymentModeConstraint> enabledPaymentModes;
-    List<PaymentModeConstraint> disabledPaymentModes;
+	List<PaymentModeConstraint> enabledPaymentModes;
+	List<PaymentModeConstraint> disabledPaymentModes;
 
-    PaymentModeConfig(
-            List<PaymentModeConstraint> enabledPaymentModes,
-            List<PaymentModeConstraint> disabledPaymentModes) {
-        this.enabledPaymentModes = enabledPaymentModes;
-        this.disabledPaymentModes = disabledPaymentModes;
-    }
+	PaymentModeConfig(
+			List<PaymentModeConstraint> enabledPaymentModes,
+			List<PaymentModeConstraint> disabledPaymentModes) {
+		this.enabledPaymentModes = enabledPaymentModes;
+		this.disabledPaymentModes = disabledPaymentModes;
+	}
 
-    public PaymentModeConfig() {
-        this.enabledPaymentModes = null;
-        this.disabledPaymentModes = null;
-    }
+	public PaymentModeConfig() {
+		this.enabledPaymentModes = null;
+		this.disabledPaymentModes = null;
+	}
 }

@@ -30,7 +30,7 @@ import lombok.NoArgsConstructor;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class InstrumentCombo {
 
-    private PaymentInstrumentV2 instrument;
-    private PaymentRail rail;
-    private long amount;
+	private PaymentInstrumentV2 instrument;
+	private PaymentRail rail;
+	private long amount;
 }

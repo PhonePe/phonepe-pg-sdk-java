@@ -30,12 +30,12 @@ import lombok.NoArgsConstructor;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PhonePeResponse {
 
-    private boolean success;
-    private String code;
-    private String message;
+	private boolean success;
+	private String code;
+	private String message;
 
-    @JsonAlias({"data", "context"})
-    private Map<String, Object> data;
+	@JsonAlias({"data", "context"})
+	private Map<String, Object> data;
 
-    private String errorCode;
+	private String errorCode;
 }

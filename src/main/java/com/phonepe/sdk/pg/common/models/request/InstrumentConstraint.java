@@ -29,9 +29,9 @@ import lombok.NoArgsConstructor;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public abstract class InstrumentConstraint {
 
-    private PaymentInstrumentType type;
+	private PaymentInstrumentType type;
 
-    public enum PaymentInstrumentType {
-        ACCOUNT;
-    }
+	public enum PaymentInstrumentType {
+		ACCOUNT;
+	}
 }

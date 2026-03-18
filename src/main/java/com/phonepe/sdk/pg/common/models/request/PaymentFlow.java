@@ -30,5 +30,5 @@ import lombok.NoArgsConstructor;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public abstract class PaymentFlow {
 
-    private PaymentFlowType type;
+	private PaymentFlowType type;
 }

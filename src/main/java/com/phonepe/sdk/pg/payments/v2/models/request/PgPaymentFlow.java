@@ -29,13 +29,13 @@ import lombok.EqualsAndHashCode;
 @JsonInclude(Include.NON_NULL)
 public class PgPaymentFlow extends PaymentFlow {
 
-    private PaymentV2Instrument paymentMode;
-    private MerchantUrls merchantUrls;
+	private PaymentV2Instrument paymentMode;
+	private MerchantUrls merchantUrls;
 
-    @Builder
-    public PgPaymentFlow(final PaymentV2Instrument paymentMode, final MerchantUrls merchantUrls) {
-        super(PaymentFlowType.PG);
-        this.paymentMode = paymentMode;
-        this.merchantUrls = merchantUrls;
-    }
+	@Builder
+	public PgPaymentFlow(final PaymentV2Instrument paymentMode, final MerchantUrls merchantUrls) {
+		super(PaymentFlowType.PG);
+		this.paymentMode = paymentMode;
+		this.merchantUrls = merchantUrls;
+	}
 }

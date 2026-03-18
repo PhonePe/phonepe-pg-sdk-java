@@ -26,13 +26,13 @@ import lombok.EqualsAndHashCode;
 @JsonInclude(Include.NON_NULL)
 public class AccountConstraint extends InstrumentConstraint {
 
-    private String accountNumber;
-    private String ifsc;
+	private String accountNumber;
+	private String ifsc;
 
-    @Builder
-    public AccountConstraint(String accountNumber, String ifsc) {
-        super(PaymentInstrumentType.ACCOUNT);
-        this.accountNumber = accountNumber;
-        this.ifsc = ifsc;
-    }
+	@Builder
+	public AccountConstraint(String accountNumber, String ifsc) {
+		super(PaymentInstrumentType.ACCOUNT);
+		this.accountNumber = accountNumber;
+		this.ifsc = ifsc;
+	}
 }

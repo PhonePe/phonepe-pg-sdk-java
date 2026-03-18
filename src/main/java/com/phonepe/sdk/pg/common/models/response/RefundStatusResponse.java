@@ -29,10 +29,10 @@ import lombok.NoArgsConstructor;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class RefundStatusResponse {
 
-    private String merchantId;
-    private String merchantRefundId;
-    private String originalMerchantOrderId;
-    private long amount;
-    private String state;
-    private List<PaymentRefundDetail> paymentDetails;
+	private String merchantId;
+	private String merchantRefundId;
+	private String originalMerchantOrderId;
+	private long amount;
+	private String state;
+	private List<PaymentRefundDetail> paymentDetails;
 }

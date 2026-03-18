@@ -41,116 +41,121 @@ import okhttp3.OkHttpClient;
 @Slf4j
 public class TokenService {
 
-    private OkHttpClient okHttpClient;
-    private ObjectMapper objectMapper;
-    private CredentialConfig credentialConfig;
-    private Env env;
-    @Setter private OAuthResponse oAuthResponse;
-    private EventPublisher eventPublisher;
+	private OkHttpClient okHttpClient;
+	private ObjectMapper objectMapper;
+	private CredentialConfig credentialConfig;
+	private Env env;
+	@Setter
+	private OAuthResponse oAuthResponse;
+	private EventPublisher eventPublisher;
 
-    public TokenService(
-            OkHttpClient okHttpClient,
-            ObjectMapper objectMapper,
-            CredentialConfig credentialConfig,
-            Env env,
-            EventPublisher eventPublisher) {
-        this.okHttpClient = okHttpClient;
-        this.objectMapper = objectMapper;
-        this.credentialConfig = credentialConfig;
-        this.env = env;
-        this.eventPublisher = eventPublisher;
-        this.eventPublisher.send(
-                BaseEvent.buildInitClientEvent(EventType.TOKEN_SERVICE_INITIALIZED));
-    }
+	public TokenService(
+			OkHttpClient okHttpClient,
+			ObjectMapper objectMapper,
+			CredentialConfig credentialConfig,
+			Env env,
+			EventPublisher eventPublisher) {
+		this.okHttpClient = okHttpClient;
+		this.objectMapper = objectMapper;
+		this.credentialConfig = credentialConfig;
+		this.env = env;
+		this.eventPublisher = eventPublisher;
+		this.eventPublisher.send(
+				BaseEvent.buildInitClientEvent(EventType.TOKEN_SERVICE_INITIALIZED));
+	}
 
-    private List<HttpHeaderPair> prepareRequestHeaders() {
-        return Arrays.asList(
-                HttpHeaderPair.builder()
-                        .key(Headers.CONTENT_TYPE)
-                        .value(APPLICATION_FORM_URLENCODED)
-                        .build(),
-                HttpHeaderPair.builder().key(Headers.ACCEPT).value(APPLICATION_JSON).build());
-    }
+	private List<HttpHeaderPair> prepareRequestHeaders() {
+		return Arrays.asList(
+				HttpHeaderPair.builder()
+						.key(Headers.CONTENT_TYPE)
+						.value(APPLICATION_FORM_URLENCODED)
+						.build(),
+				HttpHeaderPair.builder()
+						.key(Headers.ACCEPT)
+						.value(APPLICATION_JSON)
+						.build());
+	}
 
-    public String formatCachedToken() {
-        return oAuthResponse.getTokenType() + " " + oAuthResponse.getAccessToken();
-    }
+	public String formatCachedToken() {
+		return oAuthResponse.getTokenType() + " " + oAuthResponse.getAccessToken();
+	}
 
-    public long getCurrentTime() {
-        return java.time.Instant.now().getEpochSecond();
-    }
+	public long getCurrentTime() {
+		return java.time.Instant.now()
+				.getEpochSecond();
+	}
 
-    @SneakyThrows
-    public synchronized String getAuthToken() {
-        if (isCachedTokenValid()) {
-            log.debug("Returning cached token");
-            return formatCachedToken();
-        }
-        try {
-            this.setOAuthResponse(fetchTokenFromPhonePe());
-        } catch (Exception exception) {
-            if (Objects.isNull(oAuthResponse)) {
-                log.error(
-                        "No cached token, error occurred while fetching new token {}",
-                        exception.toString());
-                throw exception;
-            }
-            log.info(
-                    "Returning cached token, error occurred while fetching new token {}",
-                    exception.toString());
-            eventPublisher.send(
-                    BaseEvent.buildOAuthEvent(
-                            getCurrentTime(),
-                            TokenConstants.OAUTH_GET_TOKEN,
-                            EventType.OAUTH_FETCH_FAILED_USED_CACHED_TOKEN,
-                            exception,
-                            oAuthResponse.getIssuedAt(),
-                            oAuthResponse.getExpiresAt()));
-        }
-        return formatCachedToken();
-    }
+	@SneakyThrows
+	public synchronized String getAuthToken() {
+		if (isCachedTokenValid()) {
+			log.debug("Returning cached token");
+			return formatCachedToken();
+		}
+		try {
+			this.setOAuthResponse(fetchTokenFromPhonePe());
+		} catch (Exception exception) {
+			if (Objects.isNull(oAuthResponse)) {
+				log.error(
+						"No cached token, error occurred while fetching new token {}",
+						exception.toString());
+				throw exception;
+			}
+			log.info(
+					"Returning cached token, error occurred while fetching new token {}",
+					exception.toString());
+			eventPublisher.send(
+					BaseEvent.buildOAuthEvent(
+							getCurrentTime(),
+							TokenConstants.OAUTH_GET_TOKEN,
+							EventType.OAUTH_FETCH_FAILED_USED_CACHED_TOKEN,
+							exception,
+							oAuthResponse.getIssuedAt(),
+							oAuthResponse.getExpiresAt()));
+		}
+		return formatCachedToken();
+	}
 
-    private synchronized boolean isCachedTokenValid() {
-        if (Objects.isNull(oAuthResponse)) {
-            return false;
-        }
-        long issuedAt = oAuthResponse.getIssuedAt();
-        long expireAt = oAuthResponse.getExpiresAt();
-        long currentTime = getCurrentTime();
-        long reloadTime = issuedAt + (expireAt - issuedAt) / 2;
-        return currentTime < reloadTime;
-    }
+	private synchronized boolean isCachedTokenValid() {
+		if (Objects.isNull(oAuthResponse)) {
+			return false;
+		}
+		long issuedAt = oAuthResponse.getIssuedAt();
+		long expireAt = oAuthResponse.getExpiresAt();
+		long currentTime = getCurrentTime();
+		long reloadTime = issuedAt + (expireAt - issuedAt) / 2;
+		return currentTime < reloadTime;
+	}
 
-    public void forceRefreshToken() {
-        log.debug("Force Refreshing Token");
-        this.setOAuthResponse(fetchTokenFromPhonePe());
-    }
+	public void forceRefreshToken() {
+		log.debug("Force Refreshing Token");
+		this.setOAuthResponse(fetchTokenFromPhonePe());
+	}
 
-    @SneakyThrows
-    public synchronized OAuthResponse fetchTokenFromPhonePe() {
-        final FormBody formBody = prepareFormBody(this.credentialConfig);
+	@SneakyThrows
+	public synchronized OAuthResponse fetchTokenFromPhonePe() {
+		final FormBody formBody = prepareFormBody(this.credentialConfig);
 
-        final String url = TokenConstants.OAUTH_GET_TOKEN;
-        return HttpCommand.<OAuthResponse, FormBody>builder()
-                .client(okHttpClient)
-                .objectMapper(objectMapper)
-                .responseTypeReference(new TypeReference<OAuthResponse>() {})
-                .methodName(HttpMethodType.POST)
-                .headers(prepareRequestHeaders())
-                .requestData(formBody)
-                .hostURL(this.env.getOAuthHostUrl())
-                .url(url)
-                .encodingType(APPLICATION_FORM_URLENCODED)
-                .build()
-                .execute();
-    }
+		final String url = TokenConstants.OAUTH_GET_TOKEN;
+		return HttpCommand.<OAuthResponse, FormBody>builder()
+				.client(okHttpClient)
+				.objectMapper(objectMapper)
+				.responseTypeReference(new TypeReference<OAuthResponse>() {})
+				.methodName(HttpMethodType.POST)
+				.headers(prepareRequestHeaders())
+				.requestData(formBody)
+				.hostURL(this.env.getOAuthHostUrl())
+				.url(url)
+				.encodingType(APPLICATION_FORM_URLENCODED)
+				.build()
+				.execute();
+	}
 
-    private FormBody prepareFormBody(CredentialConfig credentialConfig) {
-        return new FormBody.Builder()
-                .add("client_id", credentialConfig.getClientId())
-                .add("client_secret", credentialConfig.getClientSecret())
-                .add("grant_type", TokenConstants.OAUTH_GRANT_TYPE)
-                .add("client_version", String.valueOf(credentialConfig.getClientVersion()))
-                .build();
-    }
+	private FormBody prepareFormBody(CredentialConfig credentialConfig) {
+		return new FormBody.Builder()
+				.add("client_id", credentialConfig.getClientId())
+				.add("client_secret", credentialConfig.getClientSecret())
+				.add("grant_type", TokenConstants.OAUTH_GRANT_TYPE)
+				.add("client_version", String.valueOf(credentialConfig.getClientVersion()))
+				.build();
+	}
 }

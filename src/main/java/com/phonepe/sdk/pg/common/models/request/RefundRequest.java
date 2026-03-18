@@ -25,7 +25,7 @@ import lombok.Data;
 @JsonInclude(Include.NON_NULL)
 public class RefundRequest {
 
-    private String merchantRefundId;
-    private String originalMerchantOrderId;
-    private long amount;
+	private String merchantRefundId;
+	private String originalMerchantOrderId;
+	private long amount;
 }

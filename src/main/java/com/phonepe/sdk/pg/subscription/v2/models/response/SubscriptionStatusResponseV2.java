@@ -31,14 +31,14 @@ import lombok.NoArgsConstructor;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SubscriptionStatusResponseV2 {
 
-    private String merchantSubscriptionId;
-    private String subscriptionId;
-    private String state;
-    private AuthWorkflowType authWorkflowType;
-    private AmountType amountType;
-    private Long maxAmount;
-    private Frequency frequency;
-    private Long expireAt;
-    private Long pauseStartDate;
-    private Long pauseEndDate;
+	private String merchantSubscriptionId;
+	private String subscriptionId;
+	private String state;
+	private AuthWorkflowType authWorkflowType;
+	private AmountType amountType;
+	private Long maxAmount;
+	private Frequency frequency;
+	private Long expireAt;
+	private Long pauseStartDate;
+	private Long pauseEndDate;
 }

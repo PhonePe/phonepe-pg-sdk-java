@@ -28,10 +28,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PgPaymentResponse {
 
-    private String orderId;
-    private String state;
-    private long expireAt;
-    private String redirectUrl;
-    private String intentUrl;
-    private String qrData;
+	private String orderId;
+	private String state;
+	private long expireAt;
+	private String redirectUrl;
+	private String intentUrl;
+	private String qrData;
 }

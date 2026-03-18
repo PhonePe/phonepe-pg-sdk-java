@@ -25,8 +25,8 @@ import lombok.EqualsAndHashCode;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PpiWalletPaymentRail extends PaymentRail {
 
-    @Builder
-    public PpiWalletPaymentRail() {
-        super(PaymentRailType.PPI_WALLET);
-    }
+	@Builder
+	public PpiWalletPaymentRail() {
+		super(PaymentRailType.PPI_WALLET);
+	}
 }

@@ -27,18 +27,18 @@ import lombok.EqualsAndHashCode;
 @JsonInclude(Include.NON_NULL)
 public class CardPaymentV2Instrument extends PaymentV2Instrument {
 
-    private String authMode;
-    private NewCardDetails cardDetails;
-    private boolean savedCard;
-    private String merchantUserId;
+	private String authMode;
+	private NewCardDetails cardDetails;
+	private boolean savedCard;
+	private String merchantUserId;
 
-    @Builder
-    public CardPaymentV2Instrument(
-            String authMode, String merchantUserId, NewCardDetails cardDetails, boolean savedCard) {
-        super(PgV2InstrumentType.CARD);
-        this.authMode = authMode;
-        this.cardDetails = cardDetails;
-        this.savedCard = savedCard;
-        this.merchantUserId = merchantUserId;
-    }
+	@Builder
+	public CardPaymentV2Instrument(
+			String authMode, String merchantUserId, NewCardDetails cardDetails, boolean savedCard) {
+		super(PgV2InstrumentType.CARD);
+		this.authMode = authMode;
+		this.cardDetails = cardDetails;
+		this.savedCard = savedCard;
+		this.merchantUserId = merchantUserId;
+	}
 }

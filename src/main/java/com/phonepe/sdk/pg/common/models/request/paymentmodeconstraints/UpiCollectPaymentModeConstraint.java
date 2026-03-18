@@ -29,8 +29,8 @@ import lombok.EqualsAndHashCode;
 @JsonInclude(Include.NON_NULL)
 public class UpiCollectPaymentModeConstraint extends PaymentModeConstraint {
 
-    @Builder
-    public UpiCollectPaymentModeConstraint() {
-        super(PgV2InstrumentType.UPI_COLLECT);
-    }
+	@Builder
+	public UpiCollectPaymentModeConstraint() {
+		super(PgV2InstrumentType.UPI_COLLECT);
+	}
 }

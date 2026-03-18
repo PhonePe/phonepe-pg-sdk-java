@@ -28,6 +28,6 @@ import lombok.NoArgsConstructor;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CallbackResponse {
 
-    String event;
-    CallbackData payload;
+	String event;
+	CallbackData payload;
 }

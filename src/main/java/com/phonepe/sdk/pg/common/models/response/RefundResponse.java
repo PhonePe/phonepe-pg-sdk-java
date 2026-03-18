@@ -28,7 +28,7 @@ import lombok.NoArgsConstructor;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class RefundResponse {
 
-    private String refundId;
-    private long amount;
-    private String state;
+	private String refundId;
+	private long amount;
+	private String state;
 }

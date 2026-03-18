@@ -28,18 +28,18 @@ import lombok.EqualsAndHashCode;
 @JsonInclude(Include.NON_NULL)
 public class PgCheckoutPaymentFlow extends PaymentFlow {
 
-    private String message;
-    private MerchantUrls merchantUrls;
-    private PaymentModeConfig paymentModeConfig;
+	private String message;
+	private MerchantUrls merchantUrls;
+	private PaymentModeConfig paymentModeConfig;
 
-    @Builder
-    public PgCheckoutPaymentFlow(
-            final String message,
-            final MerchantUrls merchantUrls,
-            final PaymentModeConfig paymentModeConfig) {
-        super(PaymentFlowType.PG_CHECKOUT);
-        this.message = message;
-        this.merchantUrls = merchantUrls;
-        this.paymentModeConfig = paymentModeConfig;
-    }
+	@Builder
+	public PgCheckoutPaymentFlow(
+			final String message,
+			final MerchantUrls merchantUrls,
+			final PaymentModeConfig paymentModeConfig) {
+		super(PaymentFlowType.PG_CHECKOUT);
+		this.message = message;
+		this.merchantUrls = merchantUrls;
+		this.paymentModeConfig = paymentModeConfig;
+	}
 }

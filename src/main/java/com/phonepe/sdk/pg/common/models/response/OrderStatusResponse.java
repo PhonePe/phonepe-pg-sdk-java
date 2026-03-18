@@ -30,17 +30,17 @@ import lombok.NoArgsConstructor;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class OrderStatusResponse {
 
-    private String merchantId;
-    private String merchantOrderId;
-    private String orderId;
-    private String state;
-    private long amount;
-    private PaymentFlowResponse paymentFlow;
-    private long payableAmount;
-    private long feeAmount;
-    private long expireAt;
-    private String errorCode;
-    private String detailedErrorCode;
-    private MetaInfo metaInfo;
-    private List<PaymentDetail> paymentDetails;
+	private String merchantId;
+	private String merchantOrderId;
+	private String orderId;
+	private String state;
+	private long amount;
+	private PaymentFlowResponse paymentFlow;
+	private long payableAmount;
+	private long feeAmount;
+	private long expireAt;
+	private String errorCode;
+	private String detailedErrorCode;
+	private MetaInfo metaInfo;
+	private List<PaymentDetail> paymentDetails;
 }

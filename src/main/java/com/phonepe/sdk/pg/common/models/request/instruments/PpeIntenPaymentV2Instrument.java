@@ -27,8 +27,8 @@ import lombok.EqualsAndHashCode;
 @JsonInclude(Include.NON_NULL)
 public class PpeIntenPaymentV2Instrument extends PaymentV2Instrument {
 
-    @Builder
-    public PpeIntenPaymentV2Instrument() {
-        super(PgV2InstrumentType.PPE_INTENT);
-    }
+	@Builder
+	public PpeIntenPaymentV2Instrument() {
+		super(PgV2InstrumentType.PPE_INTENT);
+	}
 }

@@ -30,7 +30,9 @@ import lombok.NoArgsConstructor;
 @Builder
 public class BulkEvent {
 
-    private List<BaseEvent> events;
-    @Default private String source = Constants.SOURCE;
-    @Default private String clientVersion = Headers.SDK_TYPE + ":" + Headers.SDK_VERSION;
+	private List<BaseEvent> events;
+	@Default
+	private String source = Constants.SOURCE;
+	@Default
+	private String clientVersion = Headers.SDK_TYPE + ":" + Headers.SDK_VERSION;
 }

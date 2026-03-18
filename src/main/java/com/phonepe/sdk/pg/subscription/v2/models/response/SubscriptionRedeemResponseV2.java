@@ -28,6 +28,6 @@ import lombok.NoArgsConstructor;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SubscriptionRedeemResponseV2 {
 
-    private String transactionId;
-    private String state;
+	private String transactionId;
+	private String state;
 }

@@ -27,8 +27,8 @@ import lombok.EqualsAndHashCode;
 @JsonInclude(Include.NON_NULL)
 public class UpiQrPaymentV2Instrument extends PaymentV2Instrument {
 
-    @Builder
-    public UpiQrPaymentV2Instrument() {
-        super(PgV2InstrumentType.UPI_QR);
-    }
+	@Builder
+	public UpiQrPaymentV2Instrument() {
+		super(PgV2InstrumentType.UPI_QR);
+	}
 }

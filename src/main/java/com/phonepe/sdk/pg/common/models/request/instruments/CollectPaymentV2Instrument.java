@@ -27,13 +27,13 @@ import lombok.EqualsAndHashCode;
 @JsonInclude(Include.NON_NULL)
 public class CollectPaymentV2Instrument extends PaymentV2Instrument {
 
-    private CollectPaymentDetails details;
-    private String message;
+	private CollectPaymentDetails details;
+	private String message;
 
-    @Builder
-    public CollectPaymentV2Instrument(CollectPaymentDetails details, String message) {
-        super(PgV2InstrumentType.UPI_COLLECT);
-        this.details = details;
-        this.message = message;
-    }
+	@Builder
+	public CollectPaymentV2Instrument(CollectPaymentDetails details, String message) {
+		super(PgV2InstrumentType.UPI_COLLECT);
+		this.details = details;
+		this.message = message;
+	}
 }

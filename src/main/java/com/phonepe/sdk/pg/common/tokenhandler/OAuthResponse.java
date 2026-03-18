@@ -29,27 +29,27 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class OAuthResponse {
 
-    @JsonAlias("access_token")
-    private String accessToken;
+	@JsonAlias("access_token")
+	private String accessToken;
 
-    @JsonAlias("encrypted_access_token")
-    private String encryptedAccessToken;
+	@JsonAlias("encrypted_access_token")
+	private String encryptedAccessToken;
 
-    @JsonAlias("refresh_token")
-    private String refreshToken;
+	@JsonAlias("refresh_token")
+	private String refreshToken;
 
-    @JsonAlias("expires_in")
-    private int expiresIn;
+	@JsonAlias("expires_in")
+	private int expiresIn;
 
-    @JsonAlias("issued_at")
-    private long issuedAt;
+	@JsonAlias("issued_at")
+	private long issuedAt;
 
-    @JsonAlias("expires_at")
-    private long expiresAt;
+	@JsonAlias("expires_at")
+	private long expiresAt;
 
-    @JsonAlias("session_expires_at")
-    private long sessionExpiresAt;
+	@JsonAlias("session_expires_at")
+	private long sessionExpiresAt;
 
-    @JsonAlias("token_type")
-    private String tokenType;
+	@JsonAlias("token_type")
+	private String tokenType;
 }

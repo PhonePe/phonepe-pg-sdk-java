@@ -24,5 +24,5 @@ import lombok.NoArgsConstructor;
 @Getter
 public abstract class CollectPaymentDetails {
 
-    CollectPaymentDetailsType type;
+	CollectPaymentDetailsType type;
 }

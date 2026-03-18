@@ -42,128 +42,136 @@ import okhttp3.OkHttpClient;
 @Slf4j
 public class QueuedEventPublisher implements EventPublisher {
 
-    private final ObjectMapper objectMapper;
-    private final OkHttpClient okHttpClient;
-    private final EventQueue eventQueue;
-    private final String hostUrl;
-    private Supplier<String> authTokenSupplier;
-    protected ScheduledExecutorService scheduler;
+	private final ObjectMapper objectMapper;
+	private final OkHttpClient okHttpClient;
+	private final EventQueue eventQueue;
+	private final String hostUrl;
+	private Supplier<String> authTokenSupplier;
+	protected ScheduledExecutorService scheduler;
 
-    @Builder
-    public QueuedEventPublisher(
-            ObjectMapper objectMapper,
-            OkHttpClient okHttpClient,
-            EventQueue eventQueue,
-            String hostUrl) {
-        this.objectMapper = objectMapper;
-        this.okHttpClient = okHttpClient;
-        this.eventQueue = eventQueue;
-        this.hostUrl = hostUrl;
-    }
+	@Builder
+	public QueuedEventPublisher(
+			ObjectMapper objectMapper,
+			OkHttpClient okHttpClient,
+			EventQueue eventQueue,
+			String hostUrl) {
+		this.objectMapper = objectMapper;
+		this.okHttpClient = okHttpClient;
+		this.eventQueue = eventQueue;
+		this.hostUrl = hostUrl;
+	}
 
-    @Override
-    public void setAuthTokenSupplier(Supplier<String> authTokenSupplier) {
-        this.authTokenSupplier = authTokenSupplier;
-    }
+	@Override
+	public void setAuthTokenSupplier(Supplier<String> authTokenSupplier) {
+		this.authTokenSupplier = authTokenSupplier;
+	}
 
-    @Override
-    public void startPublishingEvents(Supplier<String> authTokenSupplier) {
-        this.setAuthTokenSupplier(authTokenSupplier);
-        if (Objects.isNull(scheduler)) {
-            scheduler = Executors.newScheduledThreadPool(1);
-            this.scheduler.scheduleWithFixedDelay(
-                    this, Constants.INITIAL_DELAY, Constants.DELAY, TimeUnit.SECONDS);
-        }
-    }
+	@Override
+	public void startPublishingEvents(Supplier<String> authTokenSupplier) {
+		this.setAuthTokenSupplier(authTokenSupplier);
+		if (Objects.isNull(scheduler)) {
+			scheduler = Executors.newScheduledThreadPool(1);
+			this.scheduler.scheduleWithFixedDelay(
+					this, Constants.INITIAL_DELAY, Constants.DELAY, TimeUnit.SECONDS);
+		}
+	}
 
-    @Override
-    public void send(BaseEvent event) {
-        this.eventQueue.add(event);
-    }
+	@Override
+	public void send(BaseEvent event) {
+		this.eventQueue.add(event);
+	}
 
-    private void sendBatchData() {
-        try {
-            if (this.eventQueue.isEmpty()) {
-                return;
-            }
-            log.info("Queue Size {}", this.eventQueue.size());
+	private void sendBatchData() {
+		try {
+			if (this.eventQueue.isEmpty()) {
+				return;
+			}
+			log.info("Queue Size {}", this.eventQueue.size());
 
-            List<List<BaseEvent>> bulkEventBatch = createEventBatches();
+			List<List<BaseEvent>> bulkEventBatch = createEventBatches();
 
-            for (List<BaseEvent> sdkEventList : bulkEventBatch) {
-                try {
-                    sendBatchData(sdkEventList);
-                } catch (Exception exception) {
-                    log.error("Error occurred sending events batch to backend", exception);
-                }
-            }
-        } catch (Exception exception) {
-            log.error("Error occurred sending events batch to backend", exception);
-        }
-    }
+			for (List<BaseEvent> sdkEventList : bulkEventBatch) {
+				try {
+					sendBatchData(sdkEventList);
+				} catch (Exception exception) {
+					log.error("Error occurred sending events batch to backend", exception);
+				}
+			}
+		} catch (Exception exception) {
+			log.error("Error occurred sending events batch to backend", exception);
+		}
+	}
 
-    private List<List<BaseEvent>> createEventBatches() {
-        final int CUR_QUEUE_SIZE = this.eventQueue.size();
-        List<List<BaseEvent>> bulkEventBatch = new ArrayList<>();
-        List<BaseEvent> currentBatch = new ArrayList<>();
-        for (int numEventsProcessed = 0;
-                numEventsProcessed < CUR_QUEUE_SIZE;
-                numEventsProcessed++) {
-            BaseEvent event = this.eventQueue.poll();
-            if (Objects.isNull(event)) {
-                break;
-            }
-            currentBatch.add(event);
-            if (currentBatch.size() == Constants.MAX_EVENTS_IN_BATCH) {
-                bulkEventBatch.add(currentBatch);
-                currentBatch = new ArrayList<>();
-            }
-        }
-        if (!currentBatch.isEmpty()) {
-            bulkEventBatch.add(currentBatch);
-        }
+	private List<List<BaseEvent>> createEventBatches() {
+		final int CUR_QUEUE_SIZE = this.eventQueue.size();
+		List<List<BaseEvent>> bulkEventBatch = new ArrayList<>();
+		List<BaseEvent> currentBatch = new ArrayList<>();
+		for (int numEventsProcessed = 0;
+				numEventsProcessed < CUR_QUEUE_SIZE;
+				numEventsProcessed++) {
+			BaseEvent event = this.eventQueue.poll();
+			if (Objects.isNull(event)) {
+				break;
+			}
+			currentBatch.add(event);
+			if (currentBatch.size() == Constants.MAX_EVENTS_IN_BATCH) {
+				bulkEventBatch.add(currentBatch);
+				currentBatch = new ArrayList<>();
+			}
+		}
+		if (!currentBatch.isEmpty()) {
+			bulkEventBatch.add(currentBatch);
+		}
 
-        return bulkEventBatch;
-    }
+		return bulkEventBatch;
+	}
 
-    private List<HttpHeaderPair> getHeaders() {
-        List<HttpHeaderPair> headers = new ArrayList<>();
-        headers.add(HttpHeaderPair.builder().key(Headers.ACCEPT).value(APPLICATION_JSON).build());
-        headers.add(
-                HttpHeaderPair.builder()
-                        .key(Constants.AUTHORIZATION)
-                        .value(authTokenSupplier.get())
-                        .build());
-        headers.add(
-                HttpHeaderPair.builder().key(Headers.CONTENT_TYPE).value(APPLICATION_JSON).build());
-        return headers;
-    }
+	private List<HttpHeaderPair> getHeaders() {
+		List<HttpHeaderPair> headers = new ArrayList<>();
+		headers.add(HttpHeaderPair.builder()
+				.key(Headers.ACCEPT)
+				.value(APPLICATION_JSON)
+				.build());
+		headers.add(
+				HttpHeaderPair.builder()
+						.key(Constants.AUTHORIZATION)
+						.value(authTokenSupplier.get())
+						.build());
+		headers.add(
+				HttpHeaderPair.builder()
+						.key(Headers.CONTENT_TYPE)
+						.value(APPLICATION_JSON)
+						.build());
+		return headers;
+	}
 
-    @SneakyThrows
-    private void sendBatchData(List<BaseEvent> sdkEventList) {
-        BulkEvent bulkEvent = BulkEvent.builder().events(sdkEventList).build();
-        List<HttpHeaderPair> headers = getHeaders();
-        HttpCommand<Object, BulkEvent> httpCommand = buildHttpCommand(headers, bulkEvent);
-        httpCommand.execute();
-    }
+	@SneakyThrows
+	private void sendBatchData(List<BaseEvent> sdkEventList) {
+		BulkEvent bulkEvent = BulkEvent.builder()
+				.events(sdkEventList)
+				.build();
+		List<HttpHeaderPair> headers = getHeaders();
+		HttpCommand<Object, BulkEvent> httpCommand = buildHttpCommand(headers, bulkEvent);
+		httpCommand.execute();
+	}
 
-    private HttpCommand<Object, BulkEvent> buildHttpCommand(
-            final List<HttpHeaderPair> headers, BulkEvent bulkEvent) {
-        return HttpCommand.<Object, BulkEvent>builder()
-                .methodName(HttpMethodType.POST)
-                .hostURL(this.hostUrl)
-                .url(Constants.EVENTS_ENDPOINT)
-                .client(this.okHttpClient)
-                .objectMapper(this.objectMapper)
-                .responseTypeReference(new TypeReference<Object>() {})
-                .requestData(bulkEvent)
-                .encodingType(APPLICATION_JSON)
-                .headers(headers)
-                .build();
-    }
+	private HttpCommand<Object, BulkEvent> buildHttpCommand(
+			final List<HttpHeaderPair> headers, BulkEvent bulkEvent) {
+		return HttpCommand.<Object, BulkEvent>builder()
+				.methodName(HttpMethodType.POST)
+				.hostURL(this.hostUrl)
+				.url(Constants.EVENTS_ENDPOINT)
+				.client(this.okHttpClient)
+				.objectMapper(this.objectMapper)
+				.responseTypeReference(new TypeReference<Object>() {})
+				.requestData(bulkEvent)
+				.encodingType(APPLICATION_JSON)
+				.headers(headers)
+				.build();
+	}
 
-    @Override
-    public void run() {
-        sendBatchData();
-    }
+	@Override
+	public void run() {
+		sendBatchData();
+	}
 }

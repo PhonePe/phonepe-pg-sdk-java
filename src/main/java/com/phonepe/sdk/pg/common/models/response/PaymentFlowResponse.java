@@ -24,24 +24,20 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @JsonTypeInfo(
-        use = JsonTypeInfo.Id.NAME,
-        include = JsonTypeInfo.As.EXISTING_PROPERTY,
-        property = "type")
+		use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = "type")
 @JsonSubTypes({
-    @JsonSubTypes.Type(
-            name = "SUBSCRIPTION_SETUP",
-            value = SubscriptionSetupPaymentFlowResponse.class),
-    @JsonSubTypes.Type(
-            name = "SUBSCRIPTION_REDEMPTION",
-            value = SubscriptionRedemptionPaymentFlowResponse.class),
+		@JsonSubTypes.Type(
+				name = "SUBSCRIPTION_SETUP", value = SubscriptionSetupPaymentFlowResponse.class),
+		@JsonSubTypes.Type(
+				name = "SUBSCRIPTION_REDEMPTION", value = SubscriptionRedemptionPaymentFlowResponse.class),
 })
 @NoArgsConstructor
 @Data
 public class PaymentFlowResponse {
 
-    private PaymentFlowType type;
+	private PaymentFlowType type;
 
-    public PaymentFlowResponse(PaymentFlowType type) {
-        this.type = type;
-    }
+	public PaymentFlowResponse(PaymentFlowType type) {
+		this.type = type;
+	}
 }

@@ -23,9 +23,9 @@ import lombok.Data;
 @JsonInclude(Include.NON_NULL)
 public class SubscriptionRedeemRequestV2 {
 
-    private String merchantOrderId;
+	private String merchantOrderId;
 
-    public SubscriptionRedeemRequestV2(String merchantOrderId) {
-        this.merchantOrderId = merchantOrderId;
-    }
+	public SubscriptionRedeemRequestV2(String merchantOrderId) {
+		this.merchantOrderId = merchantOrderId;
+	}
 }

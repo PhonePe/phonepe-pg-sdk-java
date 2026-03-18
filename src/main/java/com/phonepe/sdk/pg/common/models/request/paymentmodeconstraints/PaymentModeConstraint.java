@@ -27,18 +27,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonTypeInfo(
-        use = JsonTypeInfo.Id.NAME,
-        include = As.EXISTING_PROPERTY,
-        property = "type",
-        visible = true)
+		use = JsonTypeInfo.Id.NAME, include = As.EXISTING_PROPERTY, property = "type", visible = true)
 @JsonSubTypes({
-    @JsonSubTypes.Type(value = CardPaymentModeConstraint.class, name = "CARD"),
-    @JsonSubTypes.Type(value = NetBankingPaymentModeConstraint.class, name = "NET_BANKING"),
-    @JsonSubTypes.Type(value = UpiIntentPaymentModeConstraint.class, name = "UPI_INTENT"),
-    @JsonSubTypes.Type(value = UpiQrPaymentModeConstraint.class, name = "UPI_QR"),
-    @JsonSubTypes.Type(value = UpiCollectPaymentModeConstraint.class, name = "UPI_COLLECT")
+		@JsonSubTypes.Type(value = CardPaymentModeConstraint.class, name = "CARD"),
+		@JsonSubTypes.Type(value = NetBankingPaymentModeConstraint.class, name = "NET_BANKING"),
+		@JsonSubTypes.Type(value = UpiIntentPaymentModeConstraint.class, name = "UPI_INTENT"),
+		@JsonSubTypes.Type(value = UpiQrPaymentModeConstraint.class, name = "UPI_QR"),
+		@JsonSubTypes.Type(value = UpiCollectPaymentModeConstraint.class, name = "UPI_COLLECT")
 })
 public abstract class PaymentModeConstraint {
 
-    protected PgV2InstrumentType type;
+	protected PgV2InstrumentType type;
 }

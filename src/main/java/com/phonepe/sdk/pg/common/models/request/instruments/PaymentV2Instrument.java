@@ -27,10 +27,10 @@ import lombok.NoArgsConstructor;
 @Getter
 public abstract class PaymentV2Instrument {
 
-    private PgV2InstrumentType type;
-    private List<InstrumentConstraint> instrumentConstraints;
+	private PgV2InstrumentType type;
+	private List<InstrumentConstraint> instrumentConstraints;
 
-    public PaymentV2Instrument(PgV2InstrumentType type) {
-        this.type = type;
-    }
+	public PaymentV2Instrument(PgV2InstrumentType type) {
+		this.type = type;
+	}
 }

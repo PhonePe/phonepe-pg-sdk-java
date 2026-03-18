@@ -30,11 +30,11 @@ import lombok.EqualsAndHashCode;
 @JsonInclude(Include.NON_NULL)
 public class CardPaymentModeConstraint extends PaymentModeConstraint {
 
-    private final Set<CardType> cardTypes;
+	private final Set<CardType> cardTypes;
 
-    @Builder
-    public CardPaymentModeConstraint(Set<CardType> cardTypes) {
-        super(PgV2InstrumentType.CARD);
-        this.cardTypes = cardTypes;
-    }
+	@Builder
+	public CardPaymentModeConstraint(Set<CardType> cardTypes) {
+		super(PgV2InstrumentType.CARD);
+		this.cardTypes = cardTypes;
+	}
 }
