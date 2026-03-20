@@ -83,6 +83,20 @@ public abstract class BaseClient {
 			Map<String, String> queryParams,
 			TypeReference<T> responseTypeReference,
 			List<HttpHeaderPair> headers) {
+		return requestViaAuthRefresh(
+				methodName, requestData, url, queryParams, responseTypeReference, headers,
+				this.env.getPgHostUrl());
+	}
+
+	@SneakyThrows
+	protected <T, R> T requestViaAuthRefresh(
+			HttpMethodType methodName,
+			R requestData,
+			String url,
+			Map<String, String> queryParams,
+			TypeReference<T> responseTypeReference,
+			List<HttpHeaderPair> headers,
+			String hostUrl) {
 		List<HttpHeaderPair> httpHeaders = new ArrayList<>(headers);
 		HttpCommand<T, R> httpCommand = HttpCommand.<T, R>builder()
 				.client(this.okHttpClient)
@@ -91,7 +105,7 @@ public abstract class BaseClient {
 				.methodName(methodName)
 				.headers(addAuthHeader(httpHeaders))
 				.requestData(requestData)
-				.hostURL(this.env.getPgHostUrl())
+				.hostURL(hostUrl)
 				.encodingType(APPLICATION_JSON)
 				.queryParams(queryParams)
 				.url(url)

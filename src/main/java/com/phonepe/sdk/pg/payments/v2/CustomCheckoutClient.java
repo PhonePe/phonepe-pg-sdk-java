@@ -31,13 +31,19 @@ import com.phonepe.sdk.pg.common.http.HttpHeaderPair;
 import com.phonepe.sdk.pg.common.http.HttpMethodType;
 import com.phonepe.sdk.pg.common.models.request.PgPaymentRequest;
 import com.phonepe.sdk.pg.common.models.request.RefundRequest;
+import com.phonepe.sdk.pg.common.models.request.instruments.PaymentV2Instrument;
 import com.phonepe.sdk.pg.common.models.response.CallbackResponse;
 import com.phonepe.sdk.pg.common.models.response.OrderStatusResponse;
 import com.phonepe.sdk.pg.common.models.response.PgPaymentResponse;
 import com.phonepe.sdk.pg.common.models.response.RefundResponse;
 import com.phonepe.sdk.pg.common.models.response.RefundStatusResponse;
 import com.phonepe.sdk.pg.payments.v2.customcheckout.CustomCheckoutConstants;
+import com.phonepe.sdk.pg.payments.v2.customcheckout.filters.DeviceOsHeaderFilter;
+import com.phonepe.sdk.pg.payments.v2.customcheckout.filters.InstrumentRequestFilter;
+import com.phonepe.sdk.pg.payments.v2.customcheckout.filters.PayContext;
+import com.phonepe.sdk.pg.payments.v2.customcheckout.filters.PciHostFilter;
 import com.phonepe.sdk.pg.payments.v2.models.request.CreateSdkOrderRequest;
+import com.phonepe.sdk.pg.payments.v2.models.request.PgPaymentFlow;
 import com.phonepe.sdk.pg.payments.v2.models.response.CreateSdkOrderResponse;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -47,6 +53,7 @@ import lombok.SneakyThrows;
 public class CustomCheckoutClient extends BaseClient {
 
 	private List<HttpHeaderPair> headers;
+	private final List<InstrumentRequestFilter> instrumentFilters;
 
 	private CustomCheckoutClient(
 			final String clientId,
@@ -59,6 +66,7 @@ public class CustomCheckoutClient extends BaseClient {
 				BaseEvent.buildInitClientEvent(
 						FlowType.PG, EventType.CUSTOM_CHECKOUT_CLIENT_INITIALIZED));
 		this.prepareHeaders();
+		this.instrumentFilters = List.of(new PciHostFilter(env), new DeviceOsHeaderFilter());
 	}
 
 	/**
@@ -110,23 +118,22 @@ public class CustomCheckoutClient extends BaseClient {
 	public PgPaymentResponse pay(PgPaymentRequest pgPaymentRequest) {
 		String url = CustomCheckoutConstants.PAY_API;
 		try {
-			List<HttpHeaderPair> requestHeaders = headers;
-			if (pgPaymentRequest.getDeviceOS() != null && !pgPaymentRequest.getDeviceOS()
-					.isBlank()) {
-				requestHeaders = new ArrayList<>(headers);
-				requestHeaders.add(
-						HttpHeaderPair.builder()
-								.key(Headers.X_DEVICE_OS)
-								.value(pgPaymentRequest.getDeviceOS())
-								.build());
-			}
+			PaymentV2Instrument instrument = resolveInstrument(pgPaymentRequest);
+			PayContext ctx = new PayContext(
+					this.getEnv()
+							.getPgHostUrl(), new ArrayList<>(headers),
+					pgPaymentRequest.getDeviceOS());
+			instrumentFilters.stream()
+					.filter(f -> instrument != null && f.supports(instrument))
+					.forEach(f -> f.apply(ctx));
 			PgPaymentResponse pgPaymentResponse = requestViaAuthRefresh(
 					HttpMethodType.POST,
 					pgPaymentRequest,
 					url,
 					null,
 					new TypeReference<PgPaymentResponse>() {},
-					requestHeaders);
+					ctx.getHeaders(),
+					ctx.getHostUrl());
 			this.eventPublisher.send(
 					BaseEvent.buildCustomCheckoutPayEvent(
 							EventState.SUCCESS, pgPaymentRequest, url, EventType.PAY_SUCCESS));
@@ -141,6 +148,13 @@ public class CustomCheckoutClient extends BaseClient {
 							exception));
 			throw exception;
 		}
+	}
+
+	private PaymentV2Instrument resolveInstrument(PgPaymentRequest pgPaymentRequest) {
+		if (!(pgPaymentRequest.getPaymentFlow() instanceof PgPaymentFlow)) {
+			return null;
+		}
+		return ((PgPaymentFlow) pgPaymentRequest.getPaymentFlow()).getPaymentMode();
 	}
 
 	/**
