@@ -10,3 +10,5 @@ dependency-reduced-pom.xml
 **/.DS_Store
 .run
 checkstyle.xml
+.jvm.config
+.mvn*
