@@ -47,6 +47,11 @@ class PciHostFilterTest {
 	// ── supports() ────────────────────────────────────────────────────────
 
 	@Test
+	void testDoesNotSupportNullInstrument() {
+		Assertions.assertFalse(filter.supports(null));
+	}
+
+	@Test
 	void testSupportsCardInstrument() {
 		CardPaymentV2Instrument card = (CardPaymentV2Instrument) CardPaymentV2Instrument.builder()
 				.build();

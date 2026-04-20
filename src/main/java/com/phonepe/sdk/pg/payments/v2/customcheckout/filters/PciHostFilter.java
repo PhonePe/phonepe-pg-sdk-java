@@ -32,6 +32,9 @@ public class PciHostFilter implements InstrumentRequestFilter {
 
 	@Override
 	public boolean supports(PaymentV2Instrument instrument) {
+		if (instrument == null) {
+			return false;
+		}
 		return instrument instanceof CardPaymentV2Instrument
 				|| instrument instanceof TokenPaymentV2Instrument;
 	}

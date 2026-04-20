@@ -44,6 +44,11 @@ class DeviceOsHeaderFilterTest {
 	// ── supports() ────────────────────────────────────────────────────────
 
 	@Test
+	void testSupportsNullInstrument() {
+		Assertions.assertTrue(filter.supports(null));
+	}
+
+	@Test
 	void testSupportsCardInstrument() {
 		Assertions.assertTrue(
 				filter.supports((CardPaymentV2Instrument) CardPaymentV2Instrument.builder().build()));

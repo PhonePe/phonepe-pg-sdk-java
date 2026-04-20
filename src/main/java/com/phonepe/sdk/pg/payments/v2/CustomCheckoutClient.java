@@ -66,6 +66,8 @@ public class CustomCheckoutClient extends BaseClient {
 				BaseEvent.buildInitClientEvent(
 						FlowType.PG, EventType.CUSTOM_CHECKOUT_CLIENT_INITIALIZED));
 		this.prepareHeaders();
+		// PciHostFilter must be listed before header-injecting filters (e.g. DeviceOsHeaderFilter)
+		// so that any future filter which reads ctx.getHostUrl() sees the PCI host already set.
 		this.instrumentFilters = List.of(new PciHostFilter(env), new DeviceOsHeaderFilter());
 	}
 
@@ -124,7 +126,7 @@ public class CustomCheckoutClient extends BaseClient {
 							.getPgHostUrl(), new ArrayList<>(headers),
 					pgPaymentRequest.getDeviceOS());
 			instrumentFilters.stream()
-					.filter(f -> instrument != null && f.supports(instrument))
+					.filter(f -> f.supports(instrument))
 					.forEach(f -> f.apply(ctx));
 			PgPaymentResponse pgPaymentResponse = requestViaAuthRefresh(
 					HttpMethodType.POST,
