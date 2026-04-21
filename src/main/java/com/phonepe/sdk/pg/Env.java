@@ -24,18 +24,22 @@ public enum Env {
 	SANDBOX(
 			BaseUrl.SANDBOX_PG_HOST_URL,
 			BaseUrl.SANDBOX_OAUTH_HOST_URL,
-			BaseUrl.SANDBOX_EVENTS_HOST_URL), PRODUCTION(
+			BaseUrl.SANDBOX_EVENTS_HOST_URL,
+			BaseUrl.SANDBOX_PG_HOST_URL), PRODUCTION(
 					BaseUrl.PRODUCTION_PG_HOST_URL,
 					BaseUrl.PRODUCTION_OAUTH_HOST_URL,
-					BaseUrl.PRODUCTION_EVENTS_HOST_URL), TEST(BaseUrl.TESTING_URL, BaseUrl.TESTING_URL,
-							BaseUrl.TESTING_URL);
+					BaseUrl.PRODUCTION_EVENTS_HOST_URL,
+					BaseUrl.PRODUCTION_PG_HOST_URL_PCI), TEST(BaseUrl.TESTING_URL, BaseUrl.TESTING_URL,
+							BaseUrl.TESTING_URL, BaseUrl.TESTING_URL);
 
 	private final String pgHostUrl;
 	private final String oAuthHostUrl;
 	private final String eventsHostUrl;
+	private final String pciPgHostUrl;
 
-	Env(String pgHostUrl, String oAuthHostUrl, String eventsHostUrl) {
+	Env(String pgHostUrl, String oAuthHostUrl, String eventsHostUrl, String pciPgHostUrl) {
 		this.pgHostUrl = pgHostUrl;
+		this.pciPgHostUrl = pciPgHostUrl;
 		this.oAuthHostUrl = oAuthHostUrl;
 		this.eventsHostUrl = eventsHostUrl;
 	}
