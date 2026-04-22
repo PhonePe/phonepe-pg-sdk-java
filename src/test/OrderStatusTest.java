@@ -765,4 +765,23 @@ public class OrderStatusTest extends BaseSetupWithOAuth {
 
         Assertions.assertEquals(responseObject, actual);
     }
+
+    @Test
+    void testGetOrderStatusWithoutDetailsFlagDefaultsToFalse() {
+        String url = String.format(StandardCheckoutConstants.ORDER_STATUS_API, merchantOrderId);
+        OrderStatusResponse orderStatusResponse =
+                OrderStatusResponse.builder().orderId("Order_DefaultFlag").state("COMPLETED").build();
+
+        addStubForGetRequest(
+                url,
+                ImmutableMap.of(StandardCheckoutConstants.ORDER_DETAILS, "false"),
+                getHeaders(),
+                HttpStatus.SC_OK,
+                ImmutableMap.of(),
+                orderStatusResponse);
+
+        // 1-arg overload must delegate to getOrderStatus(id, false)
+        OrderStatusResponse actual = standardCheckoutClient.getOrderStatus(merchantOrderId);
+        Assertions.assertEquals(actual, orderStatusResponse);
+    }
 }

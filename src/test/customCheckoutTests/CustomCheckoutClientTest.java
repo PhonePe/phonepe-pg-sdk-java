@@ -451,4 +451,85 @@ class CustomCheckoutClientTest extends CustomCheckoutBaseSetup {
         Assertions.assertEquals(404, exception.getHttpStatusCode());
         Assertions.assertEquals("REFUND_NOT_FOUND", exception.getCode());
     }
+
+    // ───────────────────────────────────────────────────────────────────────
+    // createSdkOrder()
+    // ───────────────────────────────────────────────────────────────────────
+
+    @Test
+    void testCreateSdkOrderSuccess() {
+        final String url = CustomCheckoutConstants.CREATE_ORDER_API;
+
+        com.phonepe.sdk.pg.payments.v2.models.request.CreateSdkOrderRequest sdkRequest =
+                com.phonepe.sdk.pg.payments.v2.models.request.CreateSdkOrderRequest
+                        .CustomCheckoutBuilder()
+                        .merchantOrderId("SDK_ORDER_001")
+                        .amount(2000L)
+                        .build();
+
+        com.phonepe.sdk.pg.payments.v2.models.response.CreateSdkOrderResponse sdkResponse =
+                com.phonepe.sdk.pg.payments.v2.models.response.CreateSdkOrderResponse.builder()
+                        .orderId("OMO_SDK_001")
+                        .state("PENDING")
+                        .token("sdk-token-abc")
+                        .expireAt(java.time.Instant.now().getEpochSecond() + 600)
+                        .build();
+
+        addStubForPostRequest(
+                url, getHeaders(), sdkRequest, HttpStatus.SC_OK, Maps.newHashMap(), sdkResponse);
+
+        com.phonepe.sdk.pg.payments.v2.models.response.CreateSdkOrderResponse actual =
+                customCheckoutClient.createSdkOrder(sdkRequest);
+        Assertions.assertEquals(sdkResponse.getOrderId(), actual.getOrderId());
+        Assertions.assertEquals(sdkResponse.getToken(), actual.getToken());
+    }
+
+    @Test
+    void testCreateSdkOrderFailure() {
+        final String url = CustomCheckoutConstants.CREATE_ORDER_API;
+
+        com.phonepe.sdk.pg.payments.v2.models.request.CreateSdkOrderRequest sdkRequest =
+                com.phonepe.sdk.pg.payments.v2.models.request.CreateSdkOrderRequest
+                        .CustomCheckoutBuilder()
+                        .merchantOrderId("SDK_ORDER_FAIL_001")
+                        .amount(2000L)
+                        .build();
+
+        PhonePeResponse errorResponse =
+                PhonePeResponse.<Map<String, String>>builder()
+                        .code("INTERNAL_SERVER_ERROR")
+                        .message("Something went wrong")
+                        .data(Collections.emptyMap())
+                        .build();
+
+        addStubForPostRequest(
+                url,
+                getHeaders(),
+                sdkRequest,
+                HttpStatus.SC_INTERNAL_SERVER_ERROR,
+                Maps.newHashMap(),
+                errorResponse);
+
+        PhonePeException exception =
+                assertThrows(
+                        PhonePeException.class,
+                        () -> customCheckoutClient.createSdkOrder(sdkRequest));
+        Assertions.assertEquals(500, exception.getHttpStatusCode());
+    }
+
+    // ───────────────────────────────────────────────────────────────────────
+    // validateCallback()
+    // ───────────────────────────────────────────────────────────────────────
+
+    @Test
+    void testValidateCallbackMalformedJsonThrows() {
+        // sha256("username" + "password") = bc842c31a9e54efe320d30d948be61291f3ceee4766e36ab25fa65243cd76e0e
+        assertThrows(
+                Exception.class,
+                () -> customCheckoutClient.validateCallback(
+                        "username",
+                        "password",
+                        "bc842c31a9e54efe320d30d948be61291f3ceee4766e36ab25fa65243cd76e0e",
+                        "{not valid json"));
+    }
 }

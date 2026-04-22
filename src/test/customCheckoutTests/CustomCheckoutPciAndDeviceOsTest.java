@@ -177,4 +177,41 @@ class CustomCheckoutPciAndDeviceOsTest extends CustomCheckoutBaseSetup {
 		PgPaymentResponse actual = customCheckoutClient.pay(request);
 		Assertions.assertEquals(response.getOrderId(), actual.getOrderId());
 	}
+
+	// ── Non-PgPaymentFlow uses default host (resolveInstrument returns null) ──
+
+	@Test
+	void testNonPgPaymentFlowUsesDefaultHost() throws Exception {
+		final String url = CustomCheckoutConstants.PAY_API;
+
+		// Use SubscriptionNotifyRequestBuilder which sets SubscriptionRedemptionPaymentFlow —
+		// definitively not a PgPaymentFlow, so resolveInstrument() returns null.
+		PgPaymentRequest request = PgPaymentRequest.SubscriptionNotifyRequestBuilder()
+				.merchantOrderId("ORDER_NON_PG_FLOW_001")
+				.amount(1000L)
+				.merchantSubscriptionId("SUB001")
+				.autoDebit(false)
+				.build();
+
+		PgPaymentResponse response = PgPaymentResponse.builder()
+				.orderId("OMO_NON_PG_FLOW_001")
+				.state("PENDING")
+				.expireAt(java.time.Instant.now().getEpochSecond() + 600)
+				.build();
+
+		// Stub by URL only (no body match) since SubscriptionRedemptionPaymentFlow has
+		// extra fields; we only care that the request routes to the default host, not PCI host.
+		wireMockServer.stubFor(
+				com.github.tomakehurst.wiremock.client.WireMock.post(
+								com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo(url))
+						.willReturn(
+								com.github.tomakehurst.wiremock.client.WireMock.aResponse()
+										.withStatus(200)
+										.withHeader("Content-Type", "application/json")
+										.withBody(new com.fasterxml.jackson.databind.ObjectMapper()
+												.writeValueAsString(response))));
+
+		PgPaymentResponse actual = customCheckoutClient.pay(request);
+		Assertions.assertEquals(response.getOrderId(), actual.getOrderId());
+	}
 }

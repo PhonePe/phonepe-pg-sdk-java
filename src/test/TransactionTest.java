@@ -113,4 +113,56 @@ public class TransactionTest extends BaseSetupWithOAuth {
         OrderStatusResponse actual = subscriptionClient.getTransactionStatus(transactionId);
         Assertions.assertEquals(actual, transactionCheckStatusResponse);
     }
+
+    @Test
+    void testTransactionStatusStandardCheckoutFails() {
+        String url = String.format(StandardCheckoutConstants.TRANSACTION_STATUS_API, transactionId);
+
+        com.phonepe.sdk.pg.common.http.PhonePeResponse errorResponse =
+                com.phonepe.sdk.pg.common.http.PhonePeResponse.<java.util.Map<String, String>>builder()
+                        .code("TRANSACTION_NOT_FOUND")
+                        .message("Transaction not found")
+                        .data(java.util.Collections.emptyMap())
+                        .build();
+
+        addStubForGetRequest(
+                url,
+                ImmutableMap.of(),
+                getHeaders(),
+                HttpStatus.SC_NOT_FOUND,
+                ImmutableMap.of(),
+                errorResponse);
+
+        com.phonepe.sdk.pg.common.exception.PhonePeException exception =
+                org.junit.jupiter.api.Assertions.assertThrows(
+                        com.phonepe.sdk.pg.common.exception.PhonePeException.class,
+                        () -> standardCheckoutClient.getTransactionStatus(transactionId));
+        Assertions.assertEquals(404, exception.getHttpStatusCode());
+    }
+
+    @Test
+    void testTransactionStatusCustomCheckoutFails() {
+        String url = String.format(CustomCheckoutConstants.TRANSACTION_STATUS_API, transactionId);
+
+        com.phonepe.sdk.pg.common.http.PhonePeResponse errorResponse =
+                com.phonepe.sdk.pg.common.http.PhonePeResponse.<java.util.Map<String, String>>builder()
+                        .code("TRANSACTION_NOT_FOUND")
+                        .message("Transaction not found")
+                        .data(java.util.Collections.emptyMap())
+                        .build();
+
+        addStubForGetRequest(
+                url,
+                ImmutableMap.of(),
+                getHeaders(),
+                HttpStatus.SC_NOT_FOUND,
+                ImmutableMap.of(),
+                errorResponse);
+
+        com.phonepe.sdk.pg.common.exception.PhonePeException exception =
+                org.junit.jupiter.api.Assertions.assertThrows(
+                        com.phonepe.sdk.pg.common.exception.PhonePeException.class,
+                        () -> customCheckoutClient.getTransactionStatus(transactionId));
+        Assertions.assertEquals(404, exception.getHttpStatusCode());
+    }
 }
