@@ -107,8 +107,10 @@ public class BaseEvent {
 			String apiPath,
 			EventType eventName) {
 
-		// Extracting the instrument from the PgPaymentFlow
-		PgPaymentFlow pgPaymentFlow = (PgPaymentFlow) pgPaymentRequest.getPaymentFlow();
+		// Extracting the instrument from the PgPaymentFlow (null-safe: non-PG flows return null)
+		PgPaymentFlow pgPaymentFlow = pgPaymentRequest.getPaymentFlow() instanceof PgPaymentFlow
+				? (PgPaymentFlow) pgPaymentRequest.getPaymentFlow()
+				: null;
 
 		// Extracting the targetApp from the paymentMode in PgPaymentFlow
 		String targetApp = Optional.ofNullable(pgPaymentFlow)

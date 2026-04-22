@@ -234,4 +234,32 @@ public class RefundTest extends BaseSetupWithOAuth {
         Assertions.assertEquals(404, phonePeException.getHttpStatusCode());
         Assertions.assertEquals("Not Found", phonePeException.getMessage());
     }
+
+    @Test
+    void testGetRefundStatusStandardCheckoutFails() {
+        String refundId = "RefundIdNotFound";
+        String url = String.format(StandardCheckoutConstants.REFUND_STATUS_API, refundId);
+
+        PhonePeResponse errorResponse =
+                PhonePeResponse.<Map<String, String>>builder()
+                        .code("REFUND_NOT_FOUND")
+                        .message("Refund does not exist")
+                        .data(Collections.emptyMap())
+                        .build();
+
+        addStubForGetRequest(
+                url,
+                ImmutableMap.of(),
+                getHeaders(),
+                HttpStatus.SC_NOT_FOUND,
+                ImmutableMap.of(),
+                errorResponse);
+
+        PhonePeException exception =
+                assertThrows(
+                        PhonePeException.class,
+                        () -> standardCheckoutClient.getRefundStatus(refundId));
+        Assertions.assertEquals(404, exception.getHttpStatusCode());
+        Assertions.assertEquals("REFUND_NOT_FOUND", exception.getCode());
+    }
 }

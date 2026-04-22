@@ -1274,4 +1274,15 @@ public class CallbackTest extends BaseSetup {
                         jsonString);
         Assertions.assertEquals(expected, actual);
     }
+
+    @Test
+    void testValidateCallbackStandardCheckoutMalformedJsonThrows() {
+        org.junit.jupiter.api.Assertions.assertThrows(
+                Exception.class,
+                () -> standardCheckoutClient.validateCallback(
+                        "username",
+                        "password",
+                        "bc842c31a9e54efe320d30d948be61291f3ceee4766e36ab25fa65243cd76e0e",
+                        "{not valid json"));
+    }
 }
