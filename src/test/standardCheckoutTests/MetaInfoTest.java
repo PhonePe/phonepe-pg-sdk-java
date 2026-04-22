@@ -201,16 +201,146 @@ class MetaInfoTest {
 		Assertions.assertEquals("v15", metaInfo.getUdf15());
 	}
 
+	// ── equals(): header branches ─────────────────────────────────────────
+
 	@Test
-	void testEqualsAndHashCode() {
+	void testEqualsSameInstance() {
+		MetaInfo a = MetaInfo.builder().udf1("x").build();
+		Assertions.assertEquals(a, a);
+	}
+
+	@Test
+	void testEqualsNullReturnsFalse() {
+		MetaInfo a = MetaInfo.builder().udf1("x").build();
+		Assertions.assertNotEquals(a, null);
+	}
+
+	@Test
+	void testEqualsDifferentTypeReturnsFalse() {
+		MetaInfo a = MetaInfo.builder().udf1("x").build();
+		Assertions.assertNotEquals(a, "not a MetaInfo");
+	}
+
+	@Test
+	void testEqualsAllFieldsNullBothObjects() {
+		// Covers: this.fieldN == null AND other.fieldN == null (proceed) for all 15 fields
+		Assertions.assertEquals(new MetaInfo(), new MetaInfo());
+	}
+
+	@Test
+	void testEqualsAllFieldsNonNullAndEqual() {
+		// Covers: this.fieldN != null AND this.fieldN.equals(other.fieldN) (proceed) for all 15 fields
+		MetaInfo a = MetaInfo.builder()
+				.udf1("v1").udf2("v2").udf3("v3").udf4("v4").udf5("v5")
+				.udf6("v6").udf7("v7").udf8("v8").udf9("v9").udf10("v10")
+				.udf11("v11").udf12("v12").udf13("v13").udf14("v14").udf15("v15")
+				.build();
+		MetaInfo b = MetaInfo.builder()
+				.udf1("v1").udf2("v2").udf3("v3").udf4("v4").udf5("v5")
+				.udf6("v6").udf7("v7").udf8("v8").udf9("v9").udf10("v10")
+				.udf11("v11").udf12("v12").udf13("v13").udf14("v14").udf15("v15")
+				.build();
+		Assertions.assertEquals(a, b);
+	}
+
+	// ── equals(): per-field "this=null, other=non-null → false" branch ───
+	// All preceding fields are null in both objects so we reach field N.
+
+	@Test
+	void testEqualsNullVsNonNullPerField() {
+		// udf1
+		Assertions.assertNotEquals(new MetaInfo(), setField(new MetaInfo(), 1, "v"));
+		// udf2 (udf1 matches: both null)
+		Assertions.assertNotEquals(new MetaInfo(), setField(new MetaInfo(), 2, "v"));
+		// udf3
+		Assertions.assertNotEquals(new MetaInfo(), setField(new MetaInfo(), 3, "v"));
+		// udf4
+		Assertions.assertNotEquals(new MetaInfo(), setField(new MetaInfo(), 4, "v"));
+		// udf5
+		Assertions.assertNotEquals(new MetaInfo(), setField(new MetaInfo(), 5, "v"));
+		// udf6
+		Assertions.assertNotEquals(new MetaInfo(), setField(new MetaInfo(), 6, "v"));
+		// udf7
+		Assertions.assertNotEquals(new MetaInfo(), setField(new MetaInfo(), 7, "v"));
+		// udf8
+		Assertions.assertNotEquals(new MetaInfo(), setField(new MetaInfo(), 8, "v"));
+		// udf9
+		Assertions.assertNotEquals(new MetaInfo(), setField(new MetaInfo(), 9, "v"));
+		// udf10
+		Assertions.assertNotEquals(new MetaInfo(), setField(new MetaInfo(), 10, "v"));
+		// udf11
+		Assertions.assertNotEquals(new MetaInfo(), setField(new MetaInfo(), 11, "v"));
+		// udf12
+		Assertions.assertNotEquals(new MetaInfo(), setField(new MetaInfo(), 12, "v"));
+		// udf13
+		Assertions.assertNotEquals(new MetaInfo(), setField(new MetaInfo(), 13, "v"));
+		// udf14
+		Assertions.assertNotEquals(new MetaInfo(), setField(new MetaInfo(), 14, "v"));
+		// udf15
+		Assertions.assertNotEquals(new MetaInfo(), setField(new MetaInfo(), 15, "v"));
+	}
+
+	// ── equals(): per-field "this!=null, !this.equals(other) → false" branch ─
+	// All preceding fields are null in both; field N differs (both non-null, different values).
+
+	@Test
+	void testEqualsNonNullDifferentValuePerField() {
+		Assertions.assertNotEquals(setField(new MetaInfo(), 1, "a"), setField(new MetaInfo(), 1, "b"));
+		Assertions.assertNotEquals(setField(new MetaInfo(), 2, "a"), setField(new MetaInfo(), 2, "b"));
+		Assertions.assertNotEquals(setField(new MetaInfo(), 3, "a"), setField(new MetaInfo(), 3, "b"));
+		Assertions.assertNotEquals(setField(new MetaInfo(), 4, "a"), setField(new MetaInfo(), 4, "b"));
+		Assertions.assertNotEquals(setField(new MetaInfo(), 5, "a"), setField(new MetaInfo(), 5, "b"));
+		Assertions.assertNotEquals(setField(new MetaInfo(), 6, "a"), setField(new MetaInfo(), 6, "b"));
+		Assertions.assertNotEquals(setField(new MetaInfo(), 7, "a"), setField(new MetaInfo(), 7, "b"));
+		Assertions.assertNotEquals(setField(new MetaInfo(), 8, "a"), setField(new MetaInfo(), 8, "b"));
+		Assertions.assertNotEquals(setField(new MetaInfo(), 9, "a"), setField(new MetaInfo(), 9, "b"));
+		Assertions.assertNotEquals(setField(new MetaInfo(), 10, "a"), setField(new MetaInfo(), 10, "b"));
+		Assertions.assertNotEquals(setField(new MetaInfo(), 11, "a"), setField(new MetaInfo(), 11, "b"));
+		Assertions.assertNotEquals(setField(new MetaInfo(), 12, "a"), setField(new MetaInfo(), 12, "b"));
+		Assertions.assertNotEquals(setField(new MetaInfo(), 13, "a"), setField(new MetaInfo(), 13, "b"));
+		Assertions.assertNotEquals(setField(new MetaInfo(), 14, "a"), setField(new MetaInfo(), 14, "b"));
+		Assertions.assertNotEquals(setField(new MetaInfo(), 15, "a"), setField(new MetaInfo(), 15, "b"));
+	}
+
+	// ── hashCode(): various null/non-null combinations ───────────────────
+
+	@Test
+	void testHashCodeConsistency() {
 		MetaInfo a = MetaInfo.builder().udf1("x").udf11("y").build();
 		MetaInfo b = MetaInfo.builder().udf1("x").udf11("y").build();
-		MetaInfo c = MetaInfo.builder().udf1("different").build();
-
-		Assertions.assertEquals(a, b);
 		Assertions.assertEquals(a.hashCode(), b.hashCode());
-		Assertions.assertNotEquals(a, c);
 	}
+
+	@Test
+	void testHashCodeAllNullFields() {
+		MetaInfo a = new MetaInfo();
+		// Just verify it doesn't throw and is stable
+		Assertions.assertEquals(a.hashCode(), a.hashCode());
+	}
+
+	@Test
+	void testHashCodeAllNonNullFields() {
+		MetaInfo a = MetaInfo.builder()
+				.udf1("v1").udf2("v2").udf3("v3").udf4("v4").udf5("v5")
+				.udf6("v6").udf7("v7").udf8("v8").udf9("v9").udf10("v10")
+				.udf11("v11").udf12("v12").udf13("v13").udf14("v14").udf15("v15")
+				.build();
+		MetaInfo b = MetaInfo.builder()
+				.udf1("v1").udf2("v2").udf3("v3").udf4("v4").udf5("v5")
+				.udf6("v6").udf7("v7").udf8("v8").udf9("v9").udf10("v10")
+				.udf11("v11").udf12("v12").udf13("v13").udf14("v14").udf15("v15")
+				.build();
+		Assertions.assertEquals(a.hashCode(), b.hashCode());
+	}
+
+	@Test
+	void testHashCodeDifferentWhenFieldsDiffer() {
+		MetaInfo a = MetaInfo.builder().udf1("x").build();
+		MetaInfo b = MetaInfo.builder().udf1("y").build();
+		Assertions.assertNotEquals(a.hashCode(), b.hashCode());
+	}
+
+	// ── toString ─────────────────────────────────────────────────────────
 
 	@Test
 	void testToString() {
@@ -220,6 +350,30 @@ class MetaInfoTest {
 		Assertions.assertNotNull(str);
 		Assertions.assertTrue(str.contains("hello"));
 		Assertions.assertTrue(str.contains("world"));
+	}
+
+	// ── Helper ───────────────────────────────────────────────────────────
+
+	/** Sets udfN (1-15) on a MetaInfo instance via the appropriate setter. */
+	private static MetaInfo setField(MetaInfo m, int n, String value) {
+		switch (n) {
+			case 1: m.setUdf1(value); break;
+			case 2: m.setUdf2(value); break;
+			case 3: m.setUdf3(value); break;
+			case 4: m.setUdf4(value); break;
+			case 5: m.setUdf5(value); break;
+			case 6: m.setUdf6(value); break;
+			case 7: m.setUdf7(value); break;
+			case 8: m.setUdf8(value); break;
+			case 9: m.setUdf9(value); break;
+			case 10: m.setUdf10(value); break;
+			case 11: m.setUdf11(value); break;
+			case 12: m.setUdf12(value); break;
+			case 13: m.setUdf13(value); break;
+			case 14: m.setUdf14(value); break;
+			case 15: m.setUdf15(value); break;
+		}
+		return m;
 	}
 }
 
