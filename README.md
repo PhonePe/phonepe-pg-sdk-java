@@ -36,7 +36,7 @@ Add the dependency to your project's POM file:
 <dependency>
     <groupId>com.phonepe</groupId>
     <artifactId>pg-sdk-java</artifactId>
-    <version>2.2.1</version>
+    <version>2.2.3</version>
 </dependency>
 ```
 
