@@ -46,7 +46,7 @@ Add the following to your project's build.gradle file:
 
 ```gradle
 dependencies {
-    implementation 'com.phonepe:pg-sdk-java:2.2.1'
+    implementation 'com.phonepe:pg-sdk-java:2.2.3'
 }
 ```
 
