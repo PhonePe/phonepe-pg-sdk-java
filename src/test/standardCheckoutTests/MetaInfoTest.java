@@ -172,5 +172,54 @@ class MetaInfoTest {
 		Assertions.assertDoesNotThrow(() -> MetaInfo.builder()
 				.udf1(specialChars).udf6(specialChars).udf10(specialChars).build());
 	}
+
+	// ── @Data generated: setters (udf6-15), equals, hashCode, toString ───
+
+	@Test
+	void testSettersUdf6To15() {
+		MetaInfo metaInfo = new MetaInfo();
+		metaInfo.setUdf6("v6");
+		metaInfo.setUdf7("v7");
+		metaInfo.setUdf8("v8");
+		metaInfo.setUdf9("v9");
+		metaInfo.setUdf10("v10");
+		metaInfo.setUdf11("v11");
+		metaInfo.setUdf12("v12");
+		metaInfo.setUdf13("v13");
+		metaInfo.setUdf14("v14");
+		metaInfo.setUdf15("v15");
+
+		Assertions.assertEquals("v6", metaInfo.getUdf6());
+		Assertions.assertEquals("v7", metaInfo.getUdf7());
+		Assertions.assertEquals("v8", metaInfo.getUdf8());
+		Assertions.assertEquals("v9", metaInfo.getUdf9());
+		Assertions.assertEquals("v10", metaInfo.getUdf10());
+		Assertions.assertEquals("v11", metaInfo.getUdf11());
+		Assertions.assertEquals("v12", metaInfo.getUdf12());
+		Assertions.assertEquals("v13", metaInfo.getUdf13());
+		Assertions.assertEquals("v14", metaInfo.getUdf14());
+		Assertions.assertEquals("v15", metaInfo.getUdf15());
+	}
+
+	@Test
+	void testEqualsAndHashCode() {
+		MetaInfo a = MetaInfo.builder().udf1("x").udf11("y").build();
+		MetaInfo b = MetaInfo.builder().udf1("x").udf11("y").build();
+		MetaInfo c = MetaInfo.builder().udf1("different").build();
+
+		Assertions.assertEquals(a, b);
+		Assertions.assertEquals(a.hashCode(), b.hashCode());
+		Assertions.assertNotEquals(a, c);
+	}
+
+	@Test
+	void testToString() {
+		MetaInfo metaInfo = MetaInfo.builder().udf1("hello").udf11("world").build();
+		String str = metaInfo.toString();
+
+		Assertions.assertNotNull(str);
+		Assertions.assertTrue(str.contains("hello"));
+		Assertions.assertTrue(str.contains("world"));
+	}
 }
 
