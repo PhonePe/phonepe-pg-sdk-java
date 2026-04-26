@@ -37,6 +37,17 @@ import lombok.SneakyThrows;
 import okhttp3.OkHttpClient;
 
 @Getter
+/**
+ * Abstract base class for all PhonePe Payment Gateway SDK clients.
+ *
+ * <p>Provides shared functionality including OAuth2 token management,
+ * authenticated HTTP request execution with automatic token refresh,
+ * and SDK event telemetry publishing.</p>
+ *
+ * @see com.phonepe.sdk.pg.payments.v2.StandardCheckoutClient
+ * @see com.phonepe.sdk.pg.payments.v2.CustomCheckoutClient
+ * @see com.phonepe.sdk.pg.subscription.v2.SubscriptionClient
+ */
 public abstract class BaseClient {
 
 	private final ObjectMapper objectMapper;
