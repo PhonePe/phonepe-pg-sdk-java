@@ -50,6 +50,21 @@ import java.util.Collections;
 import java.util.List;
 import lombok.SneakyThrows;
 
+/**
+ * The CustomCheckout client class provides methods for interacting with
+ * PhonePe's Custom Checkout Payment Gateway APIs.
+ *
+ * <p>Use this client when you need full control over the payment experience,
+ * including direct card/token instrument handling with PCI-compliant routing
+ * and device OS header injection.</p>
+ *
+ * <p>For a simpler integration where PhonePe handles the checkout UI,
+ * use {@link StandardCheckoutClient} instead.</p>
+ *
+ * @see StandardCheckoutClient
+ * @see com.phonepe.sdk.pg.subscription.v2.SubscriptionClient
+ * @see com.phonepe.sdk.pg.common.BaseClient
+ */
 public class CustomCheckoutClient extends BaseClient {
 
 	private List<HttpHeaderPair> headers;

@@ -43,6 +43,20 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.SneakyThrows;
 
+/**
+ * The Subscription client class provides methods for interacting with
+ * PhonePe's Subscription (Autopay) Payment Gateway APIs.
+ *
+ * <p>Use this client to manage recurring payment mandates, including
+ * setup, notification, redemption, cancellation, and status queries.</p>
+ *
+ * <p>For one-time payments, use {@link com.phonepe.sdk.pg.payments.v2.StandardCheckoutClient}
+ * or {@link com.phonepe.sdk.pg.payments.v2.CustomCheckoutClient} instead.</p>
+ *
+ * @see com.phonepe.sdk.pg.payments.v2.StandardCheckoutClient
+ * @see com.phonepe.sdk.pg.payments.v2.CustomCheckoutClient
+ * @see com.phonepe.sdk.pg.common.BaseClient
+ */
 public class SubscriptionClient extends BaseClient {
 
 	private List<HttpHeaderPair> headers;
