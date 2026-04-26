@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: PhonePe Developer Documentation
+    url: https://developer.phonepe.com/
+    about: Check the official documentation before opening an issue
+  - name: PhonePe Developer Portal
+    url: https://developer.phonepe.com/v1/reference/java-sdk-standard-checkout
+    about: SDK-specific API reference and integration guide
