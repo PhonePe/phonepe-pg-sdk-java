@@ -19,6 +19,7 @@ A Java library for seamless integration with PhonePe Payment Gateway APIs.
   - [SDK Order Integration](#sdk-order-integration)
 - [Contributing](#contributing)
 - [Documentation](#documentation)
+- [Support](#support)
 - [License](#license)
 
 ## Requirements
@@ -188,6 +189,10 @@ For detailed API documentation, advanced features, and integration options:
 - [Standard Checkout Documentation](https://developer.phonepe.com/v1/reference/java-sdk-standard-checkout)
 - [Subscription Documentation](https://developer.phonepe.com/v1/reference/java-sdk-introduction-autopay)
 - [PhonePe Developer Portal](https://developer.phonepe.com/)
+
+## Support
+
+New features and bug fixes are released on the latest major version of the Phonepe Java client library. If you are on an older major version, we recommend that you upgrade to the latest in order to use the new features and bug fixes including those for security vulnerabilities. Older major versions of the package will continue to be available for use, but will not be receiving any updates.
 
 ## Contributing
 
