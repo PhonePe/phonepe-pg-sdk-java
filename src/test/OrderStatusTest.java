@@ -25,6 +25,7 @@ import com.phonepe.sdk.pg.common.models.response.OrderStatusResponse;
 import com.phonepe.sdk.pg.common.models.response.PaymentDetail;
 import com.phonepe.sdk.pg.common.models.response.paymentinstruments.AccountPaymentInstrumentV2;
 import com.phonepe.sdk.pg.common.models.response.paymentinstruments.CreditCardPaymentInstrumentV2;
+import com.phonepe.sdk.pg.common.models.response.paymentinstruments.CreditLinePaymentInstrumentV2;
 import com.phonepe.sdk.pg.common.models.response.paymentinstruments.EGVPaymentInstrumentV2;
 import com.phonepe.sdk.pg.common.models.response.paymentinstruments.NetBankingPaymentInstrumentV2;
 import com.phonepe.sdk.pg.common.models.response.paymentinstruments.WalletPaymentInstrumentV2;
@@ -137,6 +138,79 @@ public class OrderStatusTest extends BaseSetupWithOAuth {
                                                                                         .builder()
                                                                                         .build())
                                                                         .amount(150)
+                                                                        .build()))
+                                                .build()))
+                        .build();
+
+        OrderStatusResponse actual = standardCheckoutClient.getOrderStatus(merchantOrderId, true);
+        Assertions.assertEquals(actual, responeToObject);
+    }
+
+    @Test
+    void orderStatusForCreditLineInstrument() {
+        Map<String, String> headers = getHeaders();
+        String url = String.format(StandardCheckoutConstants.ORDER_STATUS_API, merchantOrderId);
+        String response =
+                "{\"orderId\":\"OMO2402281351151884090310\",\"state\":\"COMPLETED\",\"amount\":100,"
+                    + "\"expireAt\":1709108893,\"paymentDetails\":[{\"transactionId\":"
+                    + "\"OM2402281351157894090178\",\"paymentMode\":\"UPI_INTENT\",\"timestamp\":"
+                    + "1709108475,\"amount\":100,\"state\":\"COMPLETED\",\"splitInstruments\":"
+                    + "[{\"instrument\":{\"type\":\"CREDIT_LINE\",\"ifsc\":\"AABE0000000\","
+                    + "\"accountHolderName\":\"accountHolderName\",\"bankId\":\"bankId\","
+                    + "\"maskedAccountNumber\":\"121212121212\",\"providerAccountType\":"
+                    + "\"providerAccountType\"},\"rail\":{\"type\":\"UPI\",\"utr\":\"utr12313\","
+                    + "\"upiTransactionId\":\"upi12313\",\"vpa\":"
+                    + "\"abcd@ybl\"},\"amount\":100}]}]}";
+        addStubForGetRequest(
+                url,
+                ImmutableMap.of(StandardCheckoutConstants.ORDER_DETAILS, "true"),
+                headers,
+                HttpStatus.SC_OK,
+                ImmutableMap.of(),
+                response);
+
+        OrderStatusResponse responeToObject =
+                OrderStatusResponse.builder()
+                        .orderId("OMO2402281351151884090310")
+                        .state("COMPLETED")
+                        .amount(100)
+                        .expireAt(1709108893L)
+                        .paymentDetails(
+                                Arrays.asList(
+                                        PaymentDetail.builder()
+                                                .transactionId("OM2402281351157894090178")
+                                                .paymentMode(PgV2InstrumentType.UPI_INTENT)
+                                                .timestamp(1709108475L)
+                                                .amount(100)
+                                                .state("COMPLETED")
+                                                .splitInstruments(
+                                                        Arrays.asList(
+                                                                InstrumentCombo.builder()
+                                                                        .instrument(
+                                                                                CreditLinePaymentInstrumentV2
+                                                                                        .builder()
+                                                                                        .ifsc(
+                                                                                                "AABE0000000")
+                                                                                        .accountHolderName(
+                                                                                                "accountHolderName")
+                                                                                        .bankId(
+                                                                                                "bankId")
+                                                                                        .maskedAccountNumber(
+                                                                                                "121212121212")
+                                                                                        .providerAccountType(
+                                                                                                "providerAccountType")
+                                                                                        .build())
+                                                                        .rail(
+                                                                                UpiPaymentRail
+                                                                                        .builder()
+                                                                                        .utr(
+                                                                                                "utr12313")
+                                                                                        .upiTransactionId(
+                                                                                                "upi12313")
+                                                                                        .vpa(
+                                                                                                "abcd@ybl")
+                                                                                        .build())
+                                                                        .amount(100)
                                                                         .build()))
                                                 .build()))
                         .build();

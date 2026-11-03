@@ -28,7 +28,8 @@ import lombok.NoArgsConstructor;
 		@JsonSubTypes.Type(name = "NET_BANKING", value = NetBankingPaymentInstrumentV2.class),
 		@JsonSubTypes.Type(name = "ACCOUNT", value = AccountPaymentInstrumentV2.class),
 		@JsonSubTypes.Type(name = "CREDIT_CARD", value = CreditCardPaymentInstrumentV2.class),
-		@JsonSubTypes.Type(name = "DEBIT_CARD", value = DebitCardPaymentInstrumentV2.class)
+		@JsonSubTypes.Type(name = "DEBIT_CARD", value = DebitCardPaymentInstrumentV2.class),
+		@JsonSubTypes.Type(name = "CREDIT_LINE", value = CreditLinePaymentInstrumentV2.class)
 })
 @NoArgsConstructor
 @Data
@@ -41,6 +42,6 @@ public abstract class PaymentInstrumentV2 {
 	}
 
 	public enum PaymentInstrumentType {
-		WALLET, EGV, ACCOUNT, CREDIT_CARD, DEBIT_CARD, NET_BANKING
+		WALLET, EGV, ACCOUNT, CREDIT_CARD, DEBIT_CARD, NET_BANKING, CREDIT_LINE
 	}
 }
