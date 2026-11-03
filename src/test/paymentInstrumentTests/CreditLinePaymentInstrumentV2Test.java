@@ -13,6 +13,8 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+package paymentInstrumentTests;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.phonepe.sdk.pg.common.models.response.paymentinstruments.AccountPaymentInstrumentV2;
 import com.phonepe.sdk.pg.common.models.response.paymentinstruments.CreditLinePaymentInstrumentV2;
@@ -66,8 +68,10 @@ public class CreditLinePaymentInstrumentV2Test {
         Assertions.assertEquals(base, base);
         Assertions.assertEquals(base, same);
         Assertions.assertEquals(base.hashCode(), same.hashCode());
-        Assertions.assertNotEquals(base, null);
-        Assertions.assertNotEquals(base, "string");
+        Object nullObject = null;
+        Object otherType = "string";
+        Assertions.assertNotEquals(base, nullObject);
+        Assertions.assertNotEquals(base, otherType);
         Assertions.assertNotEquals(base, AccountPaymentInstrumentV2.builder().build());
 
         CreditLinePaymentInstrumentV2 other = sample();
