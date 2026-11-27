@@ -1,0 +1,16 @@
+{
+  "reviewedSdkVersion": "2.2.3",
+  "remediationVersion": "2.2.4",
+  "unresolved": [
+    {
+      "id": "mvn-expanded-databind-inventory",
+      "reason": "The supplied MVNRepository section still hides ten unidentified entries. Reconcile a complete export before declaring all reports fixed.",
+      "source": "https://mvnrepository.com/artifact/com.phonepe/pg-sdk-java/2.2.3"
+    },
+    {
+      "id": "GHSA-268j-6pjg-73vh",
+      "reason": "Affected ranges and applicability remain unresolved. Upstream assigns the fix to unreleased Jackson 2.21.10; 2.23.0 also lacks this fix.",
+      "source": "https://github.com/FasterXML/jackson-databind/issues/6496"
+    }
+  ]
+}

@@ -27,7 +27,7 @@ import java.util.Collections;
 import java.util.Map;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import wiremock.org.apache.http.HttpStatus;
+import javax.ws.rs.core.Response.Status;
 
 public class SubscriptionStatusResponse extends BaseSetupWithOAuth {
 
@@ -55,7 +55,7 @@ public class SubscriptionStatusResponse extends BaseSetupWithOAuth {
         Map<String, String> headers = getHeadersForSubscription();
 
         addStubForGetRequest(
-                url, ImmutableMap.of(), headers, HttpStatus.SC_OK, ImmutableMap.of(), response);
+                url, ImmutableMap.of(), headers, Status.OK.getStatusCode(), ImmutableMap.of(), response);
         SubscriptionStatusResponseV2 actual =
                 subscriptionClient.getSubscriptionStatus(merchantSubscriptionId);
 
@@ -84,7 +84,7 @@ public class SubscriptionStatusResponse extends BaseSetupWithOAuth {
                 url,
                 ImmutableMap.of(),
                 headers,
-                HttpStatus.SC_BAD_REQUEST,
+                Status.BAD_REQUEST.getStatusCode(),
                 ImmutableMap.of(),
                 response);
 

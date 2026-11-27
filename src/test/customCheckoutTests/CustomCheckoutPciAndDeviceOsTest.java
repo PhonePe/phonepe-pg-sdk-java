@@ -24,7 +24,7 @@ import com.phonepe.sdk.pg.payments.v2.customcheckout.CustomCheckoutConstants;
 import java.util.Map;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import wiremock.org.apache.http.HttpStatus;
+import javax.ws.rs.core.Response.Status;
 
 /**
  * Tests for PCI host routing and DeviceOS header injection in CustomCheckoutClient.pay().
@@ -57,7 +57,7 @@ class CustomCheckoutPciAndDeviceOsTest extends CustomCheckoutBaseSetup {
 				.build();
 
 		// WireMock is on localhost:30419 = Env.TEST pciPgHostUrl — request must arrive here
-		addStubForPostRequest(url, getHeaders(), request, HttpStatus.SC_OK, Maps.newHashMap(),
+		addStubForPostRequest(url, getHeaders(), request, Status.OK.getStatusCode(), Maps.newHashMap(),
 				response);
 
 		PgPaymentResponse actual = customCheckoutClient.pay(request);
@@ -91,7 +91,7 @@ class CustomCheckoutPciAndDeviceOsTest extends CustomCheckoutBaseSetup {
 				.expireAt(java.time.Instant.now().getEpochSecond() + 600)
 				.build();
 
-		addStubForPostRequest(url, getHeaders(), request, HttpStatus.SC_OK, Maps.newHashMap(),
+		addStubForPostRequest(url, getHeaders(), request, Status.OK.getStatusCode(), Maps.newHashMap(),
 				response);
 
 		PgPaymentResponse actual = customCheckoutClient.pay(request);
@@ -116,7 +116,7 @@ class CustomCheckoutPciAndDeviceOsTest extends CustomCheckoutBaseSetup {
 				.expireAt(java.time.Instant.now().getEpochSecond() + 600)
 				.build();
 
-		addStubForPostRequest(url, getHeaders(), request, HttpStatus.SC_OK, Maps.newHashMap(),
+		addStubForPostRequest(url, getHeaders(), request, Status.OK.getStatusCode(), Maps.newHashMap(),
 				response);
 
 		PgPaymentResponse actual = customCheckoutClient.pay(request);
@@ -147,7 +147,7 @@ class CustomCheckoutPciAndDeviceOsTest extends CustomCheckoutBaseSetup {
 				.put(Headers.X_DEVICE_OS, "ANDROID")
 				.build();
 
-		addStubForPostRequest(url, headersWithDeviceOs, request, HttpStatus.SC_OK,
+		addStubForPostRequest(url, headersWithDeviceOs, request, Status.OK.getStatusCode(),
 				Maps.newHashMap(), response);
 
 		PgPaymentResponse actual = customCheckoutClient.pay(request);
@@ -171,7 +171,7 @@ class CustomCheckoutPciAndDeviceOsTest extends CustomCheckoutBaseSetup {
 				.build();
 
 		// Stub only with base headers — if x-device-os were sent, WireMock would not match
-		addStubForPostRequest(url, getHeaders(), request, HttpStatus.SC_OK, Maps.newHashMap(),
+		addStubForPostRequest(url, getHeaders(), request, Status.OK.getStatusCode(), Maps.newHashMap(),
 				response);
 
 		PgPaymentResponse actual = customCheckoutClient.pay(request);
@@ -201,15 +201,8 @@ class CustomCheckoutPciAndDeviceOsTest extends CustomCheckoutBaseSetup {
 
 		// Stub by URL only (no body match) since SubscriptionRedemptionPaymentFlow has
 		// extra fields; we only care that the request routes to the default host, not PCI host.
-		wireMockServer.stubFor(
-				com.github.tomakehurst.wiremock.client.WireMock.post(
-								com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo(url))
-						.willReturn(
-								com.github.tomakehurst.wiremock.client.WireMock.aResponse()
-										.withStatus(200)
-										.withHeader("Content-Type", "application/json")
-										.withBody(new com.fasterxml.jackson.databind.ObjectMapper()
-												.writeValueAsString(response))));
+		httpServer.stub("POST", url, testsupport.HttpTestServer.response(
+				200, mapper.writeValueAsString(response)));
 
 		PgPaymentResponse actual = customCheckoutClient.pay(request);
 		Assertions.assertEquals(response.getOrderId(), actual.getOrderId());

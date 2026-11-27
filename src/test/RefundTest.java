@@ -30,7 +30,7 @@ import java.util.Collections;
 import java.util.Map;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import wiremock.org.apache.http.HttpStatus;
+import javax.ws.rs.core.Response.Status;
 
 public class RefundTest extends BaseSetupWithOAuth {
 
@@ -49,7 +49,7 @@ public class RefundTest extends BaseSetupWithOAuth {
         Map<String, String> headers = getHeaders();
 
         addStubForPostRequest(
-                url, headers, refundRequest, HttpStatus.SC_OK, Maps.newHashMap(), refundResponse);
+                url, headers, refundRequest, Status.OK.getStatusCode(), Maps.newHashMap(), refundResponse);
         RefundResponse actual = standardCheckoutClient.refund(refundRequest);
         Assertions.assertEquals(actual, refundResponse);
     }
@@ -71,7 +71,7 @@ public class RefundTest extends BaseSetupWithOAuth {
                 url,
                 ImmutableMap.of(),
                 getHeaders(),
-                HttpStatus.SC_OK,
+                Status.OK.getStatusCode(),
                 ImmutableMap.of(),
                 refundStatusResponse);
 
@@ -101,7 +101,7 @@ public class RefundTest extends BaseSetupWithOAuth {
                 url,
                 getHeaders(),
                 refundRequest,
-                HttpStatus.SC_NOT_FOUND,
+                Status.NOT_FOUND.getStatusCode(),
                 Maps.newHashMap(),
                 phonePeResponse);
 
@@ -127,7 +127,7 @@ public class RefundTest extends BaseSetupWithOAuth {
         Map<String, String> headers = getHeaders();
 
         addStubForPostRequest(
-                url, headers, refundRequest, HttpStatus.SC_OK, Maps.newHashMap(), refundResponse);
+                url, headers, refundRequest, Status.OK.getStatusCode(), Maps.newHashMap(), refundResponse);
         RefundResponse actual = customCheckoutClient.refund(refundRequest);
         Assertions.assertEquals(actual, refundResponse);
     }
@@ -149,7 +149,7 @@ public class RefundTest extends BaseSetupWithOAuth {
                 url,
                 ImmutableMap.of(),
                 getHeaders(),
-                HttpStatus.SC_OK,
+                Status.OK.getStatusCode(),
                 ImmutableMap.of(),
                 refundStatusResponse);
 
@@ -172,7 +172,7 @@ public class RefundTest extends BaseSetupWithOAuth {
         Map<String, String> headers = getHeadersForSubscription();
 
         addStubForPostRequest(
-                url, headers, refundRequest, HttpStatus.SC_OK, Maps.newHashMap(), refundResponse);
+                url, headers, refundRequest, Status.OK.getStatusCode(), Maps.newHashMap(), refundResponse);
         RefundResponse actual = subscriptionClient.refund(refundRequest);
         Assertions.assertEquals(actual, refundResponse);
     }
@@ -194,7 +194,7 @@ public class RefundTest extends BaseSetupWithOAuth {
                 url,
                 ImmutableMap.of(),
                 getHeadersForSubscription(),
-                HttpStatus.SC_OK,
+                Status.OK.getStatusCode(),
                 ImmutableMap.of(),
                 refundStatusResponse);
 
@@ -224,7 +224,7 @@ public class RefundTest extends BaseSetupWithOAuth {
                 url,
                 getHeadersForSubscription(),
                 refundRequest,
-                HttpStatus.SC_NOT_FOUND,
+                Status.NOT_FOUND.getStatusCode(),
                 Maps.newHashMap(),
                 phonePeResponse);
 
@@ -251,7 +251,7 @@ public class RefundTest extends BaseSetupWithOAuth {
                 url,
                 ImmutableMap.of(),
                 getHeaders(),
-                HttpStatus.SC_NOT_FOUND,
+                Status.NOT_FOUND.getStatusCode(),
                 ImmutableMap.of(),
                 errorResponse);
 

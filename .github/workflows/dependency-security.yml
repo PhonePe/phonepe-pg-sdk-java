@@ -1,0 +1,45 @@
+name: Dependency security
+
+on:
+    pull_request:
+    push:
+        branches: [main]
+    schedule:
+        - cron: '23 3 * * *'
+    workflow_dispatch:
+
+permissions:
+    contents: read
+
+jobs:
+    dependencies:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+            - uses: actions/setup-java@v4
+              with:
+                  java-version: 17
+                  distribution: zulu
+                  cache: maven
+            - name: Restore vulnerability database
+              uses: actions/cache@v4
+              with:
+                  path: target/dependency-check-data
+                  key: nvd-${{ runner.os }}-13-${{ github.run_id }}
+                  restore-keys: nvd-${{ runner.os }}-13-
+            - name: Verify runtime and isolated test dependencies
+              run: mvn -B -ntp -Pdependency-security verify
+            - name: Upload security and test reports
+              if: always()
+              uses: actions/upload-artifact@v4
+              with:
+                  name: dependency-security-reports
+                  path: |
+                      target/dependency-check-report.*
+                      target/sdk-tests/target/dependency-check-report.*
+                      target/sdk-tests/build.log
+                      target/invoker-reports/
+                      target/surefire-reports/
+                  if-no-files-found: warn

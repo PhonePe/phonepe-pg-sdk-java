@@ -19,7 +19,7 @@ import com.phonepe.sdk.pg.common.tokenhandler.TokenConstants;
 import java.util.Map;
 import okhttp3.FormBody;
 import org.junit.jupiter.api.BeforeEach;
-import wiremock.org.apache.http.HttpStatus;
+import javax.ws.rs.core.Response.Status;
 
 // Cannot mock TokenService as it is getting created inside the StandardCheckoutClient
 public class BaseSetupWithOAuth extends BaseSetup {
@@ -51,6 +51,6 @@ public class BaseSetupWithOAuth extends BaseSetup {
         Map<String, String> authHeaders = getAuthHeaders();
         final String authUrl = TokenConstants.OAUTH_GET_TOKEN;
         addStubForFormDataPostRequest(
-                authUrl, authHeaders, formBody, HttpStatus.SC_OK, Maps.newHashMap(), oAuthResponse);
+                authUrl, authHeaders, formBody, Status.OK.getStatusCode(), Maps.newHashMap(), oAuthResponse);
     }
 }

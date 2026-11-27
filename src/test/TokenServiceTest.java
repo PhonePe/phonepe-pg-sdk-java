@@ -13,18 +13,13 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
-import static com.github.tomakehurst.wiremock.client.WireMock.exactly;
-import static com.github.tomakehurst.wiremock.client.WireMock.post;
-import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static testsupport.HttpTestServer.response;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.common.collect.ImmutableMap;
@@ -45,7 +40,7 @@ import java.util.Map;
 import okhttp3.FormBody;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import wiremock.org.apache.http.HttpStatus;
+import javax.ws.rs.core.Response.Status;
 
 public class TokenServiceTest extends BaseSetup {
 
@@ -82,14 +77,8 @@ public class TokenServiceTest extends BaseSetup {
                                         "errorDescription", "Client Authentication Failure"))
                         .build();
         standardCheckoutClient.getTokenService().setOAuthResponse(null);
-        wireMockServer.stubFor(
-                post(urlPathMatching(authUrl))
-                        .willReturn(
-                                aResponse()
-                                        .withStatus(400)
-                                        .withHeader("Content-Type", "application/json")
-                                        .withBody(
-                                                objectMapper.writeValueAsString(phonePeResponse))));
+        httpServer.stub("POST", authUrl,
+                response(400, objectMapper.writeValueAsString(phonePeResponse)));
 
         final PhonePeException phonePeException =
                 assertThrows(
@@ -102,13 +91,8 @@ public class TokenServiceTest extends BaseSetup {
 
     @Test
     void testOAuthFetchToken() throws JsonProcessingException {
-        wireMockServer.stubFor(
-                post(urlPathMatching(authUrl))
-                        .willReturn(
-                                aResponse()
-                                        .withStatus(200)
-                                        .withHeader("Content-Type", "application/json")
-                                        .withBody(objectMapper.writeValueAsString(oAuthResponse))));
+        httpServer.stub("POST", authUrl,
+                response(200, objectMapper.writeValueAsString(oAuthResponse)));
         String actual = standardCheckoutClient.getTokenService().getAuthToken();
         Assertions.assertEquals("O-Bearer accessToken", actual);
     }
@@ -253,7 +237,7 @@ public class TokenServiceTest extends BaseSetup {
 
     @Test
     void testWhenUnauthorizedTokenForPay() {
-        wireMockServer.resetRequests();
+        httpServer.resetRequests();
         standardCheckoutClient.getTokenService().setOAuthResponse(null);
         final String url = StandardCheckoutConstants.PAY_API;
 
@@ -276,7 +260,7 @@ public class TokenServiceTest extends BaseSetup {
                 authUrl,
                 getAuthHeaders(),
                 formBody,
-                HttpStatus.SC_OK,
+                Status.OK.getStatusCode(),
                 Maps.newHashMap(),
                 oAuthResponse);
 
@@ -284,7 +268,7 @@ public class TokenServiceTest extends BaseSetup {
                 url,
                 getHeaders(),
                 standardCheckoutPayRequest,
-                HttpStatus.SC_UNAUTHORIZED,
+                Status.UNAUTHORIZED.getStatusCode(),
                 Maps.newHashMap(),
                 phonePeResponse);
 
@@ -299,7 +283,7 @@ public class TokenServiceTest extends BaseSetup {
                 "O-Bearer accessToken",
                 standardCheckoutClient.getTokenService().formatCachedToken());
 
-        wireMockServer.verify(exactly(2), postRequestedFor(urlPathMatching(authUrl)));
+        httpServer.verifyRequests(2, "POST", authUrl);
 
         StandardCheckoutPayResponse standardCheckoutResponse =
                 StandardCheckoutPayResponse.builder()
@@ -313,7 +297,7 @@ public class TokenServiceTest extends BaseSetup {
                 url,
                 getHeaders(),
                 standardCheckoutPayRequest,
-                HttpStatus.SC_OK,
+                Status.OK.getStatusCode(),
                 Maps.newHashMap(),
                 standardCheckoutResponse);
 
@@ -326,7 +310,7 @@ public class TokenServiceTest extends BaseSetup {
 
     @Test
     void testWhenUnauthorizedTokenForOrder() throws JsonProcessingException {
-        wireMockServer.resetRequests();
+        httpServer.resetRequests();
         standardCheckoutClient.getTokenService().setOAuthResponse(null);
         String url = String.format(StandardCheckoutConstants.ORDER_STATUS_API, merchantOrderId);
 
@@ -341,7 +325,7 @@ public class TokenServiceTest extends BaseSetup {
                 authUrl,
                 getAuthHeaders(),
                 formBody,
-                HttpStatus.SC_OK,
+                Status.OK.getStatusCode(),
                 Maps.newHashMap(),
                 oAuthResponse);
 
@@ -349,7 +333,7 @@ public class TokenServiceTest extends BaseSetup {
                 url,
                 ImmutableMap.of(StandardCheckoutConstants.ORDER_DETAILS, "false"),
                 getHeaders(),
-                HttpStatus.SC_UNAUTHORIZED,
+                Status.UNAUTHORIZED.getStatusCode(),
                 ImmutableMap.of(),
                 phonePeResponse);
 
@@ -364,7 +348,7 @@ public class TokenServiceTest extends BaseSetup {
                 "O-Bearer accessToken",
                 standardCheckoutClient.getTokenService().formatCachedToken());
 
-        wireMockServer.verify(2, postRequestedFor(urlPathMatching(authUrl)));
+        httpServer.verifyRequests(2, "POST", authUrl);
 
         OrderStatusResponse orderStatusResponse =
                 OrderStatusResponse.builder().orderId("Order123").state("PENDING").build();
@@ -373,7 +357,7 @@ public class TokenServiceTest extends BaseSetup {
                 url,
                 ImmutableMap.of(StandardCheckoutConstants.ORDER_DETAILS, "false"),
                 getHeaders(),
-                HttpStatus.SC_OK,
+                Status.OK.getStatusCode(),
                 ImmutableMap.of(),
                 orderStatusResponse);
 
@@ -386,23 +370,15 @@ public class TokenServiceTest extends BaseSetup {
 
     @Test
     void testFirstFetchWorksSecondFetchFailsSendsBackOldToken() throws JsonProcessingException {
-        wireMockServer.resetRequests();
+        httpServer.resetRequests();
         standardCheckoutClient.getTokenService().setOAuthResponse(null);
         String requestBody = formDataToString(formBody);
-        wireMockServer.stubFor(
-                post(urlPathMatching(authUrl))
-                        .withRequestBody(equalTo(requestBody))
-                        .willReturn(
-                                aResponse()
-                                        .withStatus(200)
-                                        .withHeader("Content-Type", "application/json")
-                                        .withBody(objectMapper.writeValueAsString(oAuthResponse))));
+        httpServer.stub("POST", authUrl, Map.of(), requestBody, Map.of(),
+                response(200, objectMapper.writeValueAsString(oAuthResponse)));
 
         String setToken = standardCheckoutClient.getTokenService().getAuthToken();
 
-        wireMockServer.verify(
-                1,
-                postRequestedFor(urlPathMatching(authUrl)).withRequestBody(equalTo(requestBody)));
+        httpServer.verifyRequests(1, "POST", authUrl, requestBody);
 
         PhonePeResponse phonePeResponse =
                 PhonePeResponse.<Map<String, String>>builder()
@@ -411,14 +387,8 @@ public class TokenServiceTest extends BaseSetup {
                         .data(Collections.singletonMap("a", "b"))
                         .build();
 
-        wireMockServer.stubFor(
-                post(urlPathMatching(authUrl))
-                        .willReturn(
-                                aResponse()
-                                        .withStatus(400)
-                                        .withHeader("Content-Type", "application/json")
-                                        .withBody(
-                                                objectMapper.writeValueAsString(phonePeResponse))));
+        httpServer.stub("POST", authUrl,
+                response(400, objectMapper.writeValueAsString(phonePeResponse)));
 
         String shouldReceiveOldToken1 = standardCheckoutClient.getTokenService().getAuthToken();
         String shouldReceiveOldToken2 = standardCheckoutClient.getTokenService().getAuthToken();

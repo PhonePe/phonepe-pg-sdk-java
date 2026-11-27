@@ -13,36 +13,32 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-import static com.github.tomakehurst.wiremock.client.WireMock.exactly;
-import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
-
 import com.google.common.collect.Maps;
 import com.phonepe.sdk.pg.subscription.v2.SubscriptionConstants;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
-import wiremock.org.apache.http.HttpStatus;
+import javax.ws.rs.core.Response.Status;
 
 public class CancelSubscriptionTest extends BaseSetupWithOAuth {
 
     @Test
     void testCancelSubscription() {
-        wireMockServer.resetRequests();
+        httpServer.resetRequests();
         String merchantSubscriptionId = "c61d7378-a081-44ab-9559-ad8563a24b49";
         String url = String.format(SubscriptionConstants.CANCEL_API, merchantSubscriptionId);
 
         Map<String, String> headers = getHeadersForSubscription();
 
-        addStubForPostRequest(url, headers, null, HttpStatus.SC_OK, Maps.newHashMap(), null);
+        addStubForPostRequest(url, headers, null, Status.OK.getStatusCode(), Maps.newHashMap(), null);
 
         subscriptionClient.cancelSubscription(merchantSubscriptionId);
 
-        wireMockServer.verify(exactly(1), postRequestedFor(urlPathMatching(url)));
+        httpServer.verifyRequests(1, "POST", url);
     }
 
     @Test
     void testCancelSubscriptionIfResponseReceived() {
-        wireMockServer.resetRequests();
+        httpServer.resetRequests();
         String merchantSubscriptionId = "c61d7378-a081-44ab-9559-ad8563a24b49";
         String url = String.format(SubscriptionConstants.CANCEL_API, merchantSubscriptionId);
 
@@ -50,25 +46,25 @@ public class CancelSubscriptionTest extends BaseSetupWithOAuth {
 
         String sampleJson = "{\"state\":\"PENDING\"}";
 
-        addStubForPostRequest(url, headers, null, HttpStatus.SC_OK, Maps.newHashMap(), sampleJson);
+        addStubForPostRequest(url, headers, null, Status.OK.getStatusCode(), Maps.newHashMap(), sampleJson);
 
         subscriptionClient.cancelSubscription(merchantSubscriptionId);
 
-        wireMockServer.verify(exactly(1), postRequestedFor(urlPathMatching(url)));
+        httpServer.verifyRequests(1, "POST", url);
     }
 
     @Test
     void testCancelSubscriptionIfNoContentResponseReceived() {
-        wireMockServer.resetRequests();
+        httpServer.resetRequests();
         String merchantSubscriptionId = "c61d7378-a081-44ab-9559-ad8563a24b49";
         String url = String.format(SubscriptionConstants.CANCEL_API, merchantSubscriptionId);
 
         Map<String, String> headers = getHeadersForSubscription();
 
-        addStubForPostRequest(url, headers, null, HttpStatus.SC_NO_CONTENT, Maps.newHashMap(), "");
+        addStubForPostRequest(url, headers, null, Status.NO_CONTENT.getStatusCode(), Maps.newHashMap(), "");
 
         subscriptionClient.cancelSubscription(merchantSubscriptionId);
 
-        wireMockServer.verify(exactly(1), postRequestedFor(urlPathMatching(url)));
+        httpServer.verifyRequests(1, "POST", url);
     }
 }

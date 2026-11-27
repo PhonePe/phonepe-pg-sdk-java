@@ -32,7 +32,7 @@ import java.util.Collections;
 import java.util.Map;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import wiremock.org.apache.http.HttpStatus;
+import javax.ws.rs.core.Response.Status;
 
 class CustomCheckoutClientTest extends CustomCheckoutBaseSetup {
 
@@ -60,7 +60,7 @@ class CustomCheckoutClientTest extends CustomCheckoutBaseSetup {
                         .build();
 
         addStubForPostRequest(
-                url, getHeaders(), request, HttpStatus.SC_OK, Maps.newHashMap(), response);
+                url, getHeaders(), request, Status.OK.getStatusCode(), Maps.newHashMap(), response);
 
         PgPaymentResponse actual = customCheckoutClient.pay(request);
         Assertions.assertEquals(response, actual);
@@ -88,7 +88,7 @@ class CustomCheckoutClientTest extends CustomCheckoutBaseSetup {
                 url,
                 getHeaders(),
                 request,
-                HttpStatus.SC_BAD_REQUEST,
+                Status.BAD_REQUEST.getStatusCode(),
                 Maps.newHashMap(),
                 errorResponse);
 
@@ -122,7 +122,7 @@ class CustomCheckoutClientTest extends CustomCheckoutBaseSetup {
                         .build();
 
         addStubForPostRequest(
-                url, getHeaders(), request, HttpStatus.SC_OK, Maps.newHashMap(), response);
+                url, getHeaders(), request, Status.OK.getStatusCode(), Maps.newHashMap(), response);
 
         PgPaymentResponse actual = customCheckoutClient.pay(request);
         Assertions.assertEquals(response, actual);
@@ -150,7 +150,7 @@ class CustomCheckoutClientTest extends CustomCheckoutBaseSetup {
                 url,
                 getHeaders(),
                 request,
-                HttpStatus.SC_BAD_REQUEST,
+                Status.BAD_REQUEST.getStatusCode(),
                 Maps.newHashMap(),
                 errorResponse);
 
@@ -182,7 +182,7 @@ class CustomCheckoutClientTest extends CustomCheckoutBaseSetup {
                 url,
                 getHeaders(),
                 request,
-                HttpStatus.SC_INTERNAL_SERVER_ERROR,
+                Status.INTERNAL_SERVER_ERROR.getStatusCode(),
                 Maps.newHashMap(),
                 errorResponse);
 
@@ -211,7 +211,7 @@ class CustomCheckoutClientTest extends CustomCheckoutBaseSetup {
                 url,
                 ImmutableMap.of(CustomCheckoutConstants.ORDER_DETAILS, "false"),
                 getHeaders(),
-                HttpStatus.SC_OK,
+                Status.OK.getStatusCode(),
                 ImmutableMap.of(),
                 orderStatusResponse);
 
@@ -235,7 +235,7 @@ class CustomCheckoutClientTest extends CustomCheckoutBaseSetup {
                 url,
                 ImmutableMap.of(CustomCheckoutConstants.ORDER_DETAILS, "true"),
                 getHeaders(),
-                HttpStatus.SC_OK,
+                Status.OK.getStatusCode(),
                 ImmutableMap.of(),
                 orderStatusResponse);
 
@@ -259,7 +259,7 @@ class CustomCheckoutClientTest extends CustomCheckoutBaseSetup {
                 url,
                 ImmutableMap.of(CustomCheckoutConstants.ORDER_DETAILS, "false"),
                 getHeaders(),
-                HttpStatus.SC_NOT_FOUND,
+                Status.NOT_FOUND.getStatusCode(),
                 ImmutableMap.of(),
                 errorResponse);
 
@@ -291,7 +291,7 @@ class CustomCheckoutClientTest extends CustomCheckoutBaseSetup {
                 url,
                 ImmutableMap.of(),
                 getHeaders(),
-                HttpStatus.SC_OK,
+                Status.OK.getStatusCode(),
                 ImmutableMap.of(),
                 transactionStatusResponse);
 
@@ -315,7 +315,7 @@ class CustomCheckoutClientTest extends CustomCheckoutBaseSetup {
                 url,
                 ImmutableMap.of(),
                 getHeaders(),
-                HttpStatus.SC_NOT_FOUND,
+                Status.NOT_FOUND.getStatusCode(),
                 ImmutableMap.of(),
                 errorResponse);
 
@@ -353,7 +353,7 @@ class CustomCheckoutClientTest extends CustomCheckoutBaseSetup {
                 url,
                 getHeaders(),
                 refundRequest,
-                HttpStatus.SC_OK,
+                Status.OK.getStatusCode(),
                 Maps.newHashMap(),
                 refundResponse);
 
@@ -383,7 +383,7 @@ class CustomCheckoutClientTest extends CustomCheckoutBaseSetup {
                 url,
                 getHeaders(),
                 refundRequest,
-                HttpStatus.SC_BAD_REQUEST,
+                Status.BAD_REQUEST.getStatusCode(),
                 Maps.newHashMap(),
                 errorResponse);
 
@@ -416,7 +416,7 @@ class CustomCheckoutClientTest extends CustomCheckoutBaseSetup {
                 url,
                 ImmutableMap.of(),
                 getHeaders(),
-                HttpStatus.SC_OK,
+                Status.OK.getStatusCode(),
                 ImmutableMap.of(),
                 refundStatusResponse);
 
@@ -440,7 +440,7 @@ class CustomCheckoutClientTest extends CustomCheckoutBaseSetup {
                 url,
                 ImmutableMap.of(),
                 getHeaders(),
-                HttpStatus.SC_NOT_FOUND,
+                Status.NOT_FOUND.getStatusCode(),
                 ImmutableMap.of(),
                 errorResponse);
 
@@ -476,7 +476,7 @@ class CustomCheckoutClientTest extends CustomCheckoutBaseSetup {
                         .build();
 
         addStubForPostRequest(
-                url, getHeaders(), sdkRequest, HttpStatus.SC_OK, Maps.newHashMap(), sdkResponse);
+                url, getHeaders(), sdkRequest, Status.OK.getStatusCode(), Maps.newHashMap(), sdkResponse);
 
         com.phonepe.sdk.pg.payments.v2.models.response.CreateSdkOrderResponse actual =
                 customCheckoutClient.createSdkOrder(sdkRequest);
@@ -506,7 +506,7 @@ class CustomCheckoutClientTest extends CustomCheckoutBaseSetup {
                 url,
                 getHeaders(),
                 sdkRequest,
-                HttpStatus.SC_INTERNAL_SERVER_ERROR,
+                Status.INTERNAL_SERVER_ERROR.getStatusCode(),
                 Maps.newHashMap(),
                 errorResponse);
 

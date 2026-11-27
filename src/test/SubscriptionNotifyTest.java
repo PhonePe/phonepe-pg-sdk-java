@@ -28,7 +28,7 @@ import java.util.Map;
 import java.util.UUID;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import wiremock.org.apache.http.HttpStatus;
+import javax.ws.rs.core.Response.Status;
 
 public class SubscriptionNotifyTest extends BaseSetupWithOAuth {
 
@@ -54,7 +54,7 @@ public class SubscriptionNotifyTest extends BaseSetupWithOAuth {
         Map<String, String> headers = getHeadersForSubscription();
 
         addStubForPostRequest(
-                url, headers, notifyRequest, HttpStatus.SC_OK, Maps.newHashMap(), response);
+                url, headers, notifyRequest, Status.OK.getStatusCode(), Maps.newHashMap(), response);
 
         PgPaymentResponse actual = subscriptionClient.notify(notifyRequest);
 
@@ -90,7 +90,7 @@ public class SubscriptionNotifyTest extends BaseSetupWithOAuth {
                 url,
                 headers,
                 notifyRequest,
-                HttpStatus.SC_BAD_REQUEST,
+                Status.BAD_REQUEST.getStatusCode(),
                 Maps.newHashMap(),
                 response);
 

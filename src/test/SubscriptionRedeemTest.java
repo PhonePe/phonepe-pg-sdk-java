@@ -26,7 +26,7 @@ import java.util.Collections;
 import java.util.Map;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import wiremock.org.apache.http.HttpStatus;
+import javax.ws.rs.core.Response.Status;
 
 public class SubscriptionRedeemTest extends BaseSetupWithOAuth {
 
@@ -47,7 +47,7 @@ public class SubscriptionRedeemTest extends BaseSetupWithOAuth {
         Map<String, String> headers = getHeadersForSubscription();
 
         addStubForPostRequest(
-                url, headers, request, HttpStatus.SC_OK, Maps.newHashMap(), responseJSON);
+                url, headers, request, Status.OK.getStatusCode(), Maps.newHashMap(), responseJSON);
 
         SubscriptionRedeemResponseV2 actual = subscriptionClient.redeem(merchantOrderId);
 
@@ -71,7 +71,7 @@ public class SubscriptionRedeemTest extends BaseSetupWithOAuth {
         Map<String, String> headers = getHeadersForSubscription();
 
         addStubForPostRequest(
-                url, headers, request, HttpStatus.SC_BAD_REQUEST, Maps.newHashMap(), response);
+                url, headers, request, Status.BAD_REQUEST.getStatusCode(), Maps.newHashMap(), response);
 
         final PhonePeException actual =
                 assertThrows(
