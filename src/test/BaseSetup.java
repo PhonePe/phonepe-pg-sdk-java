@@ -31,7 +31,7 @@ import java.util.Map;
 import okhttp3.OkHttpClient;
 import org.junit.jupiter.api.BeforeEach;
 
-public class BaseSetup extends BaseWireMockTest {
+public class BaseSetup extends BaseHttpServerTest {
 
     protected StandardCheckoutClient standardCheckoutClient;
 

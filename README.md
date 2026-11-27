@@ -1,6 +1,6 @@
 # PhonePe B2B Payment Gateway SDK for Java
 
-[![Maven Central](https://img.shields.io/badge/Maven%20Central-v2.2.1-blue)](https://maven-badges.herokuapp.com/maven-central/com.phonepe/pg-sdk-java)
+[![Maven Central](https://img.shields.io/badge/Maven%20Central-v2.2.3-blue)](https://maven-badges.herokuapp.com/maven-central/com.phonepe/pg-sdk-java)
 ![Java](https://img.shields.io/badge/Java-17%2B-orange)
 [![License](https://img.shields.io/badge/License-Apache%202.0-green.svg)](LICENSE)
 
@@ -201,6 +201,22 @@ Contributions to PG Java SDK are welcome! Here's how you can contribute:
 6. Open a Pull Request
 
 Please ensure your code follows the project's coding standards and includes appropriate tests.
+
+### Building and dependency security
+
+Run `mvn -B -ntp verify` to format-check, package and test the SDK. Tests run in a
+separate Maven process against the packaged SDK; `mvn test` alone does not run
+the isolated suite. Use `mvn -B -ntp -Dsdk.test=CallbackTest verify` for a selected
+test. Test reports and SDK coverage remain under `target/surefire-reports` and
+`target/site/jacoco`.
+
+The isolated test harness uses OkHttp MockWebServer rather than WireMock's
+bundled browser assets and server dependency stack. The published SDK and
+test harness retain Java 17, Jackson 2.x, OkHttp 4.x and SLF4J 1.7 compatibility.
+
+Run `mvn -B -ntp -Pdependency-security verify` to scan both runtime and test
+dependencies at every severity. Checks download the official public NVD JSON
+feeds and cache the database under `target/dependency-check-data`;
 
 ## License
 

@@ -22,7 +22,7 @@ import com.phonepe.sdk.pg.payments.v2.models.request.StandardCheckoutPayRequest;
 import com.phonepe.sdk.pg.payments.v2.standardcheckout.StandardCheckoutConstants;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import wiremock.org.apache.http.HttpStatus;
+import javax.ws.rs.core.Response.Status;
 
 public class ExceptionTest extends BaseSetupWithOAuth {
 
@@ -39,7 +39,7 @@ public class ExceptionTest extends BaseSetupWithOAuth {
                 url,
                 getHeaders(),
                 standardCheckoutPayRequest,
-                HttpStatus.SC_SERVICE_UNAVAILABLE,
+                Status.SERVICE_UNAVAILABLE.getStatusCode(),
                 Maps.newHashMap(),
                 json);
 
@@ -67,7 +67,7 @@ public class ExceptionTest extends BaseSetupWithOAuth {
                 url,
                 getHeaders(),
                 standardCheckoutPayRequest,
-                HttpStatus.SC_BAD_REQUEST,
+                Status.BAD_REQUEST.getStatusCode(),
                 Maps.newHashMap(),
                 response);
 

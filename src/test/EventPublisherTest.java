@@ -13,13 +13,8 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.post;
-import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
-import static com.github.tomakehurst.wiremock.stubbing.Scenario.STARTED;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import static testsupport.HttpTestServer.response;
 
 import com.google.common.collect.ImmutableMap;
 import com.phonepe.sdk.pg.common.constants.Headers;
@@ -45,7 +40,7 @@ import java.util.Map;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import wiremock.org.apache.http.HttpStatus;
+import javax.ws.rs.core.Response.Status;
 
 public class EventPublisherTest extends BaseSetupWithOAuth {
 
@@ -67,7 +62,7 @@ public class EventPublisherTest extends BaseSetupWithOAuth {
 
     @Test
     void testPublishingEvents() {
-        wireMockServer.resetRequests();
+        httpServer.resetRequests();
         String apiPath = StandardCheckoutConstants.PAY_API;
         StandardCheckoutPayRequest standardCheckoutPayRequest =
                 StandardCheckoutPayRequest.builder()
@@ -102,11 +97,11 @@ public class EventPublisherTest extends BaseSetupWithOAuth {
         Assertions.assertEquals(3, this.eventQueue.size());
 
         addStubForPostRequest(
-                url, headers, bulkEvent, HttpStatus.SC_OK, ImmutableMap.of(), phonePeResponse);
+                url, headers, bulkEvent, Status.OK.getStatusCode(), ImmutableMap.of(), phonePeResponse);
 
         this.eventPublisher.run();
 
-        wireMockServer.verify(1, postRequestedFor(urlPathMatching(url)));
+        httpServer.verifyRequests(1, "POST", url);
         Assertions.assertEquals(0, this.eventQueue.size());
     }
 
@@ -139,7 +134,7 @@ public class EventPublisherTest extends BaseSetupWithOAuth {
 
     @Test
     void testBatchSizeWhilePushing() throws IOException {
-        wireMockServer.resetRequests();
+        httpServer.resetRequests();
         standardCheckoutClient.getTokenService().setOAuthResponse(null);
         eventQueue.getQueue().clear();
         String apiPath = StandardCheckoutConstants.PAY_API;
@@ -173,7 +168,7 @@ public class EventPublisherTest extends BaseSetupWithOAuth {
         BulkEvent bulkEventFirstCall =
                 BulkEvent.builder()
                         .events(new ArrayList<>())
-                        .clientVersion(Constants.CLIENT_VERSION)
+                        .clientVersion(Headers.SDK_TYPE + ":" + Headers.SDK_VERSION)
                         .source(Constants.SOURCE)
                         .build();
         // First Call will be made with MAX BATCH_SIZE
@@ -185,7 +180,7 @@ public class EventPublisherTest extends BaseSetupWithOAuth {
         BulkEvent bulkEventSecondCall =
                 BulkEvent.builder()
                         .events(Arrays.asList(event, event))
-                        .clientVersion(Constants.CLIENT_VERSION)
+                        .clientVersion(Headers.SDK_TYPE + ":" + Headers.SDK_VERSION)
                         .source(Constants.SOURCE)
                         .build();
 
@@ -195,7 +190,7 @@ public class EventPublisherTest extends BaseSetupWithOAuth {
                 url,
                 headers,
                 bulkEventFirstCall,
-                HttpStatus.SC_OK,
+                Status.OK.getStatusCode(),
                 ImmutableMap.of(),
                 phonePeResponse);
 
@@ -203,7 +198,7 @@ public class EventPublisherTest extends BaseSetupWithOAuth {
                 url,
                 headers,
                 bulkEventSecondCall,
-                HttpStatus.SC_OK,
+                Status.OK.getStatusCode(),
                 ImmutableMap.of(),
                 phonePeResponse);
         this.eventPublisher.run();
@@ -211,24 +206,24 @@ public class EventPublisherTest extends BaseSetupWithOAuth {
         // Second Call Made with Remaining Size ie 2 of Bulk Events
         BulkEvent actualSecondCall =
                 this.objectMapper.readValue(
-                        wireMockServer.getAllServeEvents().get(0).getRequest().getBody(),
+                        httpServer.requestsFor("POST", url).get(1).getBody().clone().readByteArray(),
                         BulkEvent.class);
 
         // First Call Made with BATCH_MAX_SIZE ie 10 of Bulk Events
         BulkEvent actualFirstCall =
                 this.objectMapper.readValue(
-                        wireMockServer.getAllServeEvents().get(1).getRequest().getBody(),
+                        httpServer.requestsFor("POST", url).get(0).getBody().clone().readByteArray(),
                         BulkEvent.class);
 
         Assertions.assertEquals(2, actualSecondCall.getEvents().size());
         Assertions.assertEquals(10, actualFirstCall.getEvents().size());
-        wireMockServer.verify(2, postRequestedFor(urlPathMatching(url)));
+        httpServer.verifyRequests(2, "POST", url);
         Assertions.assertEquals(0, this.eventQueue.size());
     }
 
     @Test
     void testQueueFullBatchSizePush() throws IOException {
-        wireMockServer.resetRequests();
+        httpServer.resetRequests();
         standardCheckoutClient.getTokenService().setOAuthResponse(null);
         String apiPath = StandardCheckoutConstants.PAY_API;
         StandardCheckoutPayRequest standardCheckoutPayRequest =
@@ -286,7 +281,7 @@ public class EventPublisherTest extends BaseSetupWithOAuth {
                 url,
                 headers,
                 bulkEventFirstCall,
-                HttpStatus.SC_OK,
+                Status.OK.getStatusCode(),
                 ImmutableMap.of(),
                 phonePeResponse);
 
@@ -294,7 +289,7 @@ public class EventPublisherTest extends BaseSetupWithOAuth {
                 url,
                 headers,
                 bulkEventSecondCall,
-                HttpStatus.SC_OK,
+                Status.OK.getStatusCode(),
                 ImmutableMap.of(),
                 phonePeResponse);
         this.eventPublisher.run();
@@ -302,24 +297,24 @@ public class EventPublisherTest extends BaseSetupWithOAuth {
         // Second Call Made with Remaining Size ie 5 of Bulk Events
         BulkEvent actualSecondCall =
                 this.objectMapper.readValue(
-                        wireMockServer.getAllServeEvents().get(0).getRequest().getBody(),
+                        httpServer.requestsFor("POST", url).get(1).getBody().clone().readByteArray(),
                         BulkEvent.class);
 
         // First Call Made with BATCH_MAX_SIZE ie 10 of Bulk Events
         BulkEvent actualFirstCall =
                 this.objectMapper.readValue(
-                        wireMockServer.getAllServeEvents().get(1).getRequest().getBody(),
+                        httpServer.requestsFor("POST", url).get(0).getBody().clone().readByteArray(),
                         BulkEvent.class);
 
         Assertions.assertEquals(5, actualSecondCall.getEvents().size());
         Assertions.assertEquals(10, actualFirstCall.getEvents().size());
-        wireMockServer.verify(2, postRequestedFor(urlPathMatching(url)));
+        httpServer.verifyRequests(2, "POST", url);
         Assertions.assertEquals(0, this.eventQueue.size());
     }
 
     @Test
     void testPublishingEventsThroughThread() throws InterruptedException {
-        wireMockServer.resetRequests();
+        httpServer.resetRequests();
         String apiPath = StandardCheckoutConstants.PAY_API;
         StandardCheckoutPayRequest standardCheckoutPayRequest =
                 StandardCheckoutPayRequest.builder()
@@ -354,18 +349,18 @@ public class EventPublisherTest extends BaseSetupWithOAuth {
         Assertions.assertEquals(3, this.eventQueue.size());
 
         addStubForPostRequest(
-                url, headers, bulkEvent, HttpStatus.SC_OK, ImmutableMap.of(), phonePeResponse);
+                url, headers, bulkEvent, Status.OK.getStatusCode(), ImmutableMap.of(), phonePeResponse);
 
         eventPublisher.startPublishingEvents(tokenService::getAuthToken);
         Thread.sleep(2000);
-        wireMockServer.verify(1, postRequestedFor(urlPathMatching(url)));
+        httpServer.verifyRequests(1, "POST", url);
         Assertions.assertEquals(0, this.eventQueue.size());
     }
 
     @Test
     void testSendsTokenFetchFailureEvent() throws IOException, InterruptedException {
         standardCheckoutClient.getTokenService().setOAuthResponse(null);
-        wireMockServer.resetAll();
+        httpServer.resetAll();
         tokenService =
                 new TokenService(okHttpClient, objectMapper, credentialConfig, env, eventPublisher);
         String tokenExpireResponse =
@@ -389,43 +384,24 @@ public class EventPublisherTest extends BaseSetupWithOAuth {
 
         String url = TokenConstants.OAUTH_GET_TOKEN;
 
-        wireMockServer.stubFor(
-                post(urlEqualTo(url))
-                        .inScenario("Sequential Responses")
-                        .whenScenarioStateIs(STARTED)
-                        .willReturn(aResponse().withStatus(200).withBody(tokenExpireResponse))
-                        .willSetStateTo("Second Call"));
+        httpServer.stubSequence("POST", url, List.of(
+                response(200, tokenExpireResponse),
+                response(500, ""),
+                response(200, correctTokenResponse)));
         tokenService.getAuthToken();
-
-        wireMockServer.stubFor(
-                post(urlEqualTo(url))
-                        .inScenario("Sequential Responses")
-                        .whenScenarioStateIs("Second Call")
-                        .willReturn(aResponse().withStatus(500))
-                        .willSetStateTo("Third Call"));
-
-        wireMockServer.stubFor(
-                post(urlEqualTo(url))
-                        .inScenario("Sequential Responses")
-                        .whenScenarioStateIs("Third Call")
-                        .willReturn(aResponse().withStatus(200).withBody(correctTokenResponse)));
 
         String eventUrl = Constants.EVENTS_ENDPOINT;
         PhonePeResponse phonePeResponse =
                 PhonePeResponse.builder().message("Success").code("SUCCESS").success(true).build();
 
-        wireMockServer.stubFor(
-                post(urlEqualTo(eventUrl))
-                        .willReturn(
-                                aResponse()
-                                        .withBody(
-                                                objectMapper.writeValueAsString(phonePeResponse))));
+        httpServer.stub("POST", eventUrl,
+                response(200, objectMapper.writeValueAsString(phonePeResponse)));
 
         this.eventPublisher.startPublishingEvents(tokenService::getAuthToken);
         Thread.sleep(5000);
 
-        wireMockServer.verify(3, postRequestedFor(urlPathMatching(url)));
-        wireMockServer.verify(2, postRequestedFor(urlPathMatching(eventUrl)));
+        httpServer.verifyRequests(3, "POST", url);
+        httpServer.verifyRequests(2, "POST", eventUrl);
         Assertions.assertEquals(0, this.eventQueue.size());
         Assertions.assertEquals("O-Bearer correct_access_token", tokenService.formatCachedToken());
     }

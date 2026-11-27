@@ -44,7 +44,7 @@ import java.util.Collections;
 import java.util.Map;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import wiremock.org.apache.http.HttpStatus;
+import javax.ws.rs.core.Response.Status;
 
 public class OrderStatusTest extends BaseSetupWithOAuth {
 
@@ -59,7 +59,7 @@ public class OrderStatusTest extends BaseSetupWithOAuth {
                 url,
                 ImmutableMap.of(StandardCheckoutConstants.ORDER_DETAILS, "false"),
                 headers,
-                HttpStatus.SC_OK,
+                Status.OK.getStatusCode(),
                 ImmutableMap.of(),
                 orderStatusResponse);
 
@@ -86,7 +86,7 @@ public class OrderStatusTest extends BaseSetupWithOAuth {
                 url,
                 ImmutableMap.of(StandardCheckoutConstants.ORDER_DETAILS, "true"),
                 headers,
-                HttpStatus.SC_OK,
+                Status.OK.getStatusCode(),
                 ImmutableMap.of(),
                 response);
 
@@ -162,7 +162,7 @@ public class OrderStatusTest extends BaseSetupWithOAuth {
                 url,
                 ImmutableMap.of(StandardCheckoutConstants.ORDER_DETAILS, "true"),
                 headers,
-                HttpStatus.SC_OK,
+                Status.OK.getStatusCode(),
                 ImmutableMap.of(),
                 response);
 
@@ -230,7 +230,7 @@ public class OrderStatusTest extends BaseSetupWithOAuth {
                 url,
                 ImmutableMap.of(StandardCheckoutConstants.ORDER_DETAILS, "true"),
                 headers,
-                HttpStatus.SC_OK,
+                Status.OK.getStatusCode(),
                 ImmutableMap.of(),
                 response);
 
@@ -299,7 +299,7 @@ public class OrderStatusTest extends BaseSetupWithOAuth {
                 url,
                 ImmutableMap.of(StandardCheckoutConstants.ORDER_DETAILS, "true"),
                 headers,
-                HttpStatus.SC_OK,
+                Status.OK.getStatusCode(),
                 ImmutableMap.of(),
                 response);
 
@@ -366,7 +366,7 @@ public class OrderStatusTest extends BaseSetupWithOAuth {
                 url,
                 ImmutableMap.of(StandardCheckoutConstants.ORDER_DETAILS, "true"),
                 headers,
-                HttpStatus.SC_OK,
+                Status.OK.getStatusCode(),
                 ImmutableMap.of(),
                 response);
 
@@ -431,7 +431,7 @@ public class OrderStatusTest extends BaseSetupWithOAuth {
                 url,
                 ImmutableMap.of(StandardCheckoutConstants.ORDER_DETAILS, "false"),
                 headers,
-                HttpStatus.SC_NOT_FOUND,
+                Status.NOT_FOUND.getStatusCode(),
                 ImmutableMap.of(),
                 phonePeResponse);
 
@@ -457,7 +457,7 @@ public class OrderStatusTest extends BaseSetupWithOAuth {
                 url,
                 ImmutableMap.of(StandardCheckoutConstants.ORDER_DETAILS, "false"),
                 getHeaders(),
-                HttpStatus.SC_BAD_GATEWAY,
+                Status.BAD_GATEWAY.getStatusCode(),
                 ImmutableMap.of(),
                 phonePeResponse);
 
@@ -479,7 +479,7 @@ public class OrderStatusTest extends BaseSetupWithOAuth {
                 url,
                 ImmutableMap.of(CustomCheckoutConstants.ORDER_DETAILS, "false"),
                 headers,
-                HttpStatus.SC_OK,
+                Status.OK.getStatusCode(),
                 ImmutableMap.of(),
                 orderStatusResponse);
         OrderStatusResponse actual = customCheckoutClient.getOrderStatus(merchantOrderId, false);
@@ -505,7 +505,7 @@ public class OrderStatusTest extends BaseSetupWithOAuth {
                 url,
                 ImmutableMap.of(StandardCheckoutConstants.ORDER_DETAILS, "true"),
                 headers,
-                HttpStatus.SC_OK,
+                Status.OK.getStatusCode(),
                 ImmutableMap.of(),
                 response);
 
@@ -581,7 +581,7 @@ public class OrderStatusTest extends BaseSetupWithOAuth {
                 url,
                 ImmutableMap.of(StandardCheckoutConstants.ORDER_DETAILS, "true"),
                 headers,
-                HttpStatus.SC_OK,
+                Status.OK.getStatusCode(),
                 ImmutableMap.of(),
                 response);
 
@@ -637,7 +637,7 @@ public class OrderStatusTest extends BaseSetupWithOAuth {
                 url,
                 ImmutableMap.of(StandardCheckoutConstants.ORDER_DETAILS, "true"),
                 headers,
-                HttpStatus.SC_OK,
+                Status.OK.getStatusCode(),
                 ImmutableMap.of(),
                 response);
 
@@ -759,7 +759,7 @@ public class OrderStatusTest extends BaseSetupWithOAuth {
         Map<String, String> headers = getHeadersForSubscription();
 
         addStubForGetRequest(
-                url, ImmutableMap.of(), headers, HttpStatus.SC_OK, ImmutableMap.of(), response);
+                url, ImmutableMap.of(), headers, Status.OK.getStatusCode(), ImmutableMap.of(), response);
 
         OrderStatusResponse actual = subscriptionClient.getOrderStatus(merchantOrderId);
 
@@ -776,7 +776,7 @@ public class OrderStatusTest extends BaseSetupWithOAuth {
                 url,
                 ImmutableMap.of(StandardCheckoutConstants.ORDER_DETAILS, "false"),
                 getHeaders(),
-                HttpStatus.SC_OK,
+                Status.OK.getStatusCode(),
                 ImmutableMap.of(),
                 orderStatusResponse);
 

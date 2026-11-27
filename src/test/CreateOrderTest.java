@@ -33,7 +33,7 @@ import java.util.Map;
 import java.util.Set;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import wiremock.org.apache.http.HttpStatus;
+import javax.ws.rs.core.Response.Status;
 
 public class CreateOrderTest extends BaseSetupWithOAuth {
 
@@ -60,7 +60,7 @@ public class CreateOrderTest extends BaseSetupWithOAuth {
                 url,
                 getHeaders(),
                 createSdkOrderRequest,
-                HttpStatus.SC_OK,
+                Status.OK.getStatusCode(),
                 Maps.newHashMap(),
                 createSdkOrderResponse);
 
@@ -90,7 +90,7 @@ public class CreateOrderTest extends BaseSetupWithOAuth {
                 url,
                 getHeaders(),
                 createSdkOrderRequest,
-                HttpStatus.SC_OK,
+                Status.OK.getStatusCode(),
                 Maps.newHashMap(),
                 createSdkOrderResponse);
 
@@ -118,7 +118,7 @@ public class CreateOrderTest extends BaseSetupWithOAuth {
                 url,
                 getHeaders(),
                 createSdkOrderRequest,
-                HttpStatus.SC_BAD_REQUEST,
+                Status.BAD_REQUEST.getStatusCode(),
                 Maps.newHashMap(),
                 phonePeResponse);
 
@@ -155,7 +155,7 @@ public class CreateOrderTest extends BaseSetupWithOAuth {
                 url,
                 getHeaders(),
                 createSdkOrderRequest,
-                HttpStatus.SC_OK,
+                Status.OK.getStatusCode(),
                 Maps.newHashMap(),
                 createSdkOrderResponse);
 
@@ -189,7 +189,7 @@ public class CreateOrderTest extends BaseSetupWithOAuth {
                 url,
                 getHeaders(),
                 createSdkOrderRequest,
-                HttpStatus.SC_OK,
+                Status.OK.getStatusCode(),
                 Maps.newHashMap(),
                 createSdkOrderResponse);
 
@@ -222,7 +222,7 @@ public class CreateOrderTest extends BaseSetupWithOAuth {
                 url,
                 getHeaders(),
                 createSdkOrderRequest,
-                HttpStatus.SC_OK,
+                Status.OK.getStatusCode(),
                 Maps.newHashMap(),
                 createSdkOrderResponse);
 
@@ -254,7 +254,7 @@ public class CreateOrderTest extends BaseSetupWithOAuth {
                 url,
                 getHeaders(),
                 createSdkOrderRequest,
-                HttpStatus.SC_OK,
+                Status.OK.getStatusCode(),
                 Maps.newHashMap(),
                 createSdkOrderResponse);
 
@@ -285,7 +285,7 @@ public class CreateOrderTest extends BaseSetupWithOAuth {
                 url,
                 getHeaders(),
                 createSdkOrderRequest,
-                HttpStatus.SC_OK,
+                Status.OK.getStatusCode(),
                 Maps.newHashMap(),
                 createSdkOrderResponse);
 
@@ -315,7 +315,7 @@ public class CreateOrderTest extends BaseSetupWithOAuth {
                 url,
                 getHeaders(),
                 createSdkOrderRequest,
-                HttpStatus.SC_OK,
+                Status.OK.getStatusCode(),
                 Maps.newHashMap(),
                 createSdkOrderResponse);
 
@@ -354,7 +354,7 @@ public class CreateOrderTest extends BaseSetupWithOAuth {
                 url,
                 getHeaders(),
                 createSdkOrderRequest,
-                HttpStatus.SC_OK,
+                Status.OK.getStatusCode(),
                 Maps.newHashMap(),
                 createSdkOrderResponse);
 
@@ -394,7 +394,7 @@ public class CreateOrderTest extends BaseSetupWithOAuth {
                 url,
                 getHeaders(),
                 createSdkOrderRequest,
-                HttpStatus.SC_OK,
+                Status.OK.getStatusCode(),
                 Maps.newHashMap(),
                 createSdkOrderResponse);
 

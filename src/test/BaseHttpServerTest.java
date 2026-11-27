@@ -13,15 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.tomakehurst.wiremock.WireMockServer;
-import com.github.tomakehurst.wiremock.client.MappingBuilder;
-import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder;
-import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
-import com.github.tomakehurst.wiremock.stubbing.StubMapping;
 import com.google.common.collect.ImmutableMap;
 import java.util.Map;
 import lombok.SneakyThrows;
@@ -29,27 +21,32 @@ import okhttp3.FormBody;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import testsupport.HttpTestServer;
+import testsupport.HttpTestServer.ResponseSpec;
 
-public abstract class BaseWireMockTest {
+public abstract class BaseHttpServerTest {
 
-    public static final int WIREMOCK_PORT = 30419;
+    public static final int HTTP_PORT = 30419;
 
     public final ObjectMapper mapper = new ObjectMapper();
 
-    private static final WireMockConfiguration wireMockConfiguration =
-            new WireMockConfiguration().port(WIREMOCK_PORT);
-    protected static final WireMockServer wireMockServer =
-            new WireMockServer(wireMockConfiguration);
+    protected final HttpTestServer httpServer = new HttpTestServer(HTTP_PORT);
 
+    @SneakyThrows
     @BeforeEach
-    public void baseWireMockTestRunBeforeEach() {
-        wireMockServer.start();
+    public void startHttpServer() {
+        httpServer.start();
     }
 
+    @SneakyThrows
     @AfterEach
-    public void baseWireMockTestExecuteAfterEach() {
-        Assertions.assertEquals(0, wireMockServer.findAllUnmatchedRequests().size());
-        wireMockServer.stop();
+    public void stopHttpServer() {
+        try {
+            Assertions.assertEquals(0, httpServer.unmatchedRequests().size(),
+                    () -> httpServer.unmatchedRequests().toString());
+        } finally {
+            httpServer.close();
+        }
     }
 
     protected void addStubForGetRequest(
@@ -67,21 +64,8 @@ public abstract class BaseWireMockTest {
             final Map<String, String> responseHeaders,
             final Object response) {
 
-        final MappingBuilder mappingBuilder = WireMock.get(WireMock.urlPathEqualTo(urlPath));
-        requestHeaders.forEach(
-                (key, value) -> mappingBuilder.withHeader(key, WireMock.containing(value)));
-        queryParams.forEach(
-                (key, value) -> mappingBuilder.withQueryParam(key, WireMock.equalTo(value)));
-
-        final ResponseDefinitionBuilder responseDefinitionBuilder =
-                WireMock.aResponse()
-                        .withStatus(status)
-                        .withBody(
-                                response instanceof String
-                                        ? (String) response
-                                        : mapper.writeValueAsString(response));
-        responseHeaders.forEach(responseDefinitionBuilder::withHeader);
-        wireMockServer.stubFor(mappingBuilder.willReturn(responseDefinitionBuilder));
+        httpServer.stub("GET", urlPath, requestHeaders, null, queryParams,
+                new ResponseSpec(status, responseHeaders, serialize(response)));
     }
 
     protected void addStubForPostRequest(
@@ -116,29 +100,13 @@ public abstract class BaseWireMockTest {
             final Map<String, String> responseHeaders,
             final Object response,
             final Map<String, String> queryParams) {
-        final MappingBuilder mappingBuilder =
-                WireMock.post(WireMock.urlPathEqualTo(urlPath))
-                        .withRequestBody(
-                                equalTo(
-                                        request instanceof String
-                                                ? (String) request
-                                                : mapper.writeValueAsString(request)));
+        httpServer.stub("POST", urlPath, requestHeaders, serialize(request), queryParams,
+                new ResponseSpec(status, responseHeaders, serialize(response)));
+    }
 
-        requestHeaders.forEach(
-                (key, value) -> mappingBuilder.withHeader(key, WireMock.containing(value)));
-        queryParams.forEach(
-                (key, value) -> mappingBuilder.withQueryParam(key, WireMock.equalTo(value)));
-        final ResponseDefinitionBuilder responseDefinitionBuilder =
-                WireMock.aResponse()
-                        .withStatus(status)
-                        .withBody(
-                                response instanceof String
-                                        ? (String) response
-                                        : mapper.writeValueAsString(response));
-
-        responseHeaders.forEach(responseDefinitionBuilder::withHeader);
-        StubMapping stubMapping =
-                wireMockServer.stubFor(mappingBuilder.willReturn(responseDefinitionBuilder));
+    @SneakyThrows
+    private String serialize(Object value) {
+        return value instanceof String ? (String) value : mapper.writeValueAsString(value);
     }
 
     protected void addStubForFormDataPostRequest(

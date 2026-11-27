@@ -23,11 +23,19 @@ import com.phonepe.sdk.pg.common.http.HttpCommand;
 import com.phonepe.sdk.pg.common.http.HttpMethodType;
 import com.phonepe.sdk.pg.common.http.PhonePeResponse;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import javax.ws.rs.core.Response.Status;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
+import okhttp3.mockwebserver.MockResponse;
+import okhttp3.mockwebserver.MockWebServer;
+import okhttp3.mockwebserver.RecordedRequest;
+import okio.Buffer;
+import okio.BufferedSink;
+import okio.GzipSink;
+import okio.Okio;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import wiremock.org.apache.http.HttpStatus;
 
 public class HttpCommandTest extends BaseSetup {
 
@@ -46,11 +54,41 @@ public class HttpCommandTest extends BaseSetup {
                 "/testing",
                 ImmutableMap.of(),
                 ImmutableMap.of(),
-                HttpStatus.SC_OK,
+                Status.OK.getStatusCode(),
                 ImmutableMap.of(),
                 (int) 200);
         Integer actual = httpCommand.execute();
         Assertions.assertEquals(200, actual);
+    }
+
+    @Test
+    void transparentlyDecodesGzipResponses() throws Exception {
+        Buffer compressed = new Buffer();
+        try (BufferedSink sink = Okio.buffer(new GzipSink(compressed))) {
+            sink.writeUtf8("200");
+        }
+        try (MockWebServer server = new MockWebServer()) {
+            server.start();
+            server.enqueue(new MockResponse()
+                    .setHeader("Content-Type", APPLICATION_JSON)
+                    .setHeader("Content-Encoding", "gzip")
+                    .setBody(compressed));
+            HttpCommand<Integer, String> command =
+                    HttpCommand.<Integer, String>builder()
+                            .hostURL("http://localhost:" + server.getPort())
+                            .client(okHttpClient)
+                            .objectMapper(mapper)
+                            .responseTypeReference(new TypeReference<Integer>() {})
+                            .url("/testing")
+                            .methodName(HttpMethodType.GET)
+                            .build();
+
+            Assertions.assertEquals(200, command.execute());
+            RecordedRequest request = server.takeRequest(1, TimeUnit.SECONDS);
+            Assertions.assertNotNull(request);
+            Assertions.assertEquals("/testing", request.getPath());
+            Assertions.assertEquals("gzip", request.getHeader("Accept-Encoding"));
+        }
     }
 
     @Test
@@ -69,7 +107,7 @@ public class HttpCommandTest extends BaseSetup {
                 "/testing",
                 ImmutableMap.of(),
                 ImmutableMap.of(),
-                HttpStatus.SC_NOT_FOUND,
+                Status.NOT_FOUND.getStatusCode(),
                 ImmutableMap.of(),
                 phonePeResponse);
         final PhonePeException phonePeException =
@@ -93,7 +131,7 @@ public class HttpCommandTest extends BaseSetup {
                         .url("/testing")
                         .methodName(HttpMethodType.POST)
                         .build();
-        addStubForPostRequest("/testing", sampleJson, HttpStatus.SC_NO_CONTENT, "");
+        addStubForPostRequest("/testing", sampleJson, Status.NO_CONTENT.getStatusCode(), "");
         Void result = httpCommand.execute();
         Assertions.assertNull(result);
     }

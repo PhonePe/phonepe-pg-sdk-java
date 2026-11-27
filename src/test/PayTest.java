@@ -44,7 +44,7 @@ import java.util.Set;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import wiremock.org.apache.http.HttpStatus;
+import javax.ws.rs.core.Response.Status;
 
 public class PayTest extends BaseSetupWithOAuth {
 
@@ -106,7 +106,7 @@ public class PayTest extends BaseSetupWithOAuth {
                 url,
                 headers,
                 standardCheckoutPayRequest,
-                HttpStatus.SC_OK,
+                Status.OK.getStatusCode(),
                 Maps.newHashMap(),
                 standardCheckoutResponse);
         StandardCheckoutPayResponse actual = standardCheckoutClient.pay(standardCheckoutPayRequest);
@@ -131,7 +131,7 @@ public class PayTest extends BaseSetupWithOAuth {
                 url,
                 getHeaders(),
                 standardCheckoutPayRequest,
-                HttpStatus.SC_BAD_REQUEST,
+                Status.BAD_REQUEST.getStatusCode(),
                 Maps.newHashMap(),
                 phonePeResponse);
 
@@ -160,7 +160,7 @@ public class PayTest extends BaseSetupWithOAuth {
                         .redirectUrl("mercury.com")
                         .build();
         addStubForPostRequest(
-                url, getHeaders(), request, HttpStatus.SC_OK, Maps.newHashMap(), pgPaymentResponse);
+                url, getHeaders(), request, Status.OK.getStatusCode(), Maps.newHashMap(), pgPaymentResponse);
 
         PgPaymentResponse actual = customCheckoutClient.pay(request);
         Assertions.assertEquals(pgPaymentResponse, actual);
@@ -190,7 +190,7 @@ public class PayTest extends BaseSetupWithOAuth {
         headers.put(Headers.X_DEVICE_OS, "ANDROID");
 
         addStubForPostRequest(
-                url, headers, request, HttpStatus.SC_OK, Maps.newHashMap(), pgPaymentResponse);
+                url, headers, request, Status.OK.getStatusCode(), Maps.newHashMap(), pgPaymentResponse);
 
         PgPaymentResponse actual = customCheckoutClient.pay(request);
         Assertions.assertEquals(pgPaymentResponse, actual);
@@ -216,7 +216,7 @@ public class PayTest extends BaseSetupWithOAuth {
                         .build();
 
         addStubForPostRequest(
-                url, getHeaders(), request, HttpStatus.SC_OK, Maps.newHashMap(), pgPaymentResponse);
+                url, getHeaders(), request, Status.OK.getStatusCode(), Maps.newHashMap(), pgPaymentResponse);
 
         PgPaymentResponse actual = customCheckoutClient.pay(request);
         Assertions.assertEquals(pgPaymentResponse, actual);
@@ -264,7 +264,7 @@ public class PayTest extends BaseSetupWithOAuth {
                 url,
                 headers,
                 standardCheckoutPayRequest,
-                HttpStatus.SC_OK,
+                Status.OK.getStatusCode(),
                 Maps.newHashMap(),
                 standardCheckoutResponse);
         StandardCheckoutPayResponse actual = standardCheckoutClient.pay(standardCheckoutPayRequest);
@@ -298,7 +298,7 @@ public class PayTest extends BaseSetupWithOAuth {
                 url,
                 headers,
                 standardCheckoutPayRequest,
-                HttpStatus.SC_OK,
+                Status.OK.getStatusCode(),
                 Maps.newHashMap(),
                 standardCheckoutResponse);
         StandardCheckoutPayResponse actual = standardCheckoutClient.pay(standardCheckoutPayRequest);
@@ -331,7 +331,7 @@ public class PayTest extends BaseSetupWithOAuth {
                 url,
                 headers,
                 standardCheckoutPayRequest,
-                HttpStatus.SC_OK,
+                Status.OK.getStatusCode(),
                 Maps.newHashMap(),
                 standardCheckoutResponse);
         StandardCheckoutPayResponse actual = standardCheckoutClient.pay(standardCheckoutPayRequest);
@@ -369,7 +369,7 @@ public class PayTest extends BaseSetupWithOAuth {
                 url,
                 headers,
                 standardCheckoutPayRequest,
-                HttpStatus.SC_OK,
+                Status.OK.getStatusCode(),
                 Maps.newHashMap(),
                 standardCheckoutResponse);
         StandardCheckoutPayResponse actual = standardCheckoutClient.pay(standardCheckoutPayRequest);
@@ -406,7 +406,7 @@ public class PayTest extends BaseSetupWithOAuth {
                 url,
                 headers,
                 standardCheckoutPayRequest,
-                HttpStatus.SC_OK,
+                Status.OK.getStatusCode(),
                 Maps.newHashMap(),
                 standardCheckoutResponse);
         StandardCheckoutPayResponse actual = standardCheckoutClient.pay(standardCheckoutPayRequest);
@@ -440,7 +440,7 @@ public class PayTest extends BaseSetupWithOAuth {
                 url,
                 headers,
                 standardCheckoutPayRequest,
-                HttpStatus.SC_OK,
+                Status.OK.getStatusCode(),
                 Maps.newHashMap(),
                 standardCheckoutResponse);
         StandardCheckoutPayResponse actual = standardCheckoutClient.pay(standardCheckoutPayRequest);

@@ -18,11 +18,6 @@ package customCheckoutTests;
 import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.tomakehurst.wiremock.WireMockServer;
-import com.github.tomakehurst.wiremock.client.MappingBuilder;
-import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder;
-import com.github.tomakehurst.wiremock.client.WireMock;
-import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import com.google.common.collect.ImmutableMap;
 import com.phonepe.sdk.pg.Env;
 import com.phonepe.sdk.pg.common.constants.Headers;
@@ -34,21 +29,21 @@ import okhttp3.FormBody;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import lombok.SneakyThrows;
+import testsupport.HttpTestServer;
+import testsupport.HttpTestServer.ResponseSpec;
 
 /**
- * Base class for CustomCheckout tests. Sets up a WireMock server, stubs the OAuth token
+ * Base class for CustomCheckout tests. Sets up an HTTP server, stubs the OAuth token
  * endpoint, and instantiates {@link CustomCheckoutClient} ready for use in tests.
  */
 abstract class CustomCheckoutBaseSetup {
 
-    protected static final int WIREMOCK_PORT = 30419;
+    protected static final int HTTP_PORT = 30419;
 
     protected final ObjectMapper mapper = new ObjectMapper();
 
-    private static final WireMockConfiguration wireMockConfiguration =
-            new WireMockConfiguration().port(WIREMOCK_PORT);
-    protected static final WireMockServer wireMockServer =
-            new WireMockServer(wireMockConfiguration);
+    protected final HttpTestServer httpServer = new HttpTestServer(HTTP_PORT);
 
     protected CustomCheckoutClient customCheckoutClient;
 
@@ -67,18 +62,23 @@ abstract class CustomCheckoutBaseSetup {
                     .add("client_version", String.valueOf(clientVersion))
                     .build();
 
+    @SneakyThrows
     @BeforeEach
     void setUp() {
-        wireMockServer.start();
+        httpServer.start();
         stubOAuthToken();
         this.customCheckoutClient =
                 CustomCheckoutClient.getInstance(clientId, clientSecret, clientVersion, env);
     }
 
+    @SneakyThrows
     @AfterEach
     void tearDown() {
-        Assertions.assertEquals(0, wireMockServer.findAllUnmatchedRequests().size());
-        wireMockServer.stop();
+        try {
+            Assertions.assertEquals(0, httpServer.unmatchedRequests().size());
+        } finally {
+            httpServer.close();
+        }
     }
 
     // ── OAuth stub ────────────────────────────────────────────────────────
@@ -126,8 +126,9 @@ abstract class CustomCheckoutBaseSetup {
                 .build();
     }
 
-    // ── WireMock stub helpers ─────────────────────────────────────────────
+    // ── HTTP stub helpers ─────────────────────────────────────────────────
 
+    @SneakyThrows
     protected void addStubForGetRequest(
             final String urlPath, final int status, final Object response) {
         addStubForGetRequest(
@@ -141,16 +142,11 @@ abstract class CustomCheckoutBaseSetup {
             final int status,
             final Map<String, String> responseHeaders,
             final Object response) {
-        final MappingBuilder mappingBuilder = WireMock.get(WireMock.urlPathEqualTo(urlPath));
-        requestHeaders.forEach(
-                (key, value) -> mappingBuilder.withHeader(key, WireMock.containing(value)));
-        queryParams.forEach(
-                (key, value) -> mappingBuilder.withQueryParam(key, WireMock.equalTo(value)));
-
-        wireMockServer.stubFor(
-                mappingBuilder.willReturn(buildResponse(status, responseHeaders, response)));
+        httpServer.stub("GET", urlPath, requestHeaders, null, queryParams,
+                new ResponseSpec(status, responseHeaders, serialize(response)));
     }
 
+    @SneakyThrows
     protected void addStubForPostRequest(
             final String urlPath, final Object request, final int status, final Object response) {
         addStubForPostRequest(
@@ -164,41 +160,13 @@ abstract class CustomCheckoutBaseSetup {
             final int status,
             final Map<String, String> responseHeaders,
             final Object response) {
-        try {
-            String body =
-                    request instanceof String
-                            ? (String) request
-                            : mapper.writeValueAsString(request);
-
-            final MappingBuilder mappingBuilder =
-                    WireMock.post(WireMock.urlPathEqualTo(urlPath))
-                            .withRequestBody(WireMock.equalTo(body));
-
-            requestHeaders.forEach(
-                    (key, value) -> mappingBuilder.withHeader(key, WireMock.containing(value)));
-
-            wireMockServer.stubFor(
-                    mappingBuilder.willReturn(buildResponse(status, responseHeaders, response)));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        httpServer.stub("POST", urlPath, requestHeaders, serialize(request), ImmutableMap.of(),
+                new ResponseSpec(status, responseHeaders, serialize(response)));
     }
 
-    private ResponseDefinitionBuilder buildResponse(
-            int status, Map<String, String> responseHeaders, Object response) {
-        try {
-            ResponseDefinitionBuilder builder =
-                    WireMock.aResponse()
-                            .withStatus(status)
-                            .withBody(
-                                    response instanceof String
-                                            ? (String) response
-                                            : mapper.writeValueAsString(response));
-            responseHeaders.forEach(builder::withHeader);
-            return builder;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+    @SneakyThrows
+    private String serialize(Object value) {
+        return value instanceof String ? (String) value : mapper.writeValueAsString(value);
     }
 
     private String formDataToString(FormBody formBody) {

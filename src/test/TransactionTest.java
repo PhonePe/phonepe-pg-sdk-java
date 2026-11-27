@@ -23,7 +23,7 @@ import com.phonepe.sdk.pg.subscription.v2.SubscriptionConstants;
 import java.util.Arrays;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import wiremock.org.apache.http.HttpStatus;
+import javax.ws.rs.core.Response.Status;
 
 public class TransactionTest extends BaseSetupWithOAuth {
 
@@ -50,7 +50,7 @@ public class TransactionTest extends BaseSetupWithOAuth {
                 url,
                 ImmutableMap.of(),
                 getHeaders(),
-                HttpStatus.SC_OK,
+                Status.OK.getStatusCode(),
                 ImmutableMap.of(),
                 transactionCheckStatusResponse);
 
@@ -78,7 +78,7 @@ public class TransactionTest extends BaseSetupWithOAuth {
                 url,
                 ImmutableMap.of(),
                 getHeaders(),
-                HttpStatus.SC_OK,
+                Status.OK.getStatusCode(),
                 ImmutableMap.of(),
                 transactionCheckStatusResponse);
 
@@ -106,7 +106,7 @@ public class TransactionTest extends BaseSetupWithOAuth {
                 url,
                 ImmutableMap.of(),
                 getHeadersForSubscription(),
-                HttpStatus.SC_OK,
+                Status.OK.getStatusCode(),
                 ImmutableMap.of(),
                 transactionCheckStatusResponse);
 
@@ -129,7 +129,7 @@ public class TransactionTest extends BaseSetupWithOAuth {
                 url,
                 ImmutableMap.of(),
                 getHeaders(),
-                HttpStatus.SC_NOT_FOUND,
+                Status.NOT_FOUND.getStatusCode(),
                 ImmutableMap.of(),
                 errorResponse);
 
@@ -155,7 +155,7 @@ public class TransactionTest extends BaseSetupWithOAuth {
                 url,
                 ImmutableMap.of(),
                 getHeaders(),
-                HttpStatus.SC_NOT_FOUND,
+                Status.NOT_FOUND.getStatusCode(),
                 ImmutableMap.of(),
                 errorResponse);
 
